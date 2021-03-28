@@ -1,5 +1,6 @@
-This fork tries to build native images of the demos, in various branches, like in
-[this branch](https://github.com/chirontt/lwjgl3-demos/tree/3.2.3_bgfx_native_image) for the BGFX demos.
+This fork tries to build native images of the demos compiled against official LWJGL versions,
+in various branches, like in this
+[BGFX 3.2.3 branch](https://github.com/chirontt/lwjgl3-demos/tree/3.2.3_bgfx_native_image) for the BGFX demos, etc.
 
 -----
 
