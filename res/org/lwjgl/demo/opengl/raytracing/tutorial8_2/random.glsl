@@ -9,7 +9,7 @@
 #define ONE_OVER_2PI (1.0 / TWO_PI)
 #define spatialrand vec2
 vec3 ortho(vec3 v) {
-  return normalize(mix(vec3(-v.y, v.x, 0.0), vec3(0.0, -v.z, v.y), abs(v.x) < abs(v.z)));
+  return normalize(mix(vec3(-v.y, v.x, 0.0), vec3(0.0, -v.z, v.y), step(abs(v.x), abs(v.z))));
 }
 uint hash3(uint x, uint y, uint z) {
   x += x >> 11;
@@ -33,7 +33,7 @@ float random3(vec3 f) {
 }
 vec3 around(vec3 v, vec3 z) {
   vec3 t = ortho(z), b = cross(z, t);
-  return t * v.x + b * v.y + z * v.z;
+  return fma(t, vec3(v.x), fma(b, vec3(v.y), z * v.z));
 }
 vec3 isotropic(float rp, float c) {
   float p = TWO_PI * rp, s = sqrt(1.0 - c*c);

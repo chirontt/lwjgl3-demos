@@ -9,7 +9,7 @@
 #define ONE_OVER_PI (1.0 / PI)
 #define ONE_OVER_2PI (1.0 / TWO_PI)
 vec3 ortho(vec3 v) {
-  return normalize(abs(v.x) < abs(v.z) ? vec3(0.0, -v.z, v.y) : vec3(-v.y, v.x, 0.0));
+  return normalize(mix(vec3(-v.y, v.x, 0.0), vec3(0.0, -v.z, v.y), step(abs(v.x), abs(v.z))));
 }
 vec3 around(vec3 v, vec3 z) {
   vec3 t = ortho(z), b = cross(z, t);
@@ -23,6 +23,9 @@ vec4 randomCosineWeightedHemisphereDirection(vec3 n, vec2 rand) {
   float c = sqrt(rand.y);
   return vec4(around(isotropic(rand.x, c), n), c * ONE_OVER_PI);
 }
+/**
+ * http://www.jcgt.org/published/0009/03/02/
+ */
 uvec3 pcg3d(uvec3 v) {
   v = v * 1664525u + 1013904223u;
   v.x += v.y * v.z;

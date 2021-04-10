@@ -23,7 +23,7 @@
  * @returns the unit vector orthogonal to 'v'
  */
 vec3 ortho(vec3 v) {
-  return normalize(abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0) : vec3(0.0, -v.z, v.y));
+  return normalize(mix(vec3(-v.y, v.x, 0.0), vec3(0.0, -v.z, v.y), step(abs(v.x), abs(v.z))));
 }
 
 /**
@@ -75,7 +75,7 @@ vec3 random3(vec3 f) {
  */
 vec3 around(vec3 v, vec3 z) {
   vec3 t = ortho(z), b = cross(z, t);
-  return t * v.x + b * v.y + z * v.z;
+  return fma(t, vec3(v.x), fma(b, vec3(v.y), z * v.z));
 }
 
 /**

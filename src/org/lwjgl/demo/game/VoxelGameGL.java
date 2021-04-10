@@ -798,13 +798,6 @@ public class VoxelGameGL {
     /* Computed values depending on the render path we use */
     private int verticesPerFace, indicesPerFace, voxelVertexSize;
 
-    private long indirectDrawBufferAddr;
-    private int boundingBoxesVertexBufferObject;
-    private long boundingBoxesVertexBufferObjectAddr;
-    private int visibilityFlagsBuffer;
-    private int indirectDrawCulledBuffer;
-    private int atomicCounterBuffer;
-
     /**
      * Index identifying the current region of any dynamic buffer which we will use for updating and
      * drawing from.
@@ -875,18 +868,24 @@ public class VoxelGameGL {
     private int chunksProgramUboBlockIndex;
     private int chunksProgramUbo;
     private long chunksProgramUboAddr;
-    private static final int chunksProgramUboSize = 4 * (2 * 16 + 2 * 4);
+    private static final int chunksProgramUboSize = 4 * (16 + 2 * 4);
 
-    /* Resources for generating draw commands on the GPU */
+    /* Resources for drawing chunks' bounding boxes to fill visibility buffer */
+    private int visibilityFlagsBuffer;
     private int boundingBoxesVao;
     private int boundingBoxesProgram;
     private int boundingBoxesProgramUboBlockIndex;
     private int boundingBoxesProgramUbo;
     private long boundingBoxesProgramUboAddr;
+    private int boundingBoxesVertexBufferObject;
+    private long boundingBoxesVertexBufferObjectAddr;
+    private long indirectDrawBufferAddr;
     private static final int boundingBoxesProgramUboSize = 4 * (16 + 4);
 
     /* Resources for collecting draw calls using the visibility buffer */
     private int collectDrawCallsProgram;
+    private int atomicCounterBuffer;
+    private int indirectDrawCulledBuffer;
 
     /* Resources for drawing the "selection" quad */
     private int nullVao;
@@ -3243,8 +3242,6 @@ public class VoxelGameGL {
                 uboPos = 0L;
             }
             mvpMat.getToAddress(ubo + uboPos);
-            uboPos += 16 * Float.BYTES;
-            vMat.getToAddress(ubo + uboPos);
             uboPos += 16 * Float.BYTES;
             mvpMat.getRow(3, tmpv4f).getToAddress(ubo + uboPos);
             uboPos += 4 * Float.BYTES;
