@@ -10,7 +10,6 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <lwjgl.version>3.2.3</lwjgl.version>
         <lwjgl.version>3.3.0-SNAPSHOT</lwjgl.version>
         <swt.version>4.6.1</swt.version>
         <joml.version>1.10.1</joml.version>
@@ -40,15 +39,6 @@
             </properties>
         </profile>
         <profile>
-            <id>windows-x86</id>
-            <activation>
-                <os>
-                    <family>Windows</family>
-                    <arch>x86</arch>
-                </os>
-            </activation>
-        </profile>
-        <profile>
             <id>windows-amd64</id>
             <activation>
                 <os>
@@ -74,15 +64,6 @@
             <properties>
                 <platform>linux</platform>
             </properties>
-        </profile>
-        <profile>
-            <id>linux-x86</id>
-            <activation>
-                <os>
-                    <family>Linux</family>
-                    <arch>x86</arch>
-                </os>
-            </activation>
         </profile>
         <profile>
             <id>linux-amd64</id>
@@ -186,7 +167,10 @@
     <repositories>
         <repository>
             <id>oss.sonatype.org</id>
-            <url>https://oss.sonatype.org/content/repositories/</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>swt-repo</id>
@@ -212,11 +196,13 @@
             <version>${joml.version}</version>
         </dependency>
         <!-- for compiling GraalVM substitution classes -->
+        <dependency>
             <groupId>org.graalvm.nativeimage</groupId>
             <artifactId>svm</artifactId>
             <version>${graalvm.version}</version>
-            <scope>compile</scope>
-        <!-- LWJGL modules used: minimal OpenGL, plus bgfx, jemalloc, shaderc, vma, vulkan -->
+            <scope>provided</scope>
+        </dependency>
+        <!-- LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, par, shaderc, vma, vulkan -->
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
@@ -248,6 +234,10 @@
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-opengl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-par</artifactId>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
@@ -299,6 +289,11 @@
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-opengl</artifactId>
+            <classifier>natives-${platform}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-par</artifactId>
             <classifier>natives-${platform}</classifier>
         </dependency>
         <dependency>

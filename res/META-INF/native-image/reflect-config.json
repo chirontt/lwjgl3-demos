@@ -19,7 +19,58 @@
 },
 {
   "name":"java.nio.Buffer",
-  "fields":[{"name":"address", "allowUnsafeAccess":true}]
+  "allDeclaredFields":true,
+  "fields":[
+    {"name":"address", "allowUnsafeAccess":true}, 
+    {"name":"capacity", "allowUnsafeAccess":true}, 
+    {"name":"limit", "allowUnsafeAccess":true}, 
+    {"name":"mark", "allowUnsafeAccess":true}, 
+    {"name":"position", "allowUnsafeAccess":true}
+  ]
+},
+{
+  "name":"java.nio.ByteBuffer",
+  "allDeclaredFields":true,
+  "fields":[{"name":"offset", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.nio.DirectByteBuffer",
+  "allDeclaredFields":true,
+  "fields":[{"name":"att", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.nio.DirectCharBufferU",
+  "allDeclaredFields":true,
+  "fields":[{"name":"att", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.nio.DirectDoubleBufferU",
+  "allDeclaredFields":true,
+  "fields":[{"name":"att", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.nio.DirectFloatBufferU",
+  "allDeclaredFields":true,
+  "fields":[{"name":"att", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.nio.DirectIntBufferU",
+  "allDeclaredFields":true,
+  "fields":[{"name":"att", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.nio.DirectLongBufferU",
+  "allDeclaredFields":true,
+  "fields":[{"name":"att", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.nio.DirectShortBufferU",
+  "allDeclaredFields":true,
+  "fields":[{"name":"att", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.nio.MappedByteBuffer",
+  "allDeclaredFields":true
 },
 {
   "name":"org.eclipse.swt.widgets.Display"
@@ -139,6 +190,9 @@
     {"name":"y", "allowUnsafeAccess":true}, 
     {"name":"z", "allowUnsafeAccess":true}
   ]
+},
+{
+  "name":"org.joml.Random"
 },
 {
   "name":"org.joml.Vector2f",
@@ -437,6 +491,14 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.opengl.PolygonDrawer",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.opengl.PolygonDrawer2",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.opengl.SimpleDrawElements",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -450,6 +512,14 @@
 },
 {
   "name":"org.lwjgl.demo.opengl.assimp.WavefrontObjDemo",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.opengl.camera.ArcballCameraDemo",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.opengl.camera.FreeCameraDemo",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
@@ -637,6 +707,10 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.opengl.shader.GameOfLife",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.opengl.shader.ImmediateModeDemo",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -665,7 +739,15 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.opengl.shader.SimpleQuadAndGridDemo",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.opengl.shadow.Omni2dShadow",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.opengl.shadow.ProjectiveShadowDemo",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
@@ -717,6 +799,18 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.opengl.transform.LwjglDemo",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.opengl.transform.LwjglDemoLH",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.opengl.transform.ObliqueProjectDemo",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.vulkan.ClearScreenDemo",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -753,6 +847,18 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.vulkan.raytracing.HybridMagicaVoxel",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.vulkan.raytracing.ReflectiveMagicaVoxel",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.vulkan.raytracing.SimpleTriangle",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.glfw.GLFW",
   "allDeclaredFields":true
 },
@@ -768,48 +874,8 @@
   "allPublicClasses":true
 },
 {
-  "name":"org.lwjgl.opengl.GLCapabilities",
-  "allPublicFields":true
-},
-{
-  "name":"org.lwjgl.system.CallbackI$B",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
-},
-{
-  "name":"org.lwjgl.system.CallbackI$D",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
-},
-{
-  "name":"org.lwjgl.system.CallbackI$F",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
-},
-{
-  "name":"org.lwjgl.system.CallbackI$I",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
-},
-{
-  "name":"org.lwjgl.system.CallbackI$J",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
-},
-{
-  "name":"org.lwjgl.system.CallbackI$N",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
-},
-{
-  "name":"org.lwjgl.system.CallbackI$P",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
-},
-{
-  "name":"org.lwjgl.system.CallbackI$S",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
-},
-{
-  "name":"org.lwjgl.system.CallbackI$V",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
-},
-{
-  "name":"org.lwjgl.system.CallbackI$Z",
-  "methods":[{"name":"callback","parameterTypes":["long"] }]
+  "name":"org.lwjgl.system.CallbackI",
+  "methods":[{"name":"callback","parameterTypes":["long","long"] }]
 },
 {
   "name":"org.lwjgl.system.CustomBuffer",
@@ -832,6 +898,193 @@
 {
   "name":"org.lwjgl.system.jemalloc.JEmallocAllocator",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.lwjgl.system.libffi.FFICIF",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.system.libffi.FFIClosure",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.system.libffi.FFIType",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.EXTDebugReport",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.EXTDebugUtils",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkApplicationInfo",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkDebugReportCallbackCreateInfoEXT",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkDebugUtilsMessengerCallbackDataEXT",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkDebugUtilsMessengerCallbackEXT",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkDebugUtilsMessengerCreateInfoEXT",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkExtensionProperties",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkExtensionProperties$Buffer",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkInstance",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkInstanceCreateInfo",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkLayerProperties",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkLayerProperties$Buffer",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkPhysicalDevice",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
 },
 {
   "name":"sun.misc.Unsafe",

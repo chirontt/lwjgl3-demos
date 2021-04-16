@@ -1,16 +1,11 @@
 # lwjgl3-demos + GraalVM native image
-in various branches, like in this
-[BGFX 3.2.3 branch](https://github.com/chirontt/lwjgl3-demos/tree/3.2.3_bgfx_native_image) for the BGFX demos, etc.
-
------
-
 
 Demos for LWJGL 3, compiled to native executable by GraalVM native-image utility.
 
-All demos in [src](src) are included in the build. Most demos are portable across different OSes,
-but some are platform-specific, like the [Vulkan demos](src/org/lwjgl/demo/vulkan) which work
-only on Mac platform, or the [CUDA demos](src/org/lwjgl/demo/cuda) which require a NVIDIA graphics
-card to run.
+All demos in [src](src/org/lwjgl/demo) are included in the build. Most demos are portable
+across different OSes, but some are GPU-specific, like the [Vulkan demos](src/org/lwjgl/demo/vulkan)
+which work only on discrete GPU with supporting Vulkan driver, or the
+[CUDA demos](src/org/lwjgl/demo/cuda) which require a NVIDIA graphics card to run.
 
 Gradle and Maven build scripts are provided for building the project,
 which requires JDK 11+ or GraalVM 21+ (for native image).
@@ -35,14 +30,15 @@ client-gradle-plugin.
 ### Native-image configuration files
 
 The GraalVM native-image utility will use the configuration files in
-`res/META-INF/native-image` folder to assist in the native-image generation.
+`res/META-INF/native-image` [folder](res/META-INF/native-image) to assist
+in the native-image generation.
 
 The configuration files were generated when running the demos in standard JVM with a
 [GraalVM agent](https://www.graalvm.org/reference-manual/native-image/BuildConfiguration/#assisted-configuration-of-native-image-builds),
 which tracks all usages of dynamic features of an execution of the demos
 and writes the info to the configuration files.
-Usage of the agent is contained in the [Gradle build script](build.gradle#L129),
-or in the [Maven build script](pom.xml#L163), which can be turned on (i.e. uncommented)
+Usage of the agent is contained in the Gradle build script [(line 132)](build.gradle#L132),
+or in the Maven build script [(line 145)](pom.xml#L145), which can be turned on (i.e. uncommented)
 and the demos are re-run to update the configuration files, if need be.
 
 The above agent is not perfect; it sometimes misses some classes referenced via reflection
@@ -52,11 +48,13 @@ to avoid ClassNotFoundException being thrown when running the [bgfx](src/org/lwj
 or [assimp](src/org/lwjgl/demo/opengl/assimp) demos in the generated native image.
 
 Gluon's client-gradle-plugin/client-maven-plugin also support their own configuration files,
-in `res/META-INF/substrate/config` folder, which can be platform-specific
-(e.g. for the Eclipse [SWT](https://www.eclipse.org/swt/) library used in our
+in `res/META-INF/substrate/config` [folder](res/META-INF/substrate/config), which can be
+platform-specific (e.g. for the Eclipse [SWT](https://www.eclipse.org/swt/) library used in the
 [SWT demos](src/org/lwjgl/demo/opengl/swt)), as documented
 [here](https://docs.gluonhq.com/#_substrate_config_files).
-These files need be maintained manually.
+These Gluon-plugin-specific files need be maintained manually, and should contain platform-specific
+configurations only, while the above configuration files in `res/META-INF/native-image`
+are "cross-platform" and are used by the GraalVM native-image utility.
 
 ## Gradle build tasks
 

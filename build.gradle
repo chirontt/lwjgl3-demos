@@ -13,18 +13,18 @@ description = 'LWJGL3 demos with native image by GraalVM'
 //version = '0.0.1-SNAPSHOT'
 
 ext {
-    lwjglVersion = '3.2.3'
+    lwjglVersion = '3.3.0-SNAPSHOT'
     jomlVersion = '1.10.1'
     swtVersion = '4.6.1'
     graalvmVersion = '21.0.0.2'
 
-    //LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, shaderc, vma, vulkan
+    //LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, par, shaderc, vma, vulkan
     lwjglModules = [
         'lwjgl', 'lwjgl-assimp', 'lwjgl-glfw', 'lwjgl-openal', 'lwjgl-opengl', 'lwjgl-stb',  //for OpenGL demos
         'lwjgl-bgfx',                                  //for BGFX demos
         'lwjgl-cuda',                                  //for CUDA demos (require NVIDIA hardware)
-        'lwjgl-jemalloc',                              //utilities
-        'lwjgl-shaderc', 'lwjgl-vma', 'lwjgl-vulkan',  //for Vulkan demos (run on Mac platform only)
+        'lwjgl-jemalloc', 'lwjgl-par',                 //utilities
+        'lwjgl-shaderc', 'lwjgl-vma', 'lwjgl-vulkan',  //for Vulkan demos (require discrete GPU with supporting driver)
     ]
 
     mainClassName = 'org.lwjgl.demo.DemoLauncher'
@@ -32,6 +32,9 @@ ext {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
     mavenLocal()
 }
 
