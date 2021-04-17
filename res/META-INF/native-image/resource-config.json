@@ -15,7 +15,10 @@
     {"pattern":"\\Qlinux/x64/org/lwjgl/openal/libopenal.so\\E"}, 
     {"pattern":"\\Qlinux/x64/org/lwjgl/opengl/liblwjgl_opengl.so\\E"}, 
     {"pattern":"\\Qlinux/x64/org/lwjgl/par/liblwjgl_par.so\\E"}, 
+    {"pattern":"\\Qlinux/x64/org/lwjgl/shaderc/libshaderc.so\\E"}, 
+    {"pattern":"\\Qlinux/x64/org/lwjgl/shaderc/libshaderc_spvc.so\\E"}, 
     {"pattern":"\\Qlinux/x64/org/lwjgl/stb/liblwjgl_stb.so\\E"}, 
+    {"pattern":"\\Qlinux/x64/org/lwjgl/vma/liblwjgl_vma.so\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/assimp/libassimp.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/bgfx/libbgfx.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/glfw/libglfw.dylib\\E"}, 
@@ -24,7 +27,10 @@
     {"pattern":"\\Qmacos/x64/org/lwjgl/openal/libopenal.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/opengl/liblwjgl_opengl.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/par/liblwjgl_par.dylib\\E"}, 
+    {"pattern":"\\Qmacos/x64/org/lwjgl/shaderc/libshaderc.dylib\\E"}, 
+    {"pattern":"\\Qmacos/x64/org/lwjgl/shaderc/libshaderc_spvc.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/stb/liblwjgl_stb.dylib\\E"}, 
+    {"pattern":"\\Qmacos/x64/org/lwjgl/vma/liblwjgl_vma.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/vulkan/libMoltenVK.dylib\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/bgfx/shaders/dx11/fs_bump.bin\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/bgfx/shaders/dx11/fs_cubes.bin\\E"}, 
@@ -59,6 +65,8 @@
     {"pattern":"\\Qorg/lwjgl/demo/game/voxelgame/collectdrawcalls.vs.glsl\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/game/voxelgame/selection.fs.glsl\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/game/voxelgame/selection.vs.glsl\\E"}, 
+    {"pattern":"\\Qorg/lwjgl/demo/models/mikelovesrobots_mmmm/obj_house1.vox\\E"}, 
+    {"pattern":"\\Qorg/lwjgl/demo/models/mikelovesrobots_mmmm/scene_house5.vox\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/models/mikelovesrobots_mmmm/scene_house6.vox\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/assimp/magnet.fs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/assimp/magnet.mtl\\E"}, 
@@ -335,7 +343,10 @@
     {"pattern":"\\Qwindows/x64/org/lwjgl/openal/OpenAL.dll\\E"}, 
     {"pattern":"\\Qwindows/x64/org/lwjgl/opengl/lwjgl_opengl.dll\\E"}, 
     {"pattern":"\\Qwindows/x64/org/lwjgl/par/lwjgl_par.dll\\E"}, 
-    {"pattern":"\\Qwindows/x64/org/lwjgl/stb/lwjgl_stb.dll\\E"}
+    {"pattern":"\\Qwindows/x64/org/lwjgl/shaderc/shaderc.dll\\E"}, 
+    {"pattern":"\\Qwindows/x64/org/lwjgl/shaderc/shaderc_spvc.dll\\E"}, 
+    {"pattern":"\\Qwindows/x64/org/lwjgl/stb/lwjgl_stb.dll\\E"}, 
+    {"pattern":"\\Qwindows/x64/org/lwjgl/vma/lwjgl_vma.dll\\E"}
   ]},
   "bundles":[]
 }

@@ -185,5 +185,5 @@ can be further reduced in size via compression using the [UPX](https://upx.githu
 as described [here](https://medium.com/graalvm/compressed-graalvm-native-images-4d233766a214).
 
 For example, the resulting `lwjgl3-demos.exe` native application file produced in Windows
-is normally 79MB in size, but is compressed to 26MB with the UPX command: `upx --best lwjgl3-demos.exe`
+is normally 100MB in size, but is compressed to 32MB with the UPX command: `upx --best lwjgl3-demos.exe`
 
