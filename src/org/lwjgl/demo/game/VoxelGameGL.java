@@ -779,6 +779,7 @@ public class VoxelGameGL {
     private final Material[] materials = new Material[512];
     private float nxX, nxY, nxZ, nxW, pxX, pxY, pxZ, pxW, nyX, nyY, nyZ, nyW, pyX, pyY, pyZ, pyW;
     private Callback debugProc;
+    private GLCapabilities caps;
 
     /* All the different features we are using */
     private boolean useDirectStateAccess;
@@ -788,10 +789,10 @@ public class VoxelGameGL {
     private boolean drawPointsWithGS;
     private boolean useInverseDepth;
     private boolean useNvMultisampleCoverage;
-    private boolean generateDrawCallsViaShader;
+    private boolean canGenerateDrawCallsViaShader;
     private boolean useOcclusionCulling;
     private boolean useTemporalCoherenceOcclusionCulling;
-    private boolean sourceIndirectDrawCallCountFromBuffer;
+    private boolean canSourceIndirectDrawCallCountFromBuffer;
     private boolean useRepresentativeFragmentTest;
     private boolean canUseSynchronousDebugCallback;
     /* Other queried OpenGL state/configuration */
@@ -1219,7 +1220,7 @@ public class VoxelGameGL {
      * LWJGL's {@link GLCapabilities}.
      */
     private void determineOpenGLCapabilities() {
-        GLCapabilities caps = GL.createCapabilities();
+        caps = GL.createCapabilities();
         useDirectStateAccess = caps.GL_ARB_direct_state_access/* 4.5 */ && caps.GL_ARB_vertex_attrib_binding/* 4.3 */ || caps.OpenGL45;
         useMultiDrawIndirect = caps.GL_ARB_multi_draw_indirect || caps.OpenGL43;
         useBufferStorage = caps.GL_ARB_buffer_storage || caps.OpenGL44;
@@ -1228,11 +1229,11 @@ public class VoxelGameGL {
         useInverseDepth = caps.GL_ARB_clip_control || caps.OpenGL45;
         useNvMultisampleCoverage = caps.GL_NV_framebuffer_multisample_coverage;
         canUseSynchronousDebugCallback = caps.GL_ARB_debug_output || caps.OpenGL43;
-        generateDrawCallsViaShader = caps.GL_ARB_shader_image_load_store/* 4.2 */ && caps.GL_ARB_shader_storage_buffer_object/* 4.3 */
+        canGenerateDrawCallsViaShader = caps.GL_ARB_shader_image_load_store/* 4.2 */ && caps.GL_ARB_shader_storage_buffer_object/* 4.3 */
                 && caps.GL_ARB_shader_atomic_counters/* 4.2 */ || caps.OpenGL43;
-        useOcclusionCulling = generateDrawCallsViaShader && useMultiDrawIndirect;
-        useTemporalCoherenceOcclusionCulling = true;
-        sourceIndirectDrawCallCountFromBuffer = generateDrawCallsViaShader && (caps.GL_ARB_indirect_parameters || caps.OpenGL46);
+        useOcclusionCulling = canGenerateDrawCallsViaShader && useMultiDrawIndirect;
+        useTemporalCoherenceOcclusionCulling = useOcclusionCulling && true;
+        canSourceIndirectDrawCallCountFromBuffer = canGenerateDrawCallsViaShader && (caps.GL_ARB_indirect_parameters || caps.OpenGL46);
         useRepresentativeFragmentTest = caps.GL_NV_representative_fragment_test;
         /* Query the necessary UBO alignment which we need for multi-buffering */
         uniformBufferOffsetAlignment = glGetInteger(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT);
@@ -1244,10 +1245,10 @@ public class VoxelGameGL {
         System.out.println("useInverseDepth: " + useInverseDepth);
         System.out.println("useNvMultisampleCoverage: " + useNvMultisampleCoverage);
         System.out.println("canUseSynchronousDebugCallback: " + canUseSynchronousDebugCallback);
-        System.out.println("generateDrawCallsViaShader: " + generateDrawCallsViaShader);
+        System.out.println("canGenerateDrawCallsViaShader: " + canGenerateDrawCallsViaShader);
         System.out.println("useOcclusionCulling: " + useOcclusionCulling);
         System.out.println("useTemporalCoherenceOcclusionCulling: " + useTemporalCoherenceOcclusionCulling);
-        System.out.println("sourceIndirectDrawCallCountFromBuffer: " + sourceIndirectDrawCallCountFromBuffer);
+        System.out.println("canSourceIndirectDrawCallCountFromBuffer: " + canSourceIndirectDrawCallCountFromBuffer);
         System.out.println("useRepresentativeFragmentTest: " + useRepresentativeFragmentTest);
         System.out.println("uniformBufferOffsetAlignment: " + uniformBufferOffsetAlignment);
     }
@@ -3107,7 +3108,7 @@ public class VoxelGameGL {
          */
         int uboSize = roundUpToNextMultiple(chunksProgramUboSize, uniformBufferOffsetAlignment);
         glBindBufferRange(GL_UNIFORM_BUFFER, chunksProgramUboBlockIndex, chunksProgramUbo, (long) currentDynamicBufferIndex * uboSize, uboSize);
-        if (sourceIndirectDrawCallCountFromBuffer) {
+        if (canSourceIndirectDrawCallCountFromBuffer) {
             /*
              * Bind the atomic counter buffer to the indirect parameter count binding point, to source the
              * drawcall count from that buffer.
@@ -3205,7 +3206,7 @@ public class VoxelGameGL {
          * If we use temporal coherence occlusion culling, we have two sections in each buffer. One for all
          * non-occluded in-frustum chunks, and one for newly disoccluded chunks.
          */
-        if (sourceIndirectDrawCallCountFromBuffer) {
+        if (canSourceIndirectDrawCallCountFromBuffer) {
             /*
              * We use the atomic counter buffer bound to GL_PARAMETER_BUFFER_ARB to source the drawcall count.
              */
@@ -3373,6 +3374,10 @@ public class VoxelGameGL {
         glfwShowWindow(window);
         while (!glfwWindowShouldClose(window)) {
             glfwWaitEvents();
+            if (updateWindowTitle) {
+                glfwSetWindowTitle(window, windowStatsString);
+                updateWindowTitle = false;
+            }
         }
     }
 
@@ -3392,6 +3397,8 @@ public class VoxelGameGL {
      * {@link GLFW#glfwPollEvents()}).
      */
     private void runUpdateAndRenderLoop() {
+        glfwMakeContextCurrent(window);
+        GL.setCapabilities(caps);
         long lastTime = System.nanoTime();
         while (!glfwWindowShouldClose(window)) {
             /*
@@ -3538,9 +3545,11 @@ public class VoxelGameGL {
 
     private int statsFrames;
     private float statsTotalFramesTime;
+    private volatile boolean updateWindowTitle;
+    private String windowStatsString;
 
     /**
-     * When in windowed mode, this method will be called to update certain statistics in the window
+     * When in windowed mode, this method will be called to update certain statistics that are shown in the window
      * title.
      */
     private void updateStatsInWindowTitle(float dt) {
@@ -3548,12 +3557,13 @@ public class VoxelGameGL {
             int px = (int) floor(playerPosition.x);
             int py = (int) floor(playerPosition.y);
             int pz = (int) floor(playerPosition.z);
-            glfwSetWindowTitle(window,
-                    statsFrames * 2 + " FPS, " + INT_FORMATTER.format(allChunks.size()) + " act. chunks, " + INT_FORMATTER.format(numChunksInFrustum)
-                            + " chunks in frustum, GPU mem. " + INT_FORMATTER.format(computePerFaceBufferObjectSize() / 1024 / 1024) + " MB @ " + px + " , "
-                            + py + " , " + pz);
+            windowStatsString = statsFrames * 2 + " FPS, " + INT_FORMATTER.format(allChunks.size()) + " act. chunks, " + INT_FORMATTER.format(numChunksInFrustum)
+                + " chunks in frustum, GPU mem. " + INT_FORMATTER.format(computePerFaceBufferObjectSize() / 1024 / 1024) + " MB @ " + px + " , "
+                + py + " , " + pz;
             statsFrames = 0;
             statsTotalFramesTime = 0f;
+            updateWindowTitle = true;
+            glfwPostEmptyEvent();
         }
         statsFrames++;
         statsTotalFramesTime += dt;
@@ -3680,7 +3690,7 @@ public class VoxelGameGL {
     /**
      * Initialize and run the game/demo.
      */
-    private void run() throws InterruptedException {
+    private void run() throws InterruptedException, IOException {
         if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
 
@@ -3689,64 +3699,13 @@ public class VoxelGameGL {
         setWindowPosition();
         queryFramebufferSizeForHiDPI();
 
-        /*
-         * We will queue any action requiring an OpenGL context to be processed later by the render thread.
-         * Use a latch to synchronize finishing of these render thread actions with initially showing the
-         * GLFW window.
-         */
-        final CountDownLatch latch = new CountDownLatch(1);
-        updateAndRenderRunnables.add(new DelayedRunnable(() -> {
-            glfwMakeContextCurrent(window);
-
-            /* Determine, which additional OpenGL capabilities we have. */
-            determineOpenGLCapabilities();
-
-            /*
-             * Compute number of vertices per face and number of bytes per vertex. These depend on the features
-             * we are going to use.
-             */
-            verticesPerFace = drawPointsWithGS ? 1 : 4;
-            indicesPerFace = drawPointsWithGS ? 1 : 5;
-            voxelVertexSize = drawPointsWithGS ? 2 * Integer.BYTES : Integer.BYTES + Short.BYTES + (!useMultiDrawIndirect ? Integer.BYTES : 0);
-
-            if (DEBUG || GLDEBUG) {
-                installDebugCallback();
-            }
-            glfwSwapInterval(VSYNC ? 1 : 0);
-
-            /* Configure OpenGL state and create all necessary resources */
-            configureGlobalGlState();
-            createSelectionProgram();
-            createSelectionProgramUbo();
-            createNullVao();
-            createMaterials();
-            createMultiDrawIndirectBuffer();
-            createChunkInfoBuffers();
-            createChunksProgram();
-            createChunksProgramUbo();
-            if (generateDrawCallsViaShader) {
-                createOcclusionCullingBufferObjects();
-                createBoundingBoxesProgram();
-                createCollectDrawCallsProgram();
-                createBoundingBoxesProgramUbo();
-                createBoundingBoxesVao();
-            }
-            createFramebufferObject();
-
-            /* Make sure everything is ready before we show the window */
-            glFlush();
-            glFinish();
-            /* Notify the latch so that the window can be shown */
-            latch.countDown();
-            return null;
-        }, "Init", 0));
+        initGLResources();
 
         /* Run logic updates and rendering in a separate thread */
         Thread updateAndRenderThread = createAndStartUpdateAndRenderThread();
         /* Process OS/window event messages in this main thread */
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
         /* Wait for the latch to signal that init render thread actions are done */
-        latch.await();
         runWndProcLoop();
         /*
          * After the wnd loop exited (because the window was closed), wait for render thread to complete
@@ -3760,7 +3719,51 @@ public class VoxelGameGL {
         glfwTerminate();
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    private void initGLResources() throws IOException {
+        glfwMakeContextCurrent(window);
+
+        /* Determine, which additional OpenGL capabilities we have. */
+        determineOpenGLCapabilities();
+
+        /*
+         * Compute number of vertices per face and number of bytes per vertex. These depend on the features
+         * we are going to use.
+         */
+        verticesPerFace = drawPointsWithGS ? 1 : 4;
+        indicesPerFace = drawPointsWithGS ? 1 : 5;
+        voxelVertexSize = drawPointsWithGS ? 2 * Integer.BYTES : Integer.BYTES + Short.BYTES + (!useMultiDrawIndirect ? Integer.BYTES : 0);
+
+        if (DEBUG || GLDEBUG) {
+            installDebugCallback();
+        }
+        glfwSwapInterval(VSYNC ? 1 : 0);
+
+        /* Configure OpenGL state and create all necessary resources */
+        configureGlobalGlState();
+        createSelectionProgram();
+        createSelectionProgramUbo();
+        createNullVao();
+        createMaterials();
+        createMultiDrawIndirectBuffer();
+        createChunkInfoBuffers();
+        createChunksProgram();
+        createChunksProgramUbo();
+        if (canGenerateDrawCallsViaShader) {
+            createOcclusionCullingBufferObjects();
+            createBoundingBoxesProgram();
+            createCollectDrawCallsProgram();
+            createBoundingBoxesProgramUbo();
+            createBoundingBoxesVao();
+        }
+        createFramebufferObject();
+
+        /* Make sure everything is ready before we show the window */
+        glFlush();
+        glfwMakeContextCurrent(NULL);
+        GL.setCapabilities(null);
+    }
+
+    public static void main(String[] args) throws Exception {
         new VoxelGameGL().run();
     }
 }
