@@ -19,42 +19,24 @@ shows how to set up GraalVM and its native-image utility for common platforms.
 [Gluon](https://gluonhq.com/) also provides some setup
 [details](https://docs.gluonhq.com/#_platforms) for GraalVM native-image creation.
 
-This project's Gradle build script uses the
-[client-gradle-plugin](https://github.com/gluonhq/client-gradle-plugin)
-from Gluon to build the native executable from Gradle with GraalVM.
-
-Gluon also provides the [client-maven-plugin](https://github.com/gluonhq/client-maven-plugin)
-which is used in this project's Maven build script and works similarly to the above
-client-gradle-plugin.
-
 ### Native-image configuration files
 
-The GraalVM native-image utility will use the configuration files in
-`res/META-INF/native-image` [folder](res/META-INF/native-image) to assist
-in the native-image generation.
+The GraalVM native-image utility will use the configuration files in platform-specific
+[folder](graal-cfg) to assist in the native-image generation.
 
 The configuration files were generated when running the demos in standard JVM with a
 [GraalVM agent](https://www.graalvm.org/reference-manual/native-image/BuildConfiguration/#assisted-configuration-of-native-image-builds),
 which tracks all usages of dynamic features of an execution of the demos
 and writes the info to the configuration files.
 Usage of the agent is contained in the Gradle build script [(line 132)](build.gradle#L132),
-or in the Maven build script [(line 145)](pom.xml#L145), which can be turned on (i.e. uncommented)
+or in the Maven build script [(line 150)](pom.xml#L150), which can be turned on (i.e. uncommented)
 and the demos are re-run to update the configuration files, if need be.
 
 The above agent is not perfect; it sometimes misses some classes referenced via reflection
-which is used extensively in LWJGL. In the case of the LWJGL demos, many org.lwjgl.bgfx.\*
-and org.lwjgl.assimp.\* classes need be added manually to the configuration files,
+which is used extensively in LWJGL. In the case of the LWJGL demos, many `org.lwjgl.bgfx.\*`
+and `org.lwjgl.assimp.\*` classes need be added manually to the configuration files,
 to avoid ClassNotFoundException being thrown when running the [bgfx](src/org/lwjgl/demo/bgfx)
 or [assimp](src/org/lwjgl/demo/opengl/assimp) demos in the generated native image.
-
-Gluon's client-gradle-plugin/client-maven-plugin also support their own configuration files,
-in `res/META-INF/substrate/config` [folder](res/META-INF/substrate/config), which can be
-platform-specific (e.g. for the Eclipse [SWT](https://www.eclipse.org/swt/) library used in the
-[SWT demos](src/org/lwjgl/demo/opengl/swt)), as documented
-[here](https://docs.gluonhq.com/#_substrate_config_files).
-These Gluon-plugin-specific files need be maintained manually, and should contain platform-specific
-configurations only, while the above configuration files in `res/META-INF/native-image`
-are "cross-platform" and are used by the GraalVM native-image utility.
 
 ## Gradle build tasks
 
@@ -83,36 +65,36 @@ The above tasks can use any standard JDK 11+.
 To generate native executable, GraalVM 21+ need be set up as mentioned in
 *GraalVM pre-requisites* section above.
 
-Once GraalVM is set up and available in the path, run the `nativeBuild` task:
+Once GraalVM is set up and available in the path, run the `nativeImage` task:
 
-	gradlew nativeBuild
+	gradlew nativeImage
 
-The `nativeBuild` task would take a while to compile all demo source code and
+The `nativeImage` task would take a while to compile all demo source code and
 link them with the LWJGL libraries into an executable file.
 The resulting `lwjgl3-demos` file is (in Linux):
 
-	build/client/x86_64-linux/lwjgl3-demos
+	build/native-image-linux/lwjgl3-demos
 
 (or if building on a Windows machine:
 
-	build\client\x86_64-windows\lwjgl3-demos.exe
+	build\native-image-windows\lwjgl3-demos.exe
 
 )
 
 which can then be run directly with a demo class as parameter
 (e.g. [DepthEdgeShaderDemo20](src/org/lwjgl/demo/opengl/fbo/DepthEdgeShaderDemo20.java)):
 
-	./build/client/x86_64-linux/lwjgl3-demos opengl.fbo.DepthEdgeShaderDemo20
+	./build/native-image-linux/lwjgl3-demos opengl.fbo.DepthEdgeShaderDemo20
 
 System properties can be passed on to the running demo with the -D parameter,
 e.g. to print out some debug info in the console:
 
-	./build/client/x86_64-linux/lwjgl3-demos opengl.fbo.DepthEdgeShaderDemo20 -Dorg.lwjgl.util.Debug=true
+	./build/native-image-linux/lwjgl3-demos opengl.fbo.DepthEdgeShaderDemo20 -Dorg.lwjgl.util.Debug=true
 
 (or if building on a Windows machine:
 
-	build\client\x86_64-windows\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20
-	build\client\x86_64-windows\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20 -Dorg.lwjgl.util.Debug=true
+	build\native-image-windows\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20
+	build\native-image-windows\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20 -Dorg.lwjgl.util.Debug=true
 
 )
 
@@ -145,36 +127,36 @@ The above tasks can use any standard JDK 11+.
 To generate native executable, GraalVM 21+ need be set up as mentioned in
 *GraalVM pre-requisites* section above.
 
-Once GraalVM is set up and available in the path, run the `client:build` task:
+Once GraalVM is set up and available in the path, run the `package` task:
 
-	mvnw client:build
+	mvnw package
 
-The `client:build` task would take a while to compile all demo source code and
+The `package` task would take a while to compile all demo source code and
 link them with the LWJGL libraries into an executable file.
 The resulting `lwjgl3-demos` file is (in Linux):
 
-	target/client/x86_64-linux/lwjgl3-demos
+	target/native-image-linux/lwjgl3-demos
 
 (or if building on a Windows machine:
 
-	target\client\x86_64-windows\lwjgl3-demos.exe
+	target\native-image-windows\lwjgl3-demos.exe
 
 )
 
 which can then be run directly with a demo class as parameter
 (e.g. [Demo33Ubo](src/org/lwjgl/demo/opengl/raytracing/Demo33Ubo.java)):
 
-	./target/client/x86_64-linux/lwjgl3-demos opengl.raytracing.Demo33Ubo
+	./target/native-image-linux/lwjgl3-demos opengl.raytracing.Demo33Ubo
 
 System properties can be passed on to the running demo with the -D parameter,
 e.g. to print out some debug info in the console:
 
-	./target/client/x86_64-linux/lwjgl3-demos opengl.raytracing.Demo33Ubo -Dorg.lwjgl.util.Debug=true
+	./target/native-image-linux/lwjgl3-demos opengl.raytracing.Demo33Ubo -Dorg.lwjgl.util.Debug=true
 
 (or if building on a Windows machine:
 
-	target\client\x86_64-windows\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo
-	target\client\x86_64-windows\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo -Dorg.lwjgl.util.Debug=true
+	target\native-image-windows\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo
+	target\native-image-windows\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo -Dorg.lwjgl.util.Debug=true
 
 )
 
@@ -185,5 +167,5 @@ can be further reduced in size via compression using the [UPX](https://upx.githu
 as described [here](https://medium.com/graalvm/compressed-graalvm-native-images-4d233766a214).
 
 For example, the resulting `lwjgl3-demos.exe` native application file produced in Windows
-is normally 100MB in size, but is compressed to 32MB with the UPX command: `upx --best lwjgl3-demos.exe`
+is normally 65MB in size, but is compressed to 23MB with the UPX command: `upx --best lwjgl3-demos.exe`
 
