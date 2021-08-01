@@ -70,7 +70,7 @@ dependencies {
             implementation "org.eclipse.swt:org.eclipse.swt.win32.win32.x86_64:$swtVersion"
             break
         default:
-            throw new GradleException('Unknown OS: ' + currentOS)
+            throw new GradleException('Unknown OS: ' + currentPlatform)
     }
 
     //get recommended dependency versions from the LWJGL BOM
@@ -132,6 +132,18 @@ run {
     //jvmArgs = ["-agentlib:native-image-agent=config-merge-dir=graal-cfg/$currentPlatform/META-INF/native-image"]
 }
 
+//remove unneeded .dll files
+task removeUnneededDllFiles {
+    doLast {
+        ant.move(todir: "$buildDir/tmp/$nativeImageDirName") {
+            fileset(dir: "$buildDir/$nativeImageDirName") {
+                include name: '*.dll'
+                include name: '*.txt'
+            }
+        }
+    }
+}
+
 nativeImage {
     graalVmHome = System.getProperty('java.home')
     buildType { org.mikeneck.graalvm.BuildTypeSelector build ->
@@ -149,6 +161,10 @@ nativeImage {
         add '--verbose'
         //add '-H:+TraceNativeToolUsage'
         add "-H:TempDirectory=$buildDir/tmp/$nativeImageDirName"
+    }
+
+    if (currentPlatform == 'windows') {
+        finalizedBy removeUnneededDllFiles
     }
 }
 

@@ -33,8 +33,8 @@ or in the Maven build script [(line 150)](pom.xml#L150), which can be turned on 
 and the demos are re-run to update the configuration files, if need be.
 
 The above agent is not perfect; it sometimes misses some classes referenced via reflection
-which is used extensively in LWJGL. In the case of the LWJGL demos, many `org.lwjgl.bgfx.\*`
-and `org.lwjgl.assimp.\*` classes need be added manually to the configuration files,
+which is used extensively in LWJGL. In the case of the LWJGL demos, many `org.lwjgl.bgfx.*`
+and `org.lwjgl.assimp.*` classes need be added manually to the configuration files,
 to avoid ClassNotFoundException being thrown when running the [bgfx](src/org/lwjgl/demo/bgfx)
 or [assimp](src/org/lwjgl/demo/opengl/assimp) demos in the generated native image.
 
