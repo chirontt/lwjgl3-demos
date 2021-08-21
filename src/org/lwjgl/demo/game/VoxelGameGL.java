@@ -18,7 +18,6 @@ import static org.lwjgl.opengl.ARBClearBufferObject.*;
 import static org.lwjgl.opengl.ARBClipControl.glClipControl;
 import static org.lwjgl.opengl.ARBClipControl.GL_ZERO_TO_ONE;
 import static org.lwjgl.opengl.ARBDebugOutput.GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB;
-import static org.lwjgl.opengl.ARBDirectStateAccess.*;
 import static org.lwjgl.opengl.ARBDrawIndirect.GL_DRAW_INDIRECT_BUFFER;
 import static org.lwjgl.opengl.ARBIndirectParameters.*;
 import static org.lwjgl.opengl.ARBMultiDrawIndirect.glMultiDrawElementsIndirect;
@@ -45,6 +44,7 @@ import java.util.stream.Collectors;
 import org.joml.*;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.demo.game.VoxelGameGL.GreedyMeshing.FaceConsumer;
+import org.lwjgl.demo.util.FreeListAllocator;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
@@ -168,8 +168,7 @@ public class VoxelGameGL {
          */
         private static final int[] NEIGHBOR_CONFIGS = computeNeighborConfigs();
         /**
-         * We limit the length of merged faces to 32, to be able to store 31 as 5 bits. This is actually
-         * only necessary for the Y coordinate, since chunks are 32x256x32.
+         * We limit the length of merged faces to 32, to be able to store 31 as 5 bits.
          */
         private static final int MAX_MERGE_LENGTH = 32;
 
@@ -505,13 +504,9 @@ public class VoxelGameGL {
          */
         private int maxY;
         /**
-         * The offset in per-face buffers.
+         * The region associated with this chunk.
          */
-        private int faceOffset;
-        /**
-         * The number of faces.
-         */
-        private int faceCount;
+        private FreeListAllocator.Region r;
         /**
          * The index in per-chunk buffers.
          */
@@ -529,31 +524,6 @@ public class VoxelGameGL {
         @Override
         public String toString() {
             return "[" + index + " @" + cx + "," + cz + "]";
-        }
-    }
-
-    /**
-     * Represents a region in a buffer, such as per-face buffers.
-     */
-    private static class BufferRegion {
-        /**
-         * Align region allocations to reduce fragmentation at the cost of increased memory consumption.
-         * <p>
-         * i.e.: Allocate bigger regions to avoid having to skip slightly too small regions.
-         */
-        public static final int ALIGNMENT = 1024;
-        /**
-         * The offset (unit depends on the kind of buffer used, but is the same unit as for {@link #len}).
-         */
-        private int off;
-        /**
-         * The length (unit depends on the kind of buffer used, but is the same unit as for {@link #off}).
-         */
-        private int len;
-
-        @Override
-        public String toString() {
-            return "[" + INT_FORMATTER.format(off) + " | " + INT_FORMATTER.format(len) + " B]";
         }
     }
 
@@ -771,7 +741,7 @@ public class VoxelGameGL {
     private final Vector3d playerPosition = new Vector3d(0, 240, 0);
     private float angx, angy, dangx, dangy;
     private final Matrix4f pMat = new Matrix4f();
-    private final Matrix4f vMat = new Matrix4f();
+    private final Matrix4x3f vMat = new Matrix4x3f();
     private final Matrix4f mvpMat = new Matrix4f();
     private final Matrix4f imvpMat = new Matrix4f();
     private final Matrix4f tmpMat = new Matrix4f();
@@ -782,7 +752,6 @@ public class VoxelGameGL {
     private GLCapabilities caps;
 
     /* All the different features we are using */
-    private boolean useDirectStateAccess;
     private boolean useMultiDrawIndirect;
     private boolean useBufferStorage;
     private boolean useClearBuffer;
@@ -848,10 +817,16 @@ public class VoxelGameGL {
         }
     };
 
-    /**
-     * Maintains a "free list" of free buffer regions for per-face buffer objects.
-     */
-    private final List<BufferRegion> faceBuffersFreeList = new ArrayList<>();
+    private final FreeListAllocator allocator = new FreeListAllocator(new FreeListAllocator.OutOfCapacityCallback() {
+      public int onCapacityIncrease(int currentCapacity) {
+        int newPerFaceBufferCapacity = max(currentCapacity << 1, INITIAL_PER_FACE_BUFFER_CAPACITY);
+        updateAndRenderRunnables.add(new DelayedRunnable(() -> {
+            enlargePerFaceBuffers(currentCapacity, newPerFaceBufferCapacity);
+            return null;
+        }, "Enlarge per-face buffers", 0));
+        return newPerFaceBufferCapacity;
+      }
+    });
 
     /**
      * Simple {@link BitSet} to find and allocate indexes for per-chunk arrays/buffers.
@@ -859,7 +834,6 @@ public class VoxelGameGL {
     private final BitSet chunkIndexes = new BitSet(MAX_ACTIVE_CHUNKS);
 
     /* Resources for drawing the chunks */
-    private int perFaceBufferCapacity;
     private int chunkInfoBufferObject;
     private int chunkInfoTexture;
     private int vertexDataBufferObject;
@@ -1221,7 +1195,6 @@ public class VoxelGameGL {
      */
     private void determineOpenGLCapabilities() {
         caps = GL.createCapabilities();
-        useDirectStateAccess = caps.GL_ARB_direct_state_access/* 4.5 */ && caps.GL_ARB_vertex_attrib_binding/* 4.3 */ || caps.OpenGL45;
         useMultiDrawIndirect = caps.GL_ARB_multi_draw_indirect || caps.OpenGL43;
         useBufferStorage = caps.GL_ARB_buffer_storage || caps.OpenGL44;
         useClearBuffer = caps.GL_ARB_clear_buffer_object || caps.OpenGL43;
@@ -1238,7 +1211,6 @@ public class VoxelGameGL {
         /* Query the necessary UBO alignment which we need for multi-buffering */
         uniformBufferOffsetAlignment = glGetInteger(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT);
 
-        System.out.println("useDirectStateAccess: " + useDirectStateAccess);
         System.out.println("useMultiDrawIndirect: " + useMultiDrawIndirect);
         System.out.println("useBufferStorage: " + useBufferStorage);
         System.out.println("drawPointsWithGS: " + drawPointsWithGS);
@@ -1415,7 +1387,7 @@ public class VoxelGameGL {
         deallocatePerFaceBufferRegion(chunk);
         deallocatePerChunkIndex(chunk);
         allChunks.remove(chunk);
-        activeFaceCount -= chunk.faceCount;
+        activeFaceCount -= chunk.r.len;
         if (DEBUG) {
             System.out.println("Number of chunks: " + INT_FORMATTER.format(allChunks.size()) + " ("
                     + INT_FORMATTER.format(computePerFaceBufferObjectSize() / 1024 / 1024) + " MB)");
@@ -1473,7 +1445,8 @@ public class VoxelGameGL {
     private int computePerFaceBufferObjectSize() {
         int bytes = 0;
         for (Chunk c : allChunks) {
-            bytes += c.faceCount * (verticesPerFace * voxelVertexSize + indicesPerFace * Short.BYTES);
+          if (c.r != null)
+            bytes += c.r.len * (verticesPerFace * voxelVertexSize + indicesPerFace * Short.BYTES);
         }
         return bytes;
     }
@@ -2055,220 +2028,74 @@ public class VoxelGameGL {
      * Allocate a free buffer region with enough space to hold all buffer data for the given number of
      * voxel faces.
      */
-    private BufferRegion allocatePerFaceBufferRegion(int faceCount) {
-        /* find a free buffer region */
-        synchronized (faceBuffersFreeList) {
-            Iterator<BufferRegion> it = faceBuffersFreeList.iterator();
-            int skip = 0;
-            while (it.hasNext()) {
-                BufferRegion itr = it.next();
-                if (itr.len >= faceCount) {
-                    /* found */
-                    BufferRegion bufferRegion = new BufferRegion();
-                    bufferRegion.off = itr.off;
-                    bufferRegion.len = faceCount;
-                    if (DEBUG) {
-                        System.out.println("Allocated buffer region " + bufferRegion + " from " + itr);
-                    }
-                    /* reduce size by aligned allocated amount */
-                    int alignedCount = roundUpToNextMultiple(faceCount, BufferRegion.ALIGNMENT);
-                    itr.off += alignedCount;
-                    itr.len -= alignedCount;
-                    if (itr.len == 0) {
-                        /* if region is exhausted, remove it */
-                        if (DEBUG) {
-                            System.out.println("Free buffer region exhaused: " + itr);
-                        }
-                        it.remove();
-                    }
-                    if (DEBUG) {
-                        System.out.println("Found " + itr.len + " after skipping " + skip + " too small free regions");
-                    }
-                    return bufferRegion;
-                } else {
-                    skip++;
-                }
-            }
-            /* if we did not find any free region, we must enlarge face buffers */
-            long time1 = System.nanoTime();
-            enlargePerFaceBuffers();
-            long time2 = System.nanoTime();
-            if (DEBUG) {
-                System.out.println("Enlarged per-face buffers in " + INT_FORMATTER.format((time2 - time1) / (long) 1E3) + " µs");
-            }
-        }
-        /* and simply recursively try to find a free region now */
-        return allocatePerFaceBufferRegion(faceCount);
+    private FreeListAllocator.Region allocatePerFaceBufferRegion(int faceCount) {
+      return allocator.allocate(faceCount);
     }
 
     /**
      * Update the chunk's buffer objects with the given voxel field.
      */
     private void updateChunk(Chunk c, VoxelField f) {
-        activeFaceCount -= c.faceCount;
+        activeFaceCount -= c.r.len;
         deallocatePerFaceBufferRegion(c);
         meshChunkFacesAndWriteToBuffers(c, f);
     }
 
     /**
-     * Enlarge the per-face buffer objects.
-     */
-    private void enlargePerFaceBuffers() {
-        int newPerFaceBufferCapacity = max(perFaceBufferCapacity << 1, INITIAL_PER_FACE_BUFFER_CAPACITY);
-        if (DEBUG) {
-            System.out.println("Enlarging per-face buffers from capacity " + INT_FORMATTER.format(perFaceBufferCapacity) + " faces to "
-                    + INT_FORMATTER.format(newPerFaceBufferCapacity) + " faces");
-        }
-        /* Enlarge a free BufferRegion at the end of the list of create a new one */
-        enlargePerFaceBuffersFreeList(newPerFaceBufferCapacity);
-        /* Add task into render queue to enlarge the buffer objects */
-        updateAndRenderRunnables.add(new DelayedRunnable(() -> {
-            enlargePerFaceBuffers(newPerFaceBufferCapacity);
-            return null;
-        }, "Enlarge per-face buffers", 0));
-    }
-
-    /**
-     * Mark an additional buffer region as free in the {@link #faceBuffersFreeList}.
-     * <p>
-     * This can be done by either expanding a free region at the very end of the list/buffer, or adding
-     * a new region.
-     */
-    private void enlargePerFaceBuffersFreeList(int newPerFaceBufferCapacity) {
-        if (!faceBuffersFreeList.isEmpty()) {
-            BufferRegion r = faceBuffersFreeList.get(faceBuffersFreeList.size() - 1);
-            if (r.off + r.len == perFaceBufferCapacity) {
-                r.len += newPerFaceBufferCapacity - perFaceBufferCapacity;
-                if (DEBUG) {
-                    System.out.println("Enlarged last free region: " + r);
-                }
-            } else {
-                r = new BufferRegion();
-                r.off = perFaceBufferCapacity;
-                r.len = newPerFaceBufferCapacity - perFaceBufferCapacity;
-                faceBuffersFreeList.add(r);
-                if (DEBUG) {
-                    System.out.println("Created new free region: " + r);
-                }
-            }
-        } else {
-            BufferRegion r = new BufferRegion();
-            r.off = perFaceBufferCapacity;
-            r.len = newPerFaceBufferCapacity - perFaceBufferCapacity;
-            faceBuffersFreeList.add(r);
-            if (DEBUG) {
-                System.out.println("Add free region: " + r);
-            }
-        }
-    }
-
-    /**
      * Enlarge the per-face buffer objects and build a VAO for it.
      */
-    private void enlargePerFaceBuffers(int newPerFaceBufferCapacity) {
+    private void enlargePerFaceBuffers(int perFaceBufferCapacity, int newPerFaceBufferCapacity) {
         int vao;
-        if (useDirectStateAccess) {
-            vao = glCreateVertexArrays();
-        } else {
-            vao = glGenVertexArrays();
-            glBindVertexArray(vao);
-        }
+        vao = glGenVertexArrays();
+        glBindVertexArray(vao);
         int vertexDataBufferObject;
         long vertexDataBufferSize = (long) voxelVertexSize * verticesPerFace * newPerFaceBufferCapacity;
         /* Create the new vertex buffer */
         if (useBufferStorage) {
-            if (useDirectStateAccess) {
-                vertexDataBufferObject = glCreateBuffers();
-                glNamedBufferStorage(vertexDataBufferObject, vertexDataBufferSize, GL_DYNAMIC_STORAGE_BIT);
-            } else {
-                vertexDataBufferObject = glGenBuffers();
-                glBindBuffer(GL_ARRAY_BUFFER, vertexDataBufferObject);
-                glBufferStorage(GL_ARRAY_BUFFER, vertexDataBufferSize, GL_DYNAMIC_STORAGE_BIT);
-            }
+            vertexDataBufferObject = glGenBuffers();
+            glBindBuffer(GL_ARRAY_BUFFER, vertexDataBufferObject);
+            glBufferStorage(GL_ARRAY_BUFFER, vertexDataBufferSize, GL_DYNAMIC_STORAGE_BIT);
         } else {
-            if (useDirectStateAccess) {
-                vertexDataBufferObject = glCreateBuffers();
-                glNamedBufferData(vertexDataBufferObject, vertexDataBufferSize, GL_STATIC_DRAW);
-            } else {
-                vertexDataBufferObject = glGenBuffers();
-                glBindBuffer(GL_ARRAY_BUFFER, vertexDataBufferObject);
-                glBufferData(GL_ARRAY_BUFFER, vertexDataBufferSize, GL_STATIC_DRAW);
-            }
+            vertexDataBufferObject = glGenBuffers();
+            glBindBuffer(GL_ARRAY_BUFFER, vertexDataBufferObject);
+            glBufferData(GL_ARRAY_BUFFER, vertexDataBufferSize, GL_STATIC_DRAW);
         }
         /* Setup the vertex specifications */
-        if (useDirectStateAccess) {
-            glEnableVertexArrayAttrib(vao, 0);
-            glEnableVertexArrayAttrib(vao, 1);
-            glEnableVertexArrayAttrib(vao, 2);
-            glVertexArrayAttribBinding(vao, 0, 0);
-            glVertexArrayAttribBinding(vao, 1, 1);
-            glVertexArrayAttribBinding(vao, 2, 2);
-            glVertexArrayVertexBuffer(vao, 0, vertexDataBufferObject, 0L, voxelVertexSize);
-            glVertexArrayAttribIFormat(vao, 0, drawPointsWithGS ? 1 : 4, drawPointsWithGS ? GL_UNSIGNED_INT : GL_UNSIGNED_BYTE, 0);
-            glVertexArrayVertexBuffer(vao, 1, vertexDataBufferObject, 4L, voxelVertexSize);
-            glVertexArrayAttribIFormat(vao, 1, drawPointsWithGS ? 4 : 2, GL_UNSIGNED_BYTE, 0);
-            if (useMultiDrawIndirect) {
-                glVertexArrayVertexBuffer(vao, 2, chunkInfoBufferObject, 0L, 4 * Integer.BYTES);
-                glVertexArrayAttribIFormat(vao, 2, 4, GL_INT, 0);
-                glVertexArrayBindingDivisor(vao, 2, 1);
-            } else {
-                glVertexArrayVertexBuffer(vao, 2, vertexDataBufferObject, drawPointsWithGS ? 8L : 6L, voxelVertexSize);
-                glVertexArrayAttribIFormat(vao, 2, 1, GL_UNSIGNED_INT, 0);
-            }
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        glVertexAttribIPointer(0, drawPointsWithGS ? 1 : 4, drawPointsWithGS ? GL_UNSIGNED_INT : GL_UNSIGNED_BYTE, voxelVertexSize, 0L);
+        glVertexAttribIPointer(1, drawPointsWithGS ? 4 : 2, GL_UNSIGNED_BYTE, voxelVertexSize, 4L);
+        if (useMultiDrawIndirect) {
+            glBindBuffer(GL_ARRAY_BUFFER, chunkInfoBufferObject);
+            glVertexAttribIPointer(2, 4, GL_INT, 0, 0L);
+            glVertexAttribDivisor(2, 1);
         } else {
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
-            glEnableVertexAttribArray(2);
-            glVertexAttribIPointer(0, drawPointsWithGS ? 1 : 4, drawPointsWithGS ? GL_UNSIGNED_INT : GL_UNSIGNED_BYTE, voxelVertexSize, 0L);
-            glVertexAttribIPointer(1, drawPointsWithGS ? 4 : 2, GL_UNSIGNED_BYTE, voxelVertexSize, 4L);
-            if (useMultiDrawIndirect) {
-                glBindBuffer(GL_ARRAY_BUFFER, chunkInfoBufferObject);
-                glVertexAttribIPointer(2, 4, GL_INT, 0, 0L);
-                glVertexAttribDivisor(2, 1);
-            } else {
-                glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, voxelVertexSize, drawPointsWithGS ? 8L : 6L);
-            }
+            glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, voxelVertexSize, drawPointsWithGS ? 8L : 6L);
         }
         /* Setup the index buffer */
         long indexBufferSize = (long) Short.BYTES * indicesPerFace * newPerFaceBufferCapacity;
         int indexBufferObject;
-        if (useDirectStateAccess) {
-            indexBufferObject = glCreateBuffers();
-            glVertexArrayElementBuffer(vao, indexBufferObject);
-            if (useBufferStorage) {
-                glNamedBufferStorage(indexBufferObject, indexBufferSize, GL_DYNAMIC_STORAGE_BIT);
-            } else {
-                glNamedBufferData(indexBufferObject, indexBufferSize, GL_STATIC_DRAW);
-            }
+        indexBufferObject = glGenBuffers();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+        if (useBufferStorage) {
+            glBufferStorage(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, GL_DYNAMIC_STORAGE_BIT);
         } else {
-            indexBufferObject = glGenBuffers();
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-            if (useBufferStorage) {
-                glBufferStorage(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, GL_DYNAMIC_STORAGE_BIT);
-            } else {
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, GL_STATIC_DRAW);
-            }
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, GL_STATIC_DRAW);
         }
         if (chunksVao != 0) {
             if (DEBUG) {
-                System.out.println("Copying old buffer objects [" + this.perFaceBufferCapacity + "] to new");
+                System.out.println("Copying old buffer objects [" + perFaceBufferCapacity + "] to new");
             }
             /* Copy old buffer objects to new buffer objects */
-            long vertexBufferCopySize = (long) voxelVertexSize * perFaceBufferCapacity * verticesPerFace;
-            long indexBufferCopySize = (long) Short.BYTES * perFaceBufferCapacity * indicesPerFace;
-            if (useDirectStateAccess) {
-                glCopyNamedBufferSubData(this.vertexDataBufferObject, vertexDataBufferObject, 0L, 0L, vertexBufferCopySize);
-                glCopyNamedBufferSubData(this.indexBufferObject, indexBufferObject, 0L, 0L, indexBufferCopySize);
-            } else {
-                glBindBuffer(GL_COPY_READ_BUFFER, this.vertexDataBufferObject);
-                glBindBuffer(GL_COPY_WRITE_BUFFER, vertexDataBufferObject);
-                glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0L, 0L, (long) voxelVertexSize * perFaceBufferCapacity * verticesPerFace);
-                glBindBuffer(GL_COPY_READ_BUFFER, this.indexBufferObject);
-                glBindBuffer(GL_COPY_WRITE_BUFFER, indexBufferObject);
-                glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0L, 0L, (long) Short.BYTES * perFaceBufferCapacity * indicesPerFace);
-                glBindBuffer(GL_COPY_READ_BUFFER, 0);
-                glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
-            }
+            glBindBuffer(GL_COPY_READ_BUFFER, this.vertexDataBufferObject);
+            glBindBuffer(GL_COPY_WRITE_BUFFER, vertexDataBufferObject);
+            glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0L, 0L, (long) voxelVertexSize * perFaceBufferCapacity * verticesPerFace);
+            glBindBuffer(GL_COPY_READ_BUFFER, this.indexBufferObject);
+            glBindBuffer(GL_COPY_WRITE_BUFFER, indexBufferObject);
+            glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0L, 0L, (long) Short.BYTES * perFaceBufferCapacity * indicesPerFace);
+            glBindBuffer(GL_COPY_READ_BUFFER, 0);
+            glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
             /* Delete old buffers */
             glDeleteBuffers(new int[] { this.vertexDataBufferObject, this.indexBufferObject });
             glDeleteVertexArrays(chunksVao);
@@ -2277,7 +2104,7 @@ public class VoxelGameGL {
         this.vertexDataBufferObject = vertexDataBufferObject;
         this.indexBufferObject = indexBufferObject;
         this.chunksVao = vao;
-        this.perFaceBufferCapacity = newPerFaceBufferCapacity;
+        perFaceBufferCapacity = newPerFaceBufferCapacity;
         if (DEBUG) {
             System.out.println("Total size of face buffers: "
                     + INT_FORMATTER.format(newPerFaceBufferCapacity * ((4L + 2) * verticesPerFace + (long) Short.BYTES * indicesPerFace) / 1024 / 1024)
@@ -2297,9 +2124,8 @@ public class VoxelGameGL {
      * Instead, we delay marking buffer regions as free for one frame.
      */
     private void deallocatePerFaceBufferRegion(Chunk chunk) {
-        int chunkFaceOffset = chunk.faceOffset;
-        int chunkFaceCount = chunk.faceCount;
-        int alignedCount = roundUpToNextMultiple(chunkFaceCount, BufferRegion.ALIGNMENT);
+        int chunkFaceOffset = chunk.r.off;
+        int chunkFaceCount = chunk.r.len;
         /*
          * If we use temporal coherence occlusion culling, we must delay deallocating the buffer region by 1
          * frame, because the next frame still wants to potentially draw the chunk when it was visible last
@@ -2310,34 +2136,7 @@ public class VoxelGameGL {
             if (DEBUG) {
                 System.out.println("Deallocate buffer region for chunk: " + chunk);
             }
-            synchronized (faceBuffersFreeList) {
-                /* Try to find an existing free region whose either end we can enlarge */
-                for (BufferRegion r : faceBuffersFreeList) {
-                    if (r.off + r.len == chunkFaceOffset) {
-                        r.len += alignedCount;
-                        if (DEBUG) {
-                            System.out.println("Enlarged end of buffer region: " + r);
-                        }
-                        return null;
-                    } else if (r.off == chunkFaceOffset + alignedCount) {
-                        r.off -= alignedCount;
-                        r.len += alignedCount;
-                        if (DEBUG) {
-                            System.out.println("Enlarged beginning of buffer region: " + r);
-                        }
-                        return null;
-                    }
-                }
-                /* No free region found, create one */
-                BufferRegion r = new BufferRegion();
-                r.off = chunkFaceOffset;
-                r.len = alignedCount;
-                if (DEBUG) {
-                    System.out.println("Create new free buffer region: " + r);
-                }
-                faceBuffersFreeList.add(r);
-                faceBuffersFreeList.sort((r1, r2) -> Integer.compareUnsigned(r1.off, r2.off));
-            }
+            allocator.free(new FreeListAllocator.Region(chunkFaceOffset, chunkFaceCount));
             return null;
         }, "Deallocate buffer region for chunk " + chunk, delayFrames));
     }
@@ -2358,16 +2157,15 @@ public class VoxelGameGL {
                 appendFaceVertexAndIndexData(chunk, i++, u0, v0, u1, v1, p, s, v, vertexData, indices);
             }
         });
-        BufferRegion r = allocatePerFaceBufferRegion(faceCount);
+        FreeListAllocator.Region r = allocatePerFaceBufferRegion(faceCount);
         long time = System.nanoTime();
 
         /* Issue render thread task to update the buffer objects */
         updateAndRenderRunnables.add(new DelayedRunnable(() -> {
             chunk.minY = vf.ny;
             chunk.maxY = vf.py;
-            chunk.faceOffset = r.off;
-            chunk.faceCount = faceCount;
-            activeFaceCount += chunk.faceCount;
+            chunk.r = r;
+            activeFaceCount += chunk.r.len;
             updateChunkVertexAndIndexDataInBufferObjects(chunk, vertexData, indices);
             vertexData.free();
             indices.free();
@@ -2380,21 +2178,13 @@ public class VoxelGameGL {
      * Update the chunk's per-face buffer region with the given vertex and index data.
      */
     private void updateChunkVertexAndIndexDataInBufferObjects(Chunk chunk, DynamicByteBuffer vertexData, DynamicByteBuffer indices) {
-        long vertexOffset = (long) chunk.faceOffset * voxelVertexSize * verticesPerFace;
-        if (useDirectStateAccess) {
-            nglNamedBufferSubData(vertexDataBufferObject, vertexOffset, vertexData.pos, vertexData.addr);
-        } else {
-            glBindBuffer(GL_ARRAY_BUFFER, vertexDataBufferObject);
-            nglBufferSubData(GL_ARRAY_BUFFER, vertexOffset, vertexData.pos, vertexData.addr);
-        }
+        long vertexOffset = (long) chunk.r.off * voxelVertexSize * verticesPerFace;
+        glBindBuffer(GL_ARRAY_BUFFER, vertexDataBufferObject);
+        nglBufferSubData(GL_ARRAY_BUFFER, vertexOffset, vertexData.pos, vertexData.addr);
         updateChunkInfo(chunk);
-        long indexOffset = (long) chunk.faceOffset * Short.BYTES * indicesPerFace;
-        if (useDirectStateAccess) {
-            nglNamedBufferSubData(indexBufferObject, indexOffset, indices.pos, indices.addr);
-        } else {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-            nglBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indexOffset, indices.pos, indices.addr);
-        }
+        long indexOffset = (long) chunk.r.off * Short.BYTES * indicesPerFace;
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
+        nglBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indexOffset, indices.pos, indices.addr);
         if (DEBUG) {
             System.out.println("Number of chunks: " + INT_FORMATTER.format(allChunks.size()) + " ("
                     + INT_FORMATTER.format(computePerFaceBufferObjectSize() / 1024 / 1024) + " MB)");
@@ -2411,16 +2201,10 @@ public class VoxelGameGL {
     private void updateChunkInfo(Chunk chunk) {
         try (MemoryStack stack = stackPush()) {
             int bindTarget = useMultiDrawIndirect ? GL_ARRAY_BUFFER : GL_TEXTURE_BUFFER;
-            if (!useDirectStateAccess) {
-                glBindBuffer(bindTarget, chunkInfoBufferObject);
-            }
+            glBindBuffer(bindTarget, chunkInfoBufferObject);
             IntBuffer data = stack.mallocInt(4);
             data.put(0, chunk.cx << CHUNK_SIZE_SHIFT).put(1, chunk.minY | chunk.maxY << 16).put(2, chunk.cz << CHUNK_SIZE_SHIFT).put(3, chunk.index);
-            if (useDirectStateAccess) {
-                glNamedBufferSubData(chunkInfoBufferObject, (long) chunk.index * 4 * Integer.BYTES, data);
-            } else {
-                glBufferSubData(bindTarget, (long) chunk.index * 4 * Integer.BYTES, data);
-            }
+            glBufferSubData(bindTarget, (long) chunk.index * 4 * Integer.BYTES, data);
         }
     }
 
@@ -2495,10 +2279,6 @@ public class VoxelGameGL {
         pMat.mulPerspectiveAffine(vMat, mvpMat);
         mvpMat.invert(imvpMat);
         updateFrustumPlanes();
-        while (createInRenderDistanceAndDestroyOutOfRenderDistanceChunks())
-            ;
-        /* Determine selected voxel */
-        determineSelectedVoxel();
     }
 
     /**
@@ -2979,25 +2759,15 @@ public class VoxelGameGL {
         long boundingBoxesOffset = (long) currentDynamicBufferIndex * MAX_ACTIVE_CHUNKS * 4 * Integer.BYTES;
         long boundingBoxesSize = (long) numVisible * 4 * Integer.BYTES;
         if (useBufferStorage) {
-            if (useDirectStateAccess) {
-                glFlushMappedNamedBufferRange(indirectDrawBuffer, faceOffsetsAndCountsOffset, faceOffsetsAndCountsSize);
-                glFlushMappedNamedBufferRange(boundingBoxesVertexBufferObject, boundingBoxesOffset, boundingBoxesSize);
-            } else {
-                glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectDrawBuffer);
-                glBindBuffer(GL_ARRAY_BUFFER, boundingBoxesVertexBufferObject);
-                glFlushMappedBufferRange(GL_DRAW_INDIRECT_BUFFER, faceOffsetsAndCountsOffset, faceOffsetsAndCountsSize);
-                glFlushMappedBufferRange(GL_ARRAY_BUFFER, boundingBoxesOffset, boundingBoxesSize);
-            }
+            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectDrawBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, boundingBoxesVertexBufferObject);
+            glFlushMappedBufferRange(GL_DRAW_INDIRECT_BUFFER, faceOffsetsAndCountsOffset, faceOffsetsAndCountsSize);
+            glFlushMappedBufferRange(GL_ARRAY_BUFFER, boundingBoxesOffset, boundingBoxesSize);
         } else {
-            if (useDirectStateAccess) {
-                nglNamedBufferSubData(indirectDrawBuffer, faceOffsetsAndCountsOffset, faceOffsetsAndCountsPos, faceOffsetsAndCounts);
-                nglNamedBufferSubData(boundingBoxesVertexBufferObject, boundingBoxesOffset, bbPos, bb);
-            } else {
-                glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectDrawBuffer);
-                glBindBuffer(GL_ARRAY_BUFFER, boundingBoxesVertexBufferObject);
-                nglBufferSubData(GL_DRAW_INDIRECT_BUFFER, faceOffsetsAndCountsOffset, faceOffsetsAndCountsPos, faceOffsetsAndCounts);
-                nglBufferSubData(GL_ARRAY_BUFFER, boundingBoxesOffset, bbPos, bb);
-            }
+            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectDrawBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, boundingBoxesVertexBufferObject);
+            nglBufferSubData(GL_DRAW_INDIRECT_BUFFER, faceOffsetsAndCountsOffset, faceOffsetsAndCountsPos, faceOffsetsAndCounts);
+            nglBufferSubData(GL_ARRAY_BUFFER, boundingBoxesOffset, bbPos, bb);
             nmemFree(faceOffsetsAndCounts);
             nmemFree(bb);
         }
@@ -3009,8 +2779,8 @@ public class VoxelGameGL {
      * given chunk).
      */
     private int putChunkFaceOffsetAndCount(Chunk c, long faceOffsetsAndCounts) {
-        memPutInt(faceOffsetsAndCounts, c.faceOffset);
-        memPutInt(faceOffsetsAndCounts + Integer.BYTES, c.faceCount);
+        memPutInt(faceOffsetsAndCounts, c.r.off);
+        memPutInt(faceOffsetsAndCounts + Integer.BYTES, c.r.len);
         return Integer.BYTES << 1;
     }
 
@@ -3033,28 +2803,20 @@ public class VoxelGameGL {
             Chunk c = allChunks.get(i);
             if (!c.ready || chunkNotInFrustum(c))
                 continue;
-            memPutInt(indirect + indirectPos, c.faceCount * indicesPerFace);
+            memPutInt(indirect + indirectPos, c.r.len * indicesPerFace);
             memPutInt(indirect + indirectPos + Integer.BYTES, 1);
-            memPutInt(indirect + indirectPos + Integer.BYTES * 2, c.faceOffset * indicesPerFace);
-            memPutInt(indirect + indirectPos + Integer.BYTES * 3, c.faceOffset * verticesPerFace);
+            memPutInt(indirect + indirectPos + Integer.BYTES * 2, c.r.off * indicesPerFace);
+            memPutInt(indirect + indirectPos + Integer.BYTES * 3, c.r.off * verticesPerFace);
             memPutInt(indirect + indirectPos + Integer.BYTES * 4, c.index);
             indirectPos += Integer.BYTES * 5;
             numChunks++;
         }
         if (useBufferStorage) {
-            if (useDirectStateAccess) {
-                glFlushMappedNamedBufferRange(indirectDrawBuffer, offset, (long) numChunks * 5 * Integer.BYTES);
-            } else {
-                glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectDrawBuffer);
-                glFlushMappedBufferRange(GL_DRAW_INDIRECT_BUFFER, offset, (long) numChunks * 5 * Integer.BYTES);
-            }
+            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectDrawBuffer);
+            glFlushMappedBufferRange(GL_DRAW_INDIRECT_BUFFER, offset, (long) numChunks * 5 * Integer.BYTES);
         } else {
-            if (useDirectStateAccess) {
-                nglNamedBufferSubData(indirectDrawBuffer, offset, indirectPos, indirect);
-            } else {
-                glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectDrawBuffer);
-                nglBufferSubData(GL_DRAW_INDIRECT_BUFFER, offset, indirectPos, indirect);
-            }
+            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectDrawBuffer);
+            nglBufferSubData(GL_DRAW_INDIRECT_BUFFER, offset, indirectPos, indirect);
             nmemFree(indirect);
         }
         return numChunks;
@@ -3152,9 +2914,9 @@ public class VoxelGameGL {
             for (Chunk c : allChunks) {
                 if (!c.ready || chunkNotInFrustum(c))
                     continue;
-                indices.put((long) Short.BYTES * c.faceOffset * indicesPerFace);
-                count.put(c.faceCount * indicesPerFace);
-                basevertex.put(c.faceOffset * verticesPerFace);
+                indices.put((long) Short.BYTES * c.r.off * indicesPerFace);
+                count.put(c.r.len * indicesPerFace);
+                basevertex.put(c.r.off * verticesPerFace);
             }
             indices.flip();
             count.flip();
@@ -3252,19 +3014,11 @@ public class VoxelGameGL {
             memPutInt(ubo + uboPos + Integer.BYTES, (int) floor(playerPosition.y));
             memPutInt(ubo + uboPos + Integer.BYTES * 2, (int) floor(playerPosition.z));
             uboPos += 3 * Float.BYTES;
-            if (useDirectStateAccess) {
-                if (useBufferStorage) {
-                    glFlushMappedNamedBufferRange(chunksProgramUbo, (long) currentDynamicBufferIndex * size, size);
-                } else {
-                    nglNamedBufferSubData(chunksProgramUbo, (long) currentDynamicBufferIndex * size, uboPos, ubo);
-                }
+            glBindBuffer(GL_UNIFORM_BUFFER, chunksProgramUbo);
+            if (useBufferStorage) {
+                glFlushMappedBufferRange(GL_UNIFORM_BUFFER, (long) currentDynamicBufferIndex * size, size);
             } else {
-                glBindBuffer(GL_UNIFORM_BUFFER, chunksProgramUbo);
-                if (useBufferStorage) {
-                    glFlushMappedBufferRange(GL_UNIFORM_BUFFER, (long) currentDynamicBufferIndex * size, size);
-                } else {
-                    nglBufferSubData(GL_UNIFORM_BUFFER, (long) currentDynamicBufferIndex * size, uboPos, ubo);
-                }
+                nglBufferSubData(GL_UNIFORM_BUFFER, (long) currentDynamicBufferIndex * size, uboPos, ubo);
             }
         }
     }
@@ -3290,18 +3044,10 @@ public class VoxelGameGL {
             memPutInt(ubo + uboPos + Integer.BYTES * 2, (int) floor(playerPosition.z));
             uboPos += 3 * Integer.BYTES;
             glBindBuffer(GL_UNIFORM_BUFFER, boundingBoxesProgramUbo);
-            if (useDirectStateAccess) {
-                if (useBufferStorage) {
-                    glFlushMappedNamedBufferRange(boundingBoxesProgramUbo, (long) currentDynamicBufferIndex * size, size);
-                } else {
-                    nglNamedBufferSubData(boundingBoxesProgramUbo, (long) currentDynamicBufferIndex * size, uboPos, ubo);
-                }
+            if (useBufferStorage) {
+                glFlushMappedBufferRange(GL_UNIFORM_BUFFER, (long) currentDynamicBufferIndex * size, size);
             } else {
-                if (useBufferStorage) {
-                    glFlushMappedBufferRange(GL_UNIFORM_BUFFER, (long) currentDynamicBufferIndex * size, size);
-                } else {
-                    nglBufferSubData(GL_UNIFORM_BUFFER, (long) currentDynamicBufferIndex * size, uboPos, ubo);
-                }
+                nglBufferSubData(GL_UNIFORM_BUFFER, (long) currentDynamicBufferIndex * size, uboPos, ubo);
             }
         }
     }
@@ -3442,6 +3188,13 @@ public class VoxelGameGL {
                      */
                     updatePlayerPositionAndMatrices(dt);
                     /*
+                     * Create new in-view chunks and destroy out-of-view chunks.
+                     */
+                    while (createInRenderDistanceAndDestroyOutOfRenderDistanceChunks())
+                      ;
+                    // Determine the selected voxel in the center of the viewport.
+                    determineSelectedVoxel();
+                    /*
                      * Draw the same chunks that were visible last frame by using last frame's dynamic buffer index, so
                      * we use last frame's MDI draw structs. Newly disoccluded chunks that were not visible last frame
                      * will be rendered with another draw call below.
@@ -3479,6 +3232,13 @@ public class VoxelGameGL {
                      */
                     updatePlayerPositionAndMatrices(dt);
                     /*
+                     * Create new in-view chunks and destroy out-of-view chunks.
+                     */
+                    while (createInRenderDistanceAndDestroyOutOfRenderDistanceChunks())
+                      ;
+                    // Determine the selected voxel in the center of the viewport.
+                    determineSelectedVoxel();
+                    /*
                      * Collect MDI structs for in-frustum chunks marked visible by the bounding boxes draw.
                      */
                     collectDrawCommands();
@@ -3497,6 +3257,7 @@ public class VoxelGameGL {
                  * Update player's position and matrices.
                  */
                 updatePlayerPositionAndMatrices(dt);
+                
                 /*
                  * Check if we support MDI.
                  */
@@ -3524,12 +3285,8 @@ public class VoxelGameGL {
             /*
              * Blit FBO to the window.
              */
-            if (useDirectStateAccess) {
-                glBlitNamedFramebuffer(fbo, 0, 0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-            } else {
-                glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-                glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-            }
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+            glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
             glfwSwapBuffers(window);
         }
         executorService.shutdown();
