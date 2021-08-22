@@ -28,8 +28,8 @@ The configuration files were generated when running the demos in standard JVM wi
 [GraalVM agent](https://www.graalvm.org/reference-manual/native-image/BuildConfiguration/#assisted-configuration-of-native-image-builds),
 which tracks all usages of dynamic features of an execution of the demos
 and writes the info to the configuration files.
-Usage of the agent is contained in the Gradle build script [(line 132)](build.gradle#L132),
-or in the Maven build script [(line 150)](pom.xml#L150), which can be turned on (i.e. uncommented)
+Usage of the agent is contained in the Gradle build script [(line 134)](build.gradle#L134),
+or in the Maven build script [(line 168)](pom.xml#L168), which can be turned on (i.e. uncommented)
 and the demos are re-run to update the configuration files, if need be.
 
 The above agent is not perfect; it sometimes misses some classes referenced via reflection
