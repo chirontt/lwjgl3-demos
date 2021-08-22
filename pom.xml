@@ -11,7 +11,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <lwjgl.version>${project.version}</lwjgl.version>
-        <swt.version>4.6.1</swt.version>
+        <swt.maven.version>3.105.3</swt.maven.version> <!-- contains Eclipse SWT 4.6.2.9 software -->
         <joml.version>1.10.1</joml.version>
         <native.maven.plugin.version>0.9.2</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
@@ -49,9 +49,15 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.eclipse.swt</groupId>
+                    <groupId>org.eclipse.platform</groupId>
                     <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
-                    <version>${swt.version}</version>
+                    <version>${swt.maven.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.platform</groupId>
+                            <artifactId>org.eclipse.swt</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
             </dependencies>
         </profile>
@@ -76,9 +82,15 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.eclipse.swt</groupId>
+                    <groupId>org.eclipse.platform</groupId>
                     <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
-                    <version>${swt.version}</version>
+                    <version>${swt.maven.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.platform</groupId>
+                            <artifactId>org.eclipse.swt</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
             </dependencies>
         </profile>
@@ -103,9 +115,15 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.eclipse.swt</groupId>
+                    <groupId>org.eclipse.platform</groupId>
                     <artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>
-                    <version>${swt.version}</version>
+                    <version>${swt.maven.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.platform</groupId>
+                            <artifactId>org.eclipse.swt</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
                 <dependency>
                     <groupId>org.lwjgl</groupId>
@@ -191,7 +209,7 @@
                     <skip>false</skip>
                 </configuration>
             </plugin>
-            <!-- remove unneeded .dll files -->
+            <!-- remove unneeded .dll/.txt files -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -225,10 +243,6 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
-        <repository>
-            <id>swt-repo</id>
-            <url>http://maven-eclipse.github.io/maven</url>
         </repository>
     </repositories>
     <dependencyManagement>
