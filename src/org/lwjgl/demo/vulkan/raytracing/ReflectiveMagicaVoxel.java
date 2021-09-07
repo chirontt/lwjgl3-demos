@@ -7,7 +7,6 @@ package org.lwjgl.demo.vulkan.raytracing;
 import static java.lang.ClassLoader.getSystemResourceAsStream;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.IntStream.range;
 import static org.joml.Math.*;
 import static org.lwjgl.demo.vulkan.VKUtil.*;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -263,25 +262,19 @@ public class ReflectiveMagicaVoxel {
             VkExtensionProperties.Buffer pProperties = VkExtensionProperties.mallocStack(propertyCount, stack);
             _CHECK_(vkEnumerateInstanceExtensionProperties((ByteBuffer) null, pPropertyCount, pProperties),
                     "Could not enumerate instance extensions");
-            List<String> res = new ArrayList<>(propertyCount);
-            for (int i = 0; i < propertyCount; i++) {
-                res.add(pProperties.get(i).extensionNameString());
-            }
-            return res;
+            return pProperties.stream().map(VkExtensionProperties::extensionNameString).collect(toList());
         }
     }
 
     private static VkInstance createInstance(PointerBuffer requiredExtensions) {
         List<String> supportedInstanceExtensions = enumerateSupportedInstanceExtensions();
         try (MemoryStack stack = stackPush()) {
-            PointerBuffer ppEnabledExtensionNames;
+            PointerBuffer ppEnabledExtensionNames = requiredExtensions;
             if (DEBUG) {
                 if (!supportedInstanceExtensions.contains(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) {
                     throw new AssertionError(VK_EXT_DEBUG_UTILS_EXTENSION_NAME + " is not supported on the instance");
                 }
                 ppEnabledExtensionNames = pointers(stack, requiredExtensions, stack.UTF8(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));
-            } else {
-                ppEnabledExtensionNames = pointers(stack, requiredExtensions);
             }
             PointerBuffer enabledLayers = null;
             if (DEBUG) {
@@ -556,7 +549,7 @@ public class ReflectiveMagicaVoxel {
             VkExtensionProperties.Buffer pProperties = VkExtensionProperties.mallocStack(propertyCount, stack);
             _CHECK_(vkEnumerateDeviceExtensionProperties(deviceAndQueueFamilies.physicalDevice, (ByteBuffer) null, pPropertyCount, pProperties),
                     "Failed to enumerate the device extensions");
-            return range(0, propertyCount).mapToObj(i -> pProperties.get(i).extensionNameString()).collect(toList());
+            return pProperties.stream().map(VkExtensionProperties::extensionNameString).collect(toList());
         }
     }
 
@@ -565,7 +558,8 @@ public class ReflectiveMagicaVoxel {
             PointerBuffer pAllocator = stack.mallocPointer(1);
             _CHECK_(vmaCreateAllocator(VmaAllocatorCreateInfo
                         .callocStack(stack)
-                        .flags(VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT)
+                        .flags(VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT | 
+                               VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT)
                         .physicalDevice(deviceAndQueueFamilies.physicalDevice)
                         .device(device)
                         .pVulkanFunctions(VmaVulkanFunctions

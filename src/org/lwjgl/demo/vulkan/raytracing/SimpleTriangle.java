@@ -240,14 +240,12 @@ public class SimpleTriangle {
     private static VkInstance createInstance(PointerBuffer requiredExtensions) {
         List<String> supportedInstanceExtensions = enumerateSupportedInstanceExtensions();
         try (MemoryStack stack = stackPush()) {
-            PointerBuffer ppEnabledExtensionNames;
+            PointerBuffer ppEnabledExtensionNames = requiredExtensions;
             if (DEBUG) {
                 if (!supportedInstanceExtensions.contains(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) {
                     throw new AssertionError(VK_EXT_DEBUG_UTILS_EXTENSION_NAME + " is not supported on the instance");
                 }
                 ppEnabledExtensionNames = pointers(stack, requiredExtensions, stack.UTF8(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));
-            } else {
-                ppEnabledExtensionNames = pointers(stack, requiredExtensions);
             }
             PointerBuffer enabledLayers = null;
             if (DEBUG) {
@@ -513,7 +511,8 @@ public class SimpleTriangle {
             PointerBuffer pAllocator = stack.mallocPointer(1);
             _CHECK_(vmaCreateAllocator(VmaAllocatorCreateInfo
                         .callocStack(stack)
-                        .flags(VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT)
+                        .flags(VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT | 
+                               VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT)
                         .physicalDevice(deviceAndQueueFamilies.physicalDevice)
                         .device(device)
                         .pVulkanFunctions(VmaVulkanFunctions

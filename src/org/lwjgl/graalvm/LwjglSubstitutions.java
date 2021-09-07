@@ -13,7 +13,7 @@ import com.oracle.svm.core.annotate.RecomputeFieldValue;
 import com.oracle.svm.core.annotate.RecomputeFieldValue.Kind;
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
-
+/*
 @TargetClass(org.lwjgl.Version.class)
 final class Target_org_lwjgl_Version {
     
@@ -34,6 +34,7 @@ final class Target_org_lwjgl_Version {
                 ' ' + Optional.ofNullable(implVersion).orElse("SNAPSHOT");
     }
 }
+*/
 
 @TargetClass(org.lwjgl.system.ThreadLocalUtil.class)
 final class Target_org_lwjgl_system_ThreadLocalUtil {
