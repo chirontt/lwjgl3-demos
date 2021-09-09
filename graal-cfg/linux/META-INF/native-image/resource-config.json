@@ -1,7 +1,6 @@
 {
   "resources":{
   "includes":[
-    {"pattern":"\\QMETA-INF/MANIFEST.MF\\E"}, 
     {"pattern":"\\Qlibswt-cairo-gtk-4629.so\\E"}, 
     {"pattern":"\\Qlibswt-glx-gtk-4629.so\\E"}, 
     {"pattern":"\\Qlibswt-gtk-4629.so\\E"}, 
@@ -263,6 +262,8 @@
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/noverticespolygon.vs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/noverticesprojectedgrid.fs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/noverticesprojectedgrid.vs\\E"}, 
+    {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/planet.fs\\E"}, 
+    {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/planet.vs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/simple.fs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/simple.vs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shadow/omni2dShadow-fs.glsl\\E"}, 
@@ -334,7 +335,6 @@
     {"pattern":"\\Qorg/lwjgl/demo/vulkan/triangle.vert\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.frag\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.vert\\E"}, 
-    {"pattern":"\\Qorg/lwjgl/system/APIUtil.class\\E"}, 
     {"pattern":"\\Qswt-wgl-win32-4629.dll\\E"}, 
     {"pattern":"\\Qswt-win32-4629.dll\\E"}, 
     {"pattern":"\\Qwindows/x64/org/lwjgl/assimp/assimp.dll\\E"}, 

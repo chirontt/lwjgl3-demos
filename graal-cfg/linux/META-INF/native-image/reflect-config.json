@@ -773,6 +773,10 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.opengl.shader.Planet",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.opengl.shader.SimpleQuadAndGridDemo",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -965,6 +969,10 @@
   "allPublicConstructors":true,
   "allDeclaredClasses":true,
   "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.util.par.ParShapesMesh",
+  "methods":[{"name":"<init>","parameterTypes":["java.nio.ByteBuffer"] }]
 },
 {
   "name":"org.lwjgl.util.shaderc.Shaderc",

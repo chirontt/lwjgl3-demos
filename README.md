@@ -65,11 +65,11 @@ The above tasks can use any standard JDK 11+.
 To generate native executable, GraalVM 21+ need be set up as mentioned in
 *GraalVM pre-requisites* section above.
 
-Once GraalVM is set up and available in the path, run the `nativeImage` task:
+Once GraalVM is set up and available in the path, run the `nativeBuild` task:
 
-	gradlew nativeImage
+	gradlew nativeBuild
 
-The `nativeImage` task would take a while to compile all demo source code and
+The `nativeBuild` task would take a while to compile all demo source code and
 link them with the LWJGL libraries into an executable file.
 The resulting `lwjgl3-demos` file is (in Linux):
 
@@ -167,5 +167,5 @@ can be further reduced in size via compression using the [UPX](https://upx.githu
 as described [here](https://medium.com/graalvm/compressed-graalvm-native-images-4d233766a214).
 
 For example, the resulting `lwjgl3-demos.exe` native application file produced in Windows
-is normally 65MB in size, but is compressed to 23MB with the UPX command: `upx --best lwjgl3-demos.exe`
+is normally 68MB in size, but is compressed to 24MB with the UPX command: `upx --best lwjgl3-demos.exe`
 

@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'org.mikeneck.graalvm-native-image' version '1.4.1'
+    id 'org.graalvm.buildtools.native' version '0.9.4'
 }
 
 wrapper {
@@ -14,7 +14,7 @@ version = '3.3.0-SNAPSHOT'
 
 ext {
     lwjglVersion = project.version
-    jomlVersion = '1.10.1'
+    jomlVersion = '1.10.2'
     swtMavenVersion = '3.105.3'  //contains Eclipse SWT 4.6.2.9 software
     graalvmVersion = '21.2.0'
 
@@ -134,6 +134,45 @@ run {
     //jvmArgs = ["-agentlib:native-image-agent=config-merge-dir=graal-cfg/$currentPlatform/META-INF/native-image"]
 }
 
+task extractLwjglManifest(type: Copy) {
+    from {
+        configurations.compileClasspath.filter { it.name == "lwjgl-${lwjglVersion}.jar" }
+                                       .collect { zipTree(it) }
+    }
+    include 'META-INF/MANIFEST.MF'
+    into "$buildDir/tmp/lwjglCoreArchive"
+}
+
+//create a stand-alone executable uber jar
+//including all dependencies for the current platform
+task uberJar(type: Jar) {
+    dependsOn extractLwjglManifest
+    archiveClassifier = "no-deps-$currentPlatform"
+
+    with jar
+    manifest {
+        from (extractLwjglManifest.destinationDir.path + '/META-INF/MANIFEST.MF') {
+            eachEntry { details -> 
+                if (details.key == 'Created-By')
+                    details.value = System.getProperty('java.runtime.version') + ' (' + System.getProperty('java.vendor') + ')'
+                else if (details.key == 'Ant-Version')
+                    details.exclude()
+            }
+        }
+        attributes(
+            'Main-Class': project.mainClassName,
+            'Built-By': System.getProperty('user.name'),
+            'Gradle-Version': 'Gradle ' + gradle.getGradleVersion(),
+        )
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    duplicatesStrategy 'exclude'
+}
+
 //remove unneeded .dll files
 task removeUnneededDllFiles {
     doLast {
@@ -146,31 +185,24 @@ task removeUnneededDllFiles {
     }
 }
 
-nativeImage {
-    graalVmHome = System.getProperty('java.home')
-    buildType { org.mikeneck.graalvm.BuildTypeSelector build ->
-        build.executable {
-            main = project.mainClassName
-        }
-    }
-    executableName = project.name
-    outputDirectory = file("$buildDir/$nativeImageDirName")
+nativeBuild {
+    imageName = project.name
+    mainClass = project.mainClassName
+    verbose = true
+    fallback = false
 
-    arguments {
-        add '--no-fallback'
-        add '--initialize-at-run-time=org.lwjgl'
-        add '--native-image-info'
-        add '--verbose'
-        //add '-H:+TraceNativeToolUsage'
-        add "-H:TempDirectory=$buildDir/tmp/$nativeImageDirName"
-    }
+    buildArgs.add('--initialize-at-run-time=org.lwjgl')
+    buildArgs.add('--native-image-info')
+    buildArgs.add("-H:Path=$buildDir/$nativeImageDirName")
+    buildArgs.add("-H:TempDirectory=$buildDir/tmp/$nativeImageDirName")
 
-    if (currentPlatform == 'windows') {
-        finalizedBy removeUnneededDllFiles
-    }
+    useFatJar = false
 }
 
-generateNativeImageConfig {
-    enabled = false
+tasks.named("nativeBuild") {
+    //use the uber jar when long classpath becomes a problem in Windows:
+    //dependsOn uberJar
+    //classpathJar = uberJar.archiveFile
+    finalizedBy removeUnneededDllFiles
 }
 
