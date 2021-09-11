@@ -4,9 +4,9 @@
  */
 package org.lwjgl.demo.vulkan.raytracing;
 
-import static java.lang.ClassLoader.getSystemResourceAsStream;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.IntStream.range;
 import static org.joml.Math.*;
 import static org.lwjgl.demo.vulkan.VKUtil.*;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -27,33 +27,27 @@ import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.VK11.*;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.*;
 import java.util.*;
 import java.util.function.Consumer;
 
 import org.joml.*;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.demo.util.*;
-import org.lwjgl.demo.util.GreedyMeshingNoAo.Face;
-import org.lwjgl.demo.util.MagicaVoxelLoader.Material;
-import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.demo.util.DynamicByteBuffer;
 import org.lwjgl.system.*;
 import org.lwjgl.util.vma.*;
 import org.lwjgl.vulkan.*;
 
 /**
- * Draws a MagicaVoxel scene containing reflective materials (windows).
+ * VK_KHR_ray_tracing_pipeline and VK_KHR_acceleration_structure demo that draws a sphere
+ * using a custom intersection shader.
  *
  * @author Kai Burjack
  */
-public class ReflectiveMagicaVoxel {
+public class SimpleSphere {
 
-    private static final int VERTICES_PER_FACE = 4;
-    private static final int INDICES_PER_FACE = 6;
-    private static final int BITS_FOR_POSITIONS = 7; // <- allow for a position maximum of 128
-    private static final int POSITION_SCALE = 1 << BITS_FOR_POSITIONS;
-    private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("debug", "false"));
+    private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("debug", "true"));
     static {
         if (DEBUG) {
             /* When we are in debug mode, enable all LWJGL debug flags */
@@ -82,51 +76,25 @@ public class ReflectiveMagicaVoxel {
     private static long[] imageAcquireSemaphores;
     private static long[] renderCompleteSemaphores;
     private static long[] renderFences;
-    private static long queryPool;
     private static final Map<Long, Runnable> waitingFenceActions = new HashMap<>();
-    private static Geometry geometry;
     private static AccelerationStructure blas, tlas;
     private static RayTracingPipeline rayTracingPipeline;
     private static AllocationAndBuffer[] rayTracingUbos;
     private static AllocationAndBuffer sbt;
-    private static AllocationAndBuffer materialsBuffer;
     private static DescriptorSets rayTracingDescriptorSets;
     private static final Matrix4f projMatrix = new Matrix4f();
-    private static final Matrix4x3f viewMatrix = new Matrix4x3f().setLookAt(-40, 50, 140, 90, -10, 40, 0, 1, 0);
+    private static final Matrix4x3f viewMatrix = new Matrix4x3f();
     private static final Matrix4f invProjMatrix = new Matrix4f();
     private static final Matrix4x3f invViewMatrix = new Matrix4x3f();
     private static final Vector3f tmpv3 = new Vector3f();
-    private static final Material[] materials = new Material[512];
-    private static final boolean[] keydown = new boolean[GLFW_KEY_LAST + 1];
-    private static boolean mouseDown;
-    private static int mouseX, mouseY;
-
-    private static void onCursorPos(long window, double x, double y) {
-        if (mouseDown) {
-            float deltaX = (float) x - mouseX;
-            float deltaY = (float) y - mouseY;
-            viewMatrix.rotateLocalY(deltaX * 0.004f);
-            viewMatrix.rotateLocalX(deltaY * 0.004f);
-        }
-        mouseX = (int) x;
-        mouseY = (int) y;
-    }
 
     private static void onKey(long window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_ESCAPE)
             glfwSetWindowShouldClose(window, true);
-        if (key >= 0)
-            keydown[key] = action == GLFW_PRESS || action == GLFW_REPEAT;
-    }
-
-    private static void onMouseButton(long window, int button, int action, int mods) {
-        mouseDown = action == GLFW_PRESS;
     }
 
     private static void registerWindowCallbacks(long window) {
-        glfwSetKeyCallback(window, ReflectiveMagicaVoxel::onKey);
-        glfwSetCursorPosCallback(window, ReflectiveMagicaVoxel::onCursorPos);
-        glfwSetMouseButtonCallback(window, ReflectiveMagicaVoxel::onMouseButton);
+        glfwSetKeyCallback(window, SimpleSphere::onKey);
     }
 
     private static class WindowAndCallbacks {
@@ -262,7 +230,11 @@ public class ReflectiveMagicaVoxel {
             VkExtensionProperties.Buffer pProperties = VkExtensionProperties.malloc(propertyCount, stack);
             _CHECK_(vkEnumerateInstanceExtensionProperties((ByteBuffer) null, pPropertyCount, pProperties),
                     "Could not enumerate instance extensions");
-            return pProperties.stream().map(VkExtensionProperties::extensionNameString).collect(toList());
+            List<String> res = new ArrayList<>(propertyCount);
+            for (int i = 0; i < propertyCount; i++) {
+                res.add(pProperties.get(i).extensionNameString());
+            }
+            return res;
         }
     }
 
@@ -310,9 +282,7 @@ public class ReflectiveMagicaVoxel {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        GLFWVidMode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        long window = glfwCreateWindow(mode.width(), mode.height(), "Hello, reflective MagicaVoxel!", NULL, NULL);
+        long window = glfwCreateWindow(1200, 800, "Hello, ray traced sphere!", NULL, NULL);
         registerWindowCallbacks(window);
         int w, h;
         try (MemoryStack stack = stackPush()) {
@@ -349,9 +319,7 @@ public class ReflectiveMagicaVoxel {
                     VkDebugUtilsMessengerCreateInfoEXT
                         .calloc(stack)
                         .sType(VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT)
-                        .messageSeverity(VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
-                                         VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
-                                         VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                        .messageSeverity(VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
                                          VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
                         .messageType(VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
                                      VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
@@ -420,14 +388,10 @@ public class ReflectiveMagicaVoxel {
             for (int i = 0; i < physicalDeviceCount; i++) {
                 VkPhysicalDevice dev = new VkPhysicalDevice(pPhysicalDevices.get(i), instance);
                 // Check if the device supports all needed features
-                VkPhysicalDevice16BitStorageFeatures bitStorageFeatures = VkPhysicalDevice16BitStorageFeatures
-                        .malloc(stack)
-                        .sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES)
-                        .pNext(NULL);
                 VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures = VkPhysicalDeviceAccelerationStructureFeaturesKHR
                         .malloc(stack)
                         .sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR)
-                        .pNext(bitStorageFeatures.address());
+                        .pNext(NULL);
                 VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayTracingPipelineFeatures = VkPhysicalDeviceRayTracingPipelineFeaturesKHR
                         .malloc(stack)
                         .sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR)
@@ -445,13 +409,12 @@ public class ReflectiveMagicaVoxel {
                 // If any of the above is not supported, we continue with the next physical device
                 if (!bufferDeviceAddressFeatures.bufferDeviceAddress() ||
                     !rayTracingPipelineFeatures.rayTracingPipeline() ||
-                    !accelerationStructureFeatures.accelerationStructure() ||
-                    !bitStorageFeatures.storageBuffer16BitAccess())
+                    !accelerationStructureFeatures.accelerationStructure())
                     continue;
 
-                // Check if the physical device supports the VK_FORMAT_R16G16B16_UNORM vertexFormat for acceleration structure geometry
+                // Check if the physical device supports the VK_FORMAT_R32G32B32_SFLOAT vertexFormat for acceleration structure geometry
                 VkFormatProperties formatProperties = VkFormatProperties.malloc(stack);
-                vkGetPhysicalDeviceFormatProperties(dev, VK_FORMAT_R16G16B16_UNORM, formatProperties);
+                vkGetPhysicalDeviceFormatProperties(dev, VK_FORMAT_R32G32B32_SFLOAT, formatProperties);
                 if ((formatProperties.bufferFeatures() & VK_FORMAT_FEATURE_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR) == 0)
                     continue;
 
@@ -498,14 +461,9 @@ public class ReflectiveMagicaVoxel {
             if (DEBUG) {
                 ppEnabledLayerNames = stack.pointers(stack.UTF8("VK_LAYER_KHRONOS_validation"));
             }
-            VkPhysicalDevice16BitStorageFeaturesKHR bitStorageFeatures = VkPhysicalDevice16BitStorageFeaturesKHR
-                    .calloc(stack)
-                    .sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES)
-                    .storageBuffer16BitAccess(true);
             VkPhysicalDeviceBufferDeviceAddressFeaturesKHR bufferDeviceAddressFeatures = VkPhysicalDeviceBufferDeviceAddressFeaturesKHR
                     .calloc(stack)
                     .sType(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_KHR)
-                    .pNext(bitStorageFeatures.address())
                     .bufferDeviceAddress(true);
             VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexingFeatures = VkPhysicalDeviceDescriptorIndexingFeaturesEXT
                     .calloc(stack)
@@ -549,7 +507,7 @@ public class ReflectiveMagicaVoxel {
             VkExtensionProperties.Buffer pProperties = VkExtensionProperties.malloc(propertyCount, stack);
             _CHECK_(vkEnumerateDeviceExtensionProperties(deviceAndQueueFamilies.physicalDevice, (ByteBuffer) null, pPropertyCount, pProperties),
                     "Failed to enumerate the device extensions");
-            return pProperties.stream().map(VkExtensionProperties::extensionNameString).collect(toList());
+            return range(0, propertyCount).mapToObj(i -> pProperties.get(i).extensionNameString()).collect(toList());
         }
     }
 
@@ -608,28 +566,6 @@ public class ReflectiveMagicaVoxel {
         return ret;
     }
 
-    private static int determineBestPresentMode() {
-        try (MemoryStack stack = stackPush()) {
-            IntBuffer pPresentModeCount = stack.mallocInt(1);
-            _CHECK_(vkGetPhysicalDeviceSurfacePresentModesKHR(deviceAndQueueFamilies.physicalDevice, surface, pPresentModeCount, null),
-                    "Failed to get presentation modes count");
-            int presentModeCount = pPresentModeCount.get(0);
-            IntBuffer pPresentModes = stack.mallocInt(presentModeCount);
-            _CHECK_(vkGetPhysicalDeviceSurfacePresentModesKHR(deviceAndQueueFamilies.physicalDevice, surface, pPresentModeCount, pPresentModes),
-                    "Failed to get presentation modes");
-            int presentMode = VK_PRESENT_MODE_FIFO_KHR; // <- FIFO is _always_ supported, by definition
-            for (int i = 0; i < presentModeCount; i++) {
-                int mode = pPresentModes.get(i);
-                if (mode == VK_PRESENT_MODE_MAILBOX_KHR) {
-                    // we prefer mailbox over fifo
-                    presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
-                    break;
-                }
-            }
-            return presentMode;
-        }
-    }
-
     private static Swapchain createSwapchain() {
         try (MemoryStack stack = stackPush()) {
             VkSurfaceCapabilitiesKHR pSurfaceCapabilities = VkSurfaceCapabilitiesKHR
@@ -659,7 +595,7 @@ public class ReflectiveMagicaVoxel {
                 .imageSharingMode(VK_SHARING_MODE_EXCLUSIVE)
                 .preTransform(pSurfaceCapabilities.currentTransform())
                 .compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
-                .presentMode(determineBestPresentMode())
+                .presentMode(VK_PRESENT_MODE_FIFO_KHR)
                 .clipped(true)
                 .oldSwapchain(swapchain != null ? swapchain.swapchain : VK_NULL_HANDLE);
             LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
@@ -863,17 +799,12 @@ public class ReflectiveMagicaVoxel {
     }
 
     private static class Geometry {
-        private final AllocationAndBuffer positions;
-        private final AllocationAndBuffer indices;
-        private final int numFaces;
-        private Geometry(AllocationAndBuffer positions, AllocationAndBuffer indices, int numFaces) {
-            this.positions = positions;
-            this.indices = indices;
-            this.numFaces = numFaces;
+        private final AllocationAndBuffer aabbs;
+        private Geometry(AllocationAndBuffer aabbs) {
+            this.aabbs = aabbs;
         }
         private void free() {
-            positions.free();
-            indices.free();
+            aabbs.free();
         }
     }
 
@@ -995,35 +926,15 @@ public class ReflectiveMagicaVoxel {
         return ret;
     }
 
-    private static Geometry createGeometry() throws IOException {
-        VoxelField voxelField = buildVoxelField();
-        ArrayList<Face> faces = buildFaces(voxelField);
-        ByteBuffer positionsAndTypes = memAlloc(Short.BYTES * 4 * faces.size() * VERTICES_PER_FACE);
-        ByteBuffer indices = memAlloc(Short.BYTES * faces.size() * INDICES_PER_FACE);
-        triangulate(faces, positionsAndTypes.asShortBuffer(), indices.asShortBuffer());
-
-        AllocationAndBuffer positionsBuffer = createBuffer(
+    private static Geometry createGeometry() {
+        DynamicByteBuffer aabbs = new DynamicByteBuffer();
+        aabbs.putFloat(-1).putFloat(-1).putFloat(-1);
+        aabbs.putFloat(+1).putFloat(+1).putFloat(+1);
+        AllocationAndBuffer aabbsBuffer = createBuffer(
                 VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR |
-                VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
-                VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR, positionsAndTypes, Short.BYTES, null);
-        memFree(positionsAndTypes);
-        AllocationAndBuffer indicesBuffer = createBuffer(
-                VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR |
-                VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
-                VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR, indices, Short.BYTES, null);
-        memFree(indices);
-
-        return new Geometry(positionsBuffer, indicesBuffer, faces.size());
-    }
-
-    private static AllocationAndBuffer createMaterialsBuffer() {
-        ByteBuffer bb = memAlloc(materials.length * Integer.BYTES);
-        for (Material m : materials)
-            bb.putInt(m != null ? m.color : 0);
-        bb.flip();
-        AllocationAndBuffer buf = createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, bb, Integer.BYTES, null);
-        memFree(bb);
-        return buf;
+                VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR, memByteBuffer(aabbs.addr, aabbs.pos), Float.BYTES, null);
+        aabbs.free();
+        return new Geometry(aabbsBuffer);
     }
 
     private static VkDeviceOrHostAddressKHR deviceAddress(MemoryStack stack, long buffer, long alignment) {
@@ -1072,24 +983,19 @@ public class ReflectiveMagicaVoxel {
                         .calloc(1, stack)
                         .sType(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR)
                         .type(VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR)
-                        .flags(VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR | 
-                               VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_KHR)
+                        .flags(VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR)
                         .geometryCount(1)
                         .pGeometries(VkAccelerationStructureGeometryKHR
                                 .calloc(1, stack)
                                 .sType(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR)
-                                .geometryType(VK_GEOMETRY_TYPE_TRIANGLES_KHR)
+                                .geometryType(VK_GEOMETRY_TYPE_AABBS_KHR)
                                 .geometry(VkAccelerationStructureGeometryDataKHR
                                         .calloc(stack)
-                                        .triangles(VkAccelerationStructureGeometryTrianglesDataKHR
+                                        .aabbs(VkAccelerationStructureGeometryAabbsDataKHR
                                                 .calloc(stack)
-                                                .sType(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR)
-                                                .vertexFormat(VK_FORMAT_R16G16B16_UNORM)
-                                                .vertexData(deviceAddressConst(stack, geometry.positions.buffer, Short.BYTES))
-                                                .vertexStride(4 * Short.BYTES)
-                                                .maxVertex(geometry.numFaces * VERTICES_PER_FACE)
-                                                .indexType(VK_INDEX_TYPE_UINT16)
-                                                .indexData(deviceAddressConst(stack, geometry.indices.buffer, Short.BYTES))))
+                                                .sType(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR)
+                                                .data(deviceAddressConst(stack, geometry.aabbs.buffer, Float.BYTES))
+                                                .stride(6 * Float.BYTES)))
                                 .flags(VK_GEOMETRY_OPAQUE_BIT_KHR));
 
             // Query necessary sizes for the acceleration structure buffer and for the scratch buffer
@@ -1101,7 +1007,7 @@ public class ReflectiveMagicaVoxel {
                     device,
                     VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR,
                     pInfos.get(0),
-                    stack.ints(geometry.numFaces * 2),
+                    stack.ints(1),
                     buildSizesInfo);
 
             // Create a buffer that will hold the final BLAS
@@ -1155,94 +1061,20 @@ public class ReflectiveMagicaVoxel {
                     stack.pointers(
                             VkAccelerationStructureBuildRangeInfoKHR
                             .calloc(1, stack)
-                            .primitiveCount(geometry.numFaces * 2)));
-
-            // barrier for compressing the BLAS
-            vkCmdPipelineBarrier(cmdBuf,
-                    VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR,
-                    VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR,
-                    0,
-                    VkMemoryBarrier
-                        .calloc(1, stack)
-                        .sType(VK_STRUCTURE_TYPE_MEMORY_BARRIER)
-                        .srcAccessMask(VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR)
-                        .dstAccessMask(VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR | VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR),
-                    null, null);
-
-            // issue query for compacted size
-            vkCmdResetQueryPool(cmdBuf, queryPool, 0, 1);
-            vkCmdWriteAccelerationStructuresPropertiesKHR(
-                    cmdBuf,
-                    pAccelerationStructure,
-                    VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR,
-                    queryPool,
-                    0);
-
-            // submit command buffer and wait for command buffer completion
-            long fence = submitCommandBuffer(cmdBuf, true, null);
-            waitForFenceAndDestroy(fence);
-            vkFreeCommandBuffers(device, commandPoolTransient, cmdBuf);
-
-            // read-back compacted size
-            LongBuffer compactedSize = stack.mallocLong(1);
-            vkGetQueryPoolResults(device, queryPool, 0, 1, compactedSize, Long.BYTES, 
-                    VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WAIT_BIT);
-
-            // Create a buffer that will hold the compacted BLAS
-            AllocationAndBuffer accelerationStructureCompactedBuffer = createBuffer(
-                    VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR |
-                    VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR,
-                    compactedSize.get(0), null, 256, null);
-
-            // create compacted acceleration structure
-            LongBuffer pAccelerationStructureCompacted = stack.mallocLong(1);
-            vkCreateAccelerationStructureKHR(device, VkAccelerationStructureCreateInfoKHR
-                    .calloc(stack)
-                    .sType(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR)
-                    .buffer(accelerationStructureCompactedBuffer.buffer)
-                    .size(compactedSize.get(0))
-                    .type(VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR), null, pAccelerationStructureCompacted);
-
-            // issue copy command
-            VkCommandBuffer cmdBuf2 = createCommandBuffer(commandPoolTransient);
-            vkCmdCopyAccelerationStructureKHR(
-                    cmdBuf2,
-                    VkCopyAccelerationStructureInfoKHR
-                        .calloc(stack)
-                        .sType(VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_INFO_KHR)
-                        .src(pAccelerationStructure.get(0))
-                        .dst(pAccelerationStructureCompacted.get(0))
-                        .mode(VK_COPY_ACCELERATION_STRUCTURE_MODE_COMPACT_KHR));
-
-            // barrier to let TLAS build wait for BLAS compressed copy
-            vkCmdPipelineBarrier(cmdBuf2,
-                    VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR,
-                    VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR,
-                    0,
-                    VkMemoryBarrier
-                        .calloc(1, stack)
-                        .sType(VK_STRUCTURE_TYPE_MEMORY_BARRIER)
-                        .srcAccessMask(VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR)
-                        .dstAccessMask(VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR | VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR),
-                    null, null);
+                            .primitiveCount(1)));
 
             // Finally submit command buffer and register callback when fence signals to 
             // dispose of resources
-            long accelerationStructure = pAccelerationStructure.get(0);
-            submitCommandBuffer(cmdBuf2, true, () -> {
-                vkDestroyAccelerationStructureKHR(device, accelerationStructure, null);
-                accelerationStructureBuffer.free();
-                vkFreeCommandBuffers(device, commandPoolTransient, cmdBuf2);
+            submitCommandBuffer(cmdBuf, true, () -> {
+                vkFreeCommandBuffers(device, commandPoolTransient, cmdBuf);
                 scratchBuffer.free();
+                // the BLAS is completely self-contained after build, so
+                // we can also free the geometry (vertex, index buffers), since
+                // we also don't access the geometry data in the shaders.
+                geometry.free();
             });
-
-            return new AccelerationStructure(pAccelerationStructureCompacted.get(0), accelerationStructureCompactedBuffer);
+            return new AccelerationStructure(pAccelerationStructure.get(0), accelerationStructureBuffer);
         }
-    }
-
-    private static void waitForFenceAndDestroy(long fence) {
-        _CHECK_(vkWaitForFences(device, fence, true, -1), "Failed to wait for fence");
-        vkDestroyFence(device, fence, null);
     }
 
     private static AccelerationStructure createTopLevelAccelerationStructure(AccelerationStructure blas) {
@@ -1262,7 +1094,7 @@ public class ReflectiveMagicaVoxel {
                     .flags(VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR)
                     .transform(VkTransformMatrixKHR
                             .calloc(stack)
-                            .matrix(new Matrix4x3f().scale(POSITION_SCALE).getTransposed(stack.mallocFloat(12))));
+                            .matrix(new Matrix4x3f().getTransposed(stack.mallocFloat(12))));
 
             // This instance data also needs to reside in a GPU buffer, so copy it
             AllocationAndBuffer instanceData = createBuffer(
@@ -1325,8 +1157,7 @@ public class ReflectiveMagicaVoxel {
             AllocationAndBuffer scratchBuffer = createBuffer(
                     VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR |
                     VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, buildSizesInfo.buildScratchSize(), null,
-                    deviceAndQueueFamilies.minAccelerationStructureScratchOffsetAlignment,
-                    null);
+                    deviceAndQueueFamilies.minAccelerationStructureScratchOffsetAlignment, null);
 
             // fill missing/remaining info into the build geometry info to
             // be able to build the TLAS instance.
@@ -1335,7 +1166,7 @@ public class ReflectiveMagicaVoxel {
                 .dstAccelerationStructure(pAccelerationStructure.get(0));
             VkCommandBuffer cmdBuf = createCommandBuffer(commandPoolTransient);
 
-            // insert barrier to let TLAS build wait for the instance data transfer from the staging buffer to the GPU
+            // Insert barrier to let TLAS build wait for the instance data transfer from the staging buffer to the GPU
             vkCmdPipelineBarrier(cmdBuf,
                     VK_PIPELINE_STAGE_TRANSFER_BIT, // <- copying of the instance data from the staging buffer to the GPU buffer
                     VK_PIPELINE_STAGE_ACCELERATION_STRUCTURE_BUILD_BIT_KHR, // <- accessing the buffer for acceleration structure build
@@ -1350,7 +1181,7 @@ public class ReflectiveMagicaVoxel {
                                 VK_ACCESS_SHADER_READ_BIT), // <- Accesses to input buffers for the build (vertex, index, transform, aabb, or instance data)
                     null, null);
 
-            // issue build command
+            // Issue build command
             vkCmdBuildAccelerationStructuresKHR(
                     cmdBuf,
                     pInfos,
@@ -1372,7 +1203,7 @@ public class ReflectiveMagicaVoxel {
                     null,
                     null);
 
-            // finally submit command buffer and register callback when fence signals to 
+            // Finally submit command buffer and register callback when fence signals to 
             // dispose of resources
             submitCommandBuffer(cmdBuf, true, () -> {
                 vkFreeCommandBuffers(device, commandPoolTransient, cmdBuf);
@@ -1387,7 +1218,7 @@ public class ReflectiveMagicaVoxel {
     }
 
     private static RayTracingPipeline createRayTracingPipeline() throws IOException {
-        int numDescriptors = 6;
+        int numDescriptors = 3;
         try (MemoryStack stack = stackPush()) {
             LongBuffer pSetLayout = stack.mallocLong(1);
             // create the descriptor set layout
@@ -1412,21 +1243,6 @@ public class ReflectiveMagicaVoxel {
                                         .descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
                                         .descriptorCount(1)
                                         .stageFlags(VK_SHADER_STAGE_RAYGEN_BIT_KHR))
-                                .apply(dslb -> dslb
-                                        .binding(3)
-                                        .descriptorType(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
-                                        .descriptorCount(1)
-                                        .stageFlags(VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR))
-                                .apply(dslb -> dslb
-                                        .binding(4)
-                                        .descriptorType(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
-                                        .descriptorCount(1)
-                                        .stageFlags(VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR))
-                                .apply(dslb -> dslb
-                                        .binding(5)
-                                        .descriptorType(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
-                                        .descriptorCount(1)
-                                        .stageFlags(VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR))
                                 .flip()),
                     null, pSetLayout),
                     "Failed to create descriptor set layout");
@@ -1437,10 +1253,10 @@ public class ReflectiveMagicaVoxel {
                         .pSetLayouts(pSetLayout), null, pPipelineLayout),
                     "Failed to create pipeline layout");
             VkPipelineShaderStageCreateInfo.Buffer pStages = VkPipelineShaderStageCreateInfo
-                    .calloc(3, stack);
+                    .calloc(4, stack);
 
             // load shaders
-            String pkg = ReflectiveMagicaVoxel.class.getName().toLowerCase().replace('.', '/') + "/";
+            String pkg = SimpleSphere.class.getName().toLowerCase().replace('.', '/') + "/";
             loadShader(pStages
                     .get(0)
                     .sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO), 
@@ -1453,6 +1269,10 @@ public class ReflectiveMagicaVoxel {
                     .get(2)
                     .sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO),
                     null, stack, device, pkg + "closesthit.glsl", VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR);
+            loadShader(pStages
+                    .get(3)
+                    .sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO),
+                    null, stack, device, pkg + "intersect.glsl", VK_SHADER_STAGE_INTERSECTION_BIT_KHR);
 
             VkRayTracingShaderGroupCreateInfoKHR.Buffer groups = VkRayTracingShaderGroupCreateInfoKHR
                     .calloc(3, stack);
@@ -1469,8 +1289,9 @@ public class ReflectiveMagicaVoxel {
                         g.type(VK_RAY_TRACING_SHADER_GROUP_TYPE_GENERAL_KHR)
                          .generalShader(1))
                   .apply(2, g ->
-                        g.type(VK_RAY_TRACING_SHADER_GROUP_TYPE_TRIANGLES_HIT_GROUP_KHR)
-                         .closestHitShader(2));
+                        g.type(VK_RAY_TRACING_SHADER_GROUP_TYPE_PROCEDURAL_HIT_GROUP_KHR)
+                         .closestHitShader(2)
+                         .intersectionShader(3));
             LongBuffer pPipelines = stack.mallocLong(1);
             _CHECK_(vkCreateRayTracingPipelinesKHR(device, VK_NULL_HANDLE, VK_NULL_HANDLE, VkRayTracingPipelineCreateInfoKHR
                         .calloc(1, stack)
@@ -1548,7 +1369,7 @@ public class ReflectiveMagicaVoxel {
             rayTracingDescriptorSets.free();
         }
         int numSets = swapchain.imageViews.length;
-        int numDescriptors = 6;
+        int numDescriptors = 3;
         try (MemoryStack stack = stackPush()) {
             LongBuffer pDescriptorPool = stack.mallocLong(1);
             _CHECK_(vkCreateDescriptorPool(device, VkDescriptorPoolCreateInfo
@@ -1564,15 +1385,6 @@ public class ReflectiveMagicaVoxel {
                                         .descriptorCount(numSets))
                                 .apply(2, dps -> dps
                                         .type(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-                                        .descriptorCount(numSets))
-                                .apply(3, dps -> dps
-                                        .type(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
-                                        .descriptorCount(numSets))
-                                .apply(4, dps -> dps
-                                        .type(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
-                                        .descriptorCount(numSets))
-                                .apply(5, dps -> dps
-                                        .type(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
                                         .descriptorCount(numSets)))
                         .maxSets(numSets), null, pDescriptorPool),
                     "Failed to create descriptor pool");
@@ -1621,54 +1433,10 @@ public class ReflectiveMagicaVoxel {
                                 .pBufferInfo(VkDescriptorBufferInfo
                                         .calloc(1, stack)
                                         .buffer(rayTracingUbos[idx].buffer)
-                                        .range(VK_WHOLE_SIZE)))
-                        .apply(wds -> wds
-                                .sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET)
-                                .descriptorType(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
-                                .dstBinding(3)
-                                .dstSet(pDescriptorSets.get(idx))
-                                .descriptorCount(1)
-                                .pBufferInfo(VkDescriptorBufferInfo
-                                        .calloc(1, stack)
-                                        .buffer(geometry.positions.buffer)
-                                        .range(VK_WHOLE_SIZE)))
-                        .apply(wds -> wds
-                                .sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET)
-                                .descriptorType(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
-                                .dstBinding(4)
-                                .dstSet(pDescriptorSets.get(idx))
-                                .descriptorCount(1)
-                                .pBufferInfo(VkDescriptorBufferInfo
-                                        .calloc(1, stack)
-                                        .buffer(geometry.indices.buffer)
-                                        .range(VK_WHOLE_SIZE)))
-                        .apply(wds -> wds
-                                .sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET)
-                                .descriptorType(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
-                                .dstBinding(5)
-                                .dstSet(pDescriptorSets.get(idx))
-                                .descriptorCount(1)
-                                .pBufferInfo(VkDescriptorBufferInfo
-                                        .calloc(1, stack)
-                                        .buffer(materialsBuffer.buffer)
                                         .range(VK_WHOLE_SIZE)));
             }
             vkUpdateDescriptorSets(device, writeDescriptorSet.flip(), null);
             return new DescriptorSets(pDescriptorPool.get(0), sets);
-        }
-    }
-
-    private static long createQueryPool() {
-        try (MemoryStack stack = stackPush()) {
-            LongBuffer pQueryPool = stack.mallocLong(1);
-            _CHECK_(vkCreateQueryPool(device,
-                    VkQueryPoolCreateInfo
-                        .calloc(stack)
-                        .sType(VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO)
-                        .queryCount(1)
-                        .queryType(VK_QUERY_TYPE_ACCELERATION_STRUCTURE_COMPACTED_SIZE_KHR),
-                    null, pQueryPool), "Failed to create query pool");
-            return pQueryPool.get(0);
         }
     }
 
@@ -1749,153 +1517,17 @@ public class ReflectiveMagicaVoxel {
         return buffers;
     }
 
-    private static void handleKeyboardInput(float dt) {
-        float factor = 10.0f;
-        if (keydown[GLFW_KEY_LEFT_SHIFT])
-            factor = 40.0f;
-        if (keydown[GLFW_KEY_W])
-            viewMatrix.translateLocal(0, 0, factor * dt);
-        if (keydown[GLFW_KEY_S])
-            viewMatrix.translateLocal(0, 0, -factor * dt);
-        if (keydown[GLFW_KEY_A])
-            viewMatrix.translateLocal(factor * dt, 0, 0);
-        if (keydown[GLFW_KEY_D])
-            viewMatrix.translateLocal(-factor * dt, 0, 0);
-        if (keydown[GLFW_KEY_Q])
-            viewMatrix.rotateLocalZ(-factor * dt);
-        if (keydown[GLFW_KEY_E])
-            viewMatrix.rotateLocalZ(factor * dt);
-        if (keydown[GLFW_KEY_LEFT_CONTROL])
-            viewMatrix.translateLocal(0, factor * dt, 0);
-        if (keydown[GLFW_KEY_SPACE])
-            viewMatrix.translateLocal(0, -factor * dt, 0);
-    }
-
-    private static void update(float dt) {
-        handleKeyboardInput(dt);
-        viewMatrix.withLookAtUp(0, 1, 0);
-        viewMatrix.invert(invViewMatrix);
-        projMatrix.scaling(1, -1, 1).perspective((float) toRadians(45.0f), (float) windowAndCallbacks.width / windowAndCallbacks.height, 0.1f, 1000.0f, true);
-        projMatrix.invert(invProjMatrix);
-    }
-
     private static void updateRayTracingUniformBufferObject(int idx) {
+        projMatrix.scaling(1, -1, 1).perspective((float) toRadians(45.0f), (float) windowAndCallbacks.width / windowAndCallbacks.height, 0.1f, 100.0f, true);
+        viewMatrix.setLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+        projMatrix.invert(invProjMatrix);
+        viewMatrix.invert(invViewMatrix);
         invProjMatrix.transformProject(-1, -1, 0, 1, tmpv3).get(rayTracingUbos[idx].mapped);
         invProjMatrix.transformProject(+1, -1, 0, 1, tmpv3).get(4*Float.BYTES, rayTracingUbos[idx].mapped);
         invProjMatrix.transformProject(-1, +1, 0, 1, tmpv3).get(8*Float.BYTES, rayTracingUbos[idx].mapped);
         invProjMatrix.transformProject(+1, +1, 0, 1, tmpv3).get(12*Float.BYTES, rayTracingUbos[idx].mapped);
         invViewMatrix.get4x4(Float.BYTES * 16, rayTracingUbos[idx].mapped);
         rayTracingUbos[idx].flushMapped(0, Float.BYTES * 16 * 2);
-    }
-
-    private static int idx(int x, int y, int z, int width, int depth) {
-        return (x + 1) + (width + 2) * ((z + 1) + (y + 1) * (depth + 2));
-    }
-
-    private static class VoxelField {
-        int ny, py, w, d;
-        byte[] field;
-    }
-
-    private static VoxelField buildVoxelField() throws IOException {
-        Vector3i dims = new Vector3i();
-        Vector3i min = new Vector3i(Integer.MAX_VALUE);
-        Vector3i max = new Vector3i(Integer.MIN_VALUE);
-        byte[] field = new byte[(256 + 2) * (256 + 2) * (256 + 2)];
-        try (InputStream is = getSystemResourceAsStream("org/lwjgl/demo/models/mikelovesrobots_mmmm/scene_house5.vox");
-             BufferedInputStream bis = new BufferedInputStream(is)) {
-            new MagicaVoxelLoader().read(bis, new MagicaVoxelLoader.Callback() {
-                public void voxel(int x, int y, int z, byte c) {
-                    y = dims.z - y - 1;
-                    field[idx(x, z, y, dims.x, dims.z)] = c;
-                    min.set(min(min.x, x), min(min.y, z), min(min.z, y));
-                    max.set(max(max.x, x), max(max.y, z), max(max.z, y));
-                }
-                public void size(int x, int y, int z) {
-                    dims.x = x;
-                    dims.y = z;
-                    dims.z = y;
-                }
-                public void paletteMaterial(int i, Material mat) {
-                    materials[i] = mat;
-                }
-            });
-        }
-        VoxelField res = new VoxelField();
-        res.w = dims.x;
-        res.d = dims.z;
-        res.ny = min.y;
-        res.py = max.y;
-        res.field = field;
-        return res;
-    }
-
-    private static ArrayList<Face> buildFaces(VoxelField vf) {
-        GreedyMeshingNoAo gm = new GreedyMeshingNoAo(0, vf.ny, 0, vf.py, vf.w, vf.d);
-        ArrayList<Face> faces = new ArrayList<>();
-        gm.mesh(vf.field, faces);
-        return faces;
-    }
-
-    public static void triangulate(List<Face> faces, ShortBuffer positionsAndTypes, ShortBuffer indices) {
-        for (int i = 0; i < faces.size(); i++) {
-            Face f = faces.get(i);
-            switch (f.s >>> 1) {
-            case 0:
-                generatePositionsAndTypesX(f, positionsAndTypes);
-                break;
-            case 1:
-                generatePositionsAndTypesY(f, positionsAndTypes);
-                break;
-            case 2:
-                generatePositionsAndTypesZ(f, positionsAndTypes);
-                break;
-            }
-            generateIndices(f, i, indices);
-        }
-    }
-
-    private static boolean isPositiveSide(int side) {
-        return (side & 1) != 0;
-    }
-
-    private static void generateIndices(Face f, int i, ShortBuffer indices) {
-        if (isPositiveSide(f.s))
-            generateIndicesPositive(i, indices);
-        else
-            generateIndicesNegative(i, indices);
-    }
-
-    private static void generateIndicesNegative(int i, ShortBuffer indices) {
-        indices.put((short) ((i << 2) + 3)).put((short) ((i << 2) + 1)).put((short) ((i << 2) + 2))
-               .put((short) ((i << 2) + 1)).put((short) (i << 2)).put((short) ((i << 2) + 2));
-    }
-    private static void generateIndicesPositive(int i, ShortBuffer indices) {
-        indices.put((short) ((i << 2) + 3)).put((short) ((i << 2) + 2)).put((short) ((i << 2) + 1))
-               .put((short) ((i << 2) + 2)).put((short) (i << 2)).put((short) ((i << 2) + 1));
-    }
-
-    private static void generatePositionsAndTypesZ(Face f, ShortBuffer positions) {
-        positions.put(u16(f.u0)).put(u16(f.v0)).put(u16(f.p)).put((short) (f.v & 0xFF | f.s << 8));
-        positions.put(u16(f.u1)).put(u16(f.v0)).put(u16(f.p)).put((short) (f.v & 0xFF | f.s << 8));
-        positions.put(u16(f.u0)).put(u16(f.v1)).put(u16(f.p)).put((short) (f.v & 0xFF | f.s << 8));
-        positions.put(u16(f.u1)).put(u16(f.v1)).put(u16(f.p)).put((short) (f.v & 0xFF | f.s << 8));
-    }
-    private static void generatePositionsAndTypesY(Face f, ShortBuffer positions) {
-        positions.put(u16(f.v0)).put(u16(f.p)).put(u16(f.u0)).put((short) (f.v & 0xFF | f.s << 8));
-        positions.put(u16(f.v0)).put(u16(f.p)).put(u16(f.u1)).put((short) (f.v & 0xFF | f.s << 8));
-        positions.put(u16(f.v1)).put(u16(f.p)).put(u16(f.u0)).put((short) (f.v & 0xFF | f.s << 8));
-        positions.put(u16(f.v1)).put(u16(f.p)).put(u16(f.u1)).put((short) (f.v & 0xFF | f.s << 8));
-    }
-    private static void generatePositionsAndTypesX(Face f, ShortBuffer positions) {
-        positions.put(u16(f.p)).put(u16(f.u0)).put(u16(f.v0)).put((short) (f.v & 0xFF | f.s << 8));
-        positions.put(u16(f.p)).put(u16(f.u1)).put(u16(f.v0)).put((short) (f.v & 0xFF | f.s << 8));
-        positions.put(u16(f.p)).put(u16(f.u0)).put(u16(f.v1)).put((short) (f.v & 0xFF | f.s << 8));
-        positions.put(u16(f.p)).put(u16(f.u1)).put(u16(f.v1)).put((short) (f.v & 0xFF | f.s << 8));
-    }
-
-    private static short u16(short v) {
-        return (short) (v << Short.SIZE - BITS_FOR_POSITIONS);
     }
 
     private static void init() throws IOException {
@@ -1920,9 +1552,7 @@ public class ReflectiveMagicaVoxel {
         swapchain = createSwapchain();
         commandPool = createCommandPool(0);
         commandPoolTransient = createCommandPool(VK_COMMAND_POOL_CREATE_TRANSIENT_BIT);
-        queryPool = createQueryPool();
-        geometry = createGeometry();
-        materialsBuffer = createMaterialsBuffer();
+        Geometry geometry = createGeometry();
         blas = createBottomLevelAccelerationStructure(geometry);
         tlas = createTopLevelAccelerationStructure(blas);
         rayTracingUbos = createUniformBufferObjects(2 * 16 * Float.BYTES);
@@ -1934,15 +1564,11 @@ public class ReflectiveMagicaVoxel {
     }
 
     private static void runOnRenderThread() {
-        long lastTime = System.nanoTime();
         try (MemoryStack stack = stackPush()) {
             IntBuffer pImageIndex = stack.mallocInt(1);
             int idx = 0;
             boolean needRecreate = false;
             while (!glfwWindowShouldClose(windowAndCallbacks.window)) {
-                long thisTime = System.nanoTime();
-                float dt = (thisTime - lastTime) / 1E9f;
-                lastTime = thisTime;
                 updateFramebufferSize();
                 if (!isWindowRenderable())
                     continue;
@@ -1955,7 +1581,6 @@ public class ReflectiveMagicaVoxel {
                 }
                 _CHECK_(vkWaitForFences(device, renderFences[idx], true, Long.MAX_VALUE), "Failed to wait for fence");
                 _CHECK_(vkResetFences(device, renderFences[idx]), "Failed to reset fence");
-                update(dt);
                 updateRayTracingUniformBufferObject(idx);
                 if (!acquireSwapchainImage(pImageIndex, idx)) {
                     needRecreate = true;
@@ -1977,14 +1602,11 @@ public class ReflectiveMagicaVoxel {
         rayTracingPipeline.free();
         tlas.free();
         blas.free();
-        materialsBuffer.free();
-        geometry.free();
         for (int i = 0; i < swapchain.imageViews.length; i++) {
             vkDestroySemaphore(device, imageAcquireSemaphores[i], null);
             vkDestroySemaphore(device, renderCompleteSemaphores[i], null);
             vkDestroyFence(device, renderFences[i], null);
         }
-        vkDestroyQueryPool(device, queryPool, null);
         vkDestroyCommandPool(device, commandPoolTransient, null);
         vkDestroyCommandPool(device, commandPool, null);
         swapchain.free();
@@ -2000,7 +1622,7 @@ public class ReflectiveMagicaVoxel {
 
     public static void main(String[] args) throws InterruptedException, IOException {
         init();
-        Thread updateAndRenderThread = new Thread(ReflectiveMagicaVoxel::runOnRenderThread);
+        Thread updateAndRenderThread = new Thread(SimpleSphere::runOnRenderThread);
         updateAndRenderThread.start();
         runWndProcLoop();
         updateAndRenderThread.join();
