@@ -29,7 +29,7 @@ The configuration files were generated when running the demos in standard JVM wi
 which tracks all usages of dynamic features of an execution of the demos
 and writes the info to the configuration files.
 Usage of the agent is contained in the Gradle build script [(line 134)](build.gradle#L134),
-or in the Maven build script [(line 168)](pom.xml#L168), which can be turned on (i.e. uncommented)
+or in the Maven build script [(line 171)](pom.xml#L171), which can be turned on (i.e. uncommented)
 and the demos are re-run to update the configuration files, if need be.
 
 The above agent is not perfect; it sometimes misses some classes referenced via reflection
@@ -65,11 +65,11 @@ The above tasks can use any standard JDK 11+.
 To generate native executable, GraalVM 21+ need be set up as mentioned in
 *GraalVM pre-requisites* section above.
 
-Once GraalVM is set up and available in the path, run the `nativeBuild` task:
+Once GraalVM is set up and available in the path, run the `nativeCompile` task:
 
-	gradlew nativeBuild
+	gradlew nativeCompile
 
-The `nativeBuild` task would take a while to compile all demo source code and
+The `nativeCompile` task would take a while to compile all demo source code and
 link them with the LWJGL libraries into an executable file.
 The resulting `lwjgl3-demos` file is (in Linux):
 
