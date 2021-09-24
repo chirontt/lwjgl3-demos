@@ -14,7 +14,7 @@
         <lwjgl.version>${project.version}</lwjgl.version>
         <swt.maven.version>3.105.3</swt.maven.version> <!-- contains Eclipse SWT 4.6.2.9 software -->
         <joml.version>1.10.3-SNAPSHOT</joml.version>
-        <native.maven.plugin.version>0.9.4</native.maven.plugin.version>
+        <native.maven.plugin.version>0.9.5</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
         <graalvm.version>21.2.0</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
@@ -218,7 +218,7 @@
                             <shadedClassifierName>no-deps-${platform}</shadedClassifierName>
                             <filters>
                                 <filter>
-                                    <!-- Exclude files that sign a jar -->
+                                    <!-- exclude files that sign a jar -->
                                     <artifact>*:*</artifact>
                                     <excludes>
                                         <exclude>META-INF/*.SF</exclude>
@@ -287,7 +287,7 @@
                     </classpath -->
                 </configuration>
             </plugin>
-            <!-- remove unneeded .dll/.txt files -->
+            <!-- some cleanup tasks using the Ant tool -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -303,6 +303,15 @@
                 </executions>
                 <configuration>
                     <target>
+                        <!-- add the Main-Class attribute to the shaded uber jar's manifest -->
+                        <jar destfile="${project.build.directory}/${project.artifactId}-${project.version}-no-deps-${platform}.jar"
+                             update="true">
+                            <manifest>
+                                <attribute name="Main-Class"
+                                           value="${exec.mainClass}"/>
+                            </manifest>
+                        </jar>
+                        <!-- move unneeded .dll/.txt files created by the native-image build -->
                         <move todir="${project.build.directory}/tmp/${native.image.dir.name}">
                             <fileset dir="${project.build.directory}/${native.image.dir.name}">
                                 <include name="*.dll"/>

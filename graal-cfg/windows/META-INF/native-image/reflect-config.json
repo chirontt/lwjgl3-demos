@@ -893,6 +893,14 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.vulkan.raytracing.SignedDistanceCubes",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.vulkan.raytracing.SimpleSphere",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.vulkan.raytracing.SimpleTriangle",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -2131,6 +2139,28 @@
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceRayTracingPropertiesNV",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkPhysicalDeviceScalarBlockLayoutFeaturesEXT",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features",
   "allDeclaredFields":true,
   "allPublicFields":true,
   "allDeclaredMethods":true,

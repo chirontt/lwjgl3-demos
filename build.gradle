@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.4'
+    id 'org.graalvm.buildtools.native' version '0.9.5'
 }
 
 wrapper {
@@ -14,7 +14,7 @@ version = '3.3.0-SNAPSHOT'
 
 ext {
     lwjglVersion = project.version
-    jomlVersion = '1.10.2'
+    jomlVersion = '1.10.3-SNAPSHOT'
     swtMavenVersion = '3.105.3'  //contains Eclipse SWT 4.6.2.9 software
     graalvmVersion = '21.2.0'
 
@@ -173,7 +173,7 @@ task uberJar(type: Jar) {
     duplicatesStrategy 'exclude'
 }
 
-//remove unneeded .dll files
+//remove unneeded .dll/.txt files
 task removeUnneededDllFiles {
     doLast {
         ant.move(todir: "$buildDir/tmp/$nativeImageDirName") {
@@ -185,21 +185,25 @@ task removeUnneededDllFiles {
     }
 }
 
-nativeBuild {
-    imageName = project.name
-    mainClass = project.mainClassName
-    verbose = true
-    fallback = false
+graalvmNative {
+    binaries {
+        main {
+            imageName = project.name
+            mainClass = project.mainClassName
+            verbose = true
+            fallback = false
 
-    buildArgs.add('--initialize-at-run-time=org.lwjgl')
-    buildArgs.add('--native-image-info')
-    buildArgs.add("-H:Path=$buildDir/$nativeImageDirName")
-    buildArgs.add("-H:TempDirectory=$buildDir/tmp/$nativeImageDirName")
+            buildArgs.add('--initialize-at-run-time=org.lwjgl')
+            buildArgs.add('--native-image-info')
+            buildArgs.add("-H:Path=$buildDir/$nativeImageDirName")
+            buildArgs.add("-H:TempDirectory=$buildDir/tmp/$nativeImageDirName")
 
-    useFatJar = false
+            useFatJar = false
+        }
+    }
 }
 
-tasks.named("nativeBuild") {
+tasks.named("nativeCompile") {
     //use the uber jar when long classpath becomes a problem in Windows:
     //dependsOn uberJar
     //classpathJar = uberJar.archiveFile
