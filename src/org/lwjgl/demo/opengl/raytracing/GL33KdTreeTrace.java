@@ -39,11 +39,11 @@ public class GL33KdTreeTrace {
   private int rayTracingProgram;
   private int camUniform;
   private Matrix4f pMat = new Matrix4f();
-  private Matrix4f vMat = new Matrix4f().lookAt(70, 60, 180, 60, 20, 80, 0, 1, 0);
+  private Matrix4x3f vMat = new Matrix4x3f().lookAt(70, 60, 180, 60, 20, 80, 0, 1, 0);
   private Matrix4f ivpMat = new Matrix4f();
   private Vector3f camPos = new Vector3f();
   private Vector3f v = new Vector3f();
-  private Material[] materials = new Material[512];
+  private Material[] materials = new Material[256];
   private FloatBuffer vbuf = memAllocFloat(3);
   private Callback debugProc;
   private int nodesBufferBO;
@@ -202,11 +202,11 @@ public class GL33KdTreeTrace {
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32UI, leafNodesBufferBO);
     //
     DynamicByteBuffer materialsBuffer = new DynamicByteBuffer();
-    for (Material mat : materials)
-        if (mat != null)
-            materialsBuffer.putInt(mat.color);
+    for (int i = 0; i < materials.length; i++)
+        if (materials[i] != null)
+            materialsBuffer.putInt(materials[i].color);
         else
-            materialsBuffer.putInt(0);
+            materialsBuffer.putInt(MagicaVoxelLoader.DEFAULT_PALETTE[i]);
     materialsBufferBO = glGenBuffers();
     glBindBuffer(GL_TEXTURE_BUFFER, materialsBufferBO);
     nglBufferData(GL_TEXTURE_BUFFER, materialsBuffer.pos, materialsBuffer.addr, GL_STATIC_DRAW);
@@ -252,7 +252,7 @@ public class GL33KdTreeTrace {
 
   private void trace() {
     glUseProgram(rayTracingProgram);
-    glUniform3fv(camUniform, vMat.originAffine(camPos).get(vbuf));
+    glUniform3fv(camUniform, vMat.origin(camPos).get(vbuf));
     glUniform3fv(camUniform + 1, ivpMat.transformProject(v.set(-1, -1, 0)).sub(camPos).get(vbuf));
     glUniform3fv(camUniform + 2, ivpMat.transformProject(v.set(-1, +1, 0)).sub(camPos).get(vbuf));
     glUniform3fv(camUniform + 3, ivpMat.transformProject(v.set(+1, -1, 0)).sub(camPos).get(vbuf));

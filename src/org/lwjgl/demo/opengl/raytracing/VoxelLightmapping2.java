@@ -52,7 +52,7 @@ public class VoxelLightmapping2 {
     private final Matrix4f mvpMat = new Matrix4f();
     private final Matrix4f ivpMat = new Matrix4f();
     private final Vector3f camPos = new Vector3f();
-    private final Material[] materials = new Material[512];
+    private final Material[] materials = new Material[256];
     private Callback debugProc;
 
     /* OpenGL resources for kd-tree */
@@ -483,8 +483,8 @@ public class VoxelLightmapping2 {
 
     private void createMaterialsTexture() {
         ByteBuffer materialsBuffer = memAlloc(Integer.BYTES * materials.length);
-        for (Material mat : materials)
-            materialsBuffer.putInt(mat == null ? 0 : mat.color);
+        for (int i = 0; i < materials.length; i++)
+            materialsBuffer.putInt(materials[i] == null ? MagicaVoxelLoader.DEFAULT_PALETTE[i] : materials[i].color);
         materialsBuffer.flip();
         materialsBufferObject = glGenBuffers();
         glBindBuffer(GL_TEXTURE_BUFFER, materialsBufferObject);
@@ -669,7 +669,9 @@ public class VoxelLightmapping2 {
     }
 
     private static class VoxelField {
-        int ny, py, w, d;
+        int w, d;
+        Vector3i min;
+        Vector3i max;
         byte[] field;
     }
 
@@ -705,8 +707,8 @@ public class VoxelLightmapping2 {
         VoxelField res = new VoxelField();
         res.w = dims.x;
         res.d = dims.z;
-        res.ny = min.y;
-        res.py = max.y;
+        res.min = min;
+        res.max = max;
         res.field = field;
         return res;
     }
@@ -714,9 +716,13 @@ public class VoxelLightmapping2 {
     private ArrayList<Face> buildFaces(VoxelField vf) {
         System.out.println("Building faces...");
         /* Greedy-meshing */
-        GreedyMeshing gm = new GreedyMeshing(0, vf.ny, 0, vf.py, vf.w, vf.d);
+        GreedyMeshing gm = new GreedyMeshing(vf.min.x, vf.min.y, vf.min.z, vf.max.x, vf.max.y, vf.max.z, vf.w, vf.d);
         ArrayList<Face> faces = new ArrayList<>();
-        gm.mesh(vf.field, faces);
+        gm.mesh(vf.field, new GreedyMeshing.FaceConsumer() {
+            public void consume(int u0, int v0, int u1, int v1, int p, int s, int v) {
+                faces.add(new Face(u0, v0, u1, v1, p, s, v));
+            }
+        });
         System.out.println("Num faces: " + faces.size());
         return faces;
     }

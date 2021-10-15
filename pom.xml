@@ -42,6 +42,12 @@
             </properties>
         </profile>
         <profile>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.platform</groupId>
+                            <artifactId>org.eclipse.swt</artifactId>
+                        </exclusion>
+                    </exclusions>
             <id>windows-amd64</id>
             <activation>
                 <os>
@@ -75,6 +81,12 @@
             </properties>
         </profile>
         <profile>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.platform</groupId>
+                            <artifactId>org.eclipse.swt</artifactId>
+                        </exclusion>
+                    </exclusions>
             <id>linux-amd64</id>
             <activation>
                 <os>

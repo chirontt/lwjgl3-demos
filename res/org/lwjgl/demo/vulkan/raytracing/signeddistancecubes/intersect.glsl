@@ -17,7 +17,8 @@ layout(scalar, binding = 3) buffer AABBs { aabb[] aabbs; };
 hitAttributeEXT vec3 normal;
 
 float sdRoundBox(vec3 p, vec3 b, float r) {
-  vec3 q = abs(p) - b;
+  // http://iquilezles.org/www/articles/distfunctions/distfunctions.htm
+  vec3 q = abs(p) - b + vec3(r);
   return length(max(q, 0.0)) + min(max(q.x,max(q.y,q.z)), 0.0) - r;
 }
 vec3 repLim(vec3 p, vec3 lima, vec3 limb) {
@@ -26,13 +27,13 @@ vec3 repLim(vec3 p, vec3 lima, vec3 limb) {
 }
 float f(vec3 p, vec3 minp, vec3 maxp) {
   vec3 p2 = repLim(p - vec3(0.5), minp, maxp - vec3(1.0));
-  return sdRoundBox(p2, vec3(0.5-RADIUS), RADIUS);
+  return sdRoundBox(p2, vec3(0.5), RADIUS);
 }
 float f_(vec3 p, vec3 minp, vec3 maxp) {
   vec3 p2 = repLim(p - vec3(0.5), minp, maxp - vec3(1.0));
   vec3 c = (maxp + minp) * 0.5;
   vec3 hs = (maxp - minp) * 0.5;
-  return sdRoundBox(p-c, hs-vec3(RADIUS), RADIUS);
+  return sdRoundBox(p-c, hs, RADIUS);
 }
 vec3 calcNormal(vec3 p, vec3 minp, vec3 maxp) {
   // http://iquilezles.org/www/articles/normalsSDF/normalsSDF.htm
@@ -46,7 +47,7 @@ void main(void) {
   aabb a = aabbs[gl_PrimitiveID];
   float t = 0.0;
   vec3 o = gl_WorldRayOriginEXT;
-  vec3 d = normalize(gl_WorldRayDirectionEXT);
+  vec3 d = gl_WorldRayDirectionEXT;
   for (int i = 0; i < 32; i++) {
     float tn = f(o, a.min, a.max);
     t += tn;

@@ -50,7 +50,7 @@ public class VoxelLightmapping {
     private final Matrix4f pMat = new Matrix4f();
     private final Matrix4x3f vMat = new Matrix4x3f().lookAt(-40, 60, 140, 90, 0, 40, 0, 1, 0);
     private final Matrix4f mvpMat = new Matrix4f();
-    private final Material[] materials = new Material[512];
+    private final Material[] materials = new Material[256];
     private Callback debugProc;
 
     /* OpenGL resources for kd-tree */
@@ -528,8 +528,8 @@ public class VoxelLightmapping {
 
     private void createMaterialsTexture() {
         ByteBuffer materialsBuffer = memAlloc(Integer.BYTES * materials.length);
-        for (Material mat : materials)
-            materialsBuffer.putInt(mat == null ? 0 : mat.color);
+        for (int i = 0; i < materials.length; i++)
+            materialsBuffer.putInt(materials[i] == null ? MagicaVoxelLoader.DEFAULT_PALETTE[i] : materials[i].color);
         materialsBuffer.flip();
         materialsBufferObject = glGenBuffers();
         glBindBuffer(GL_TEXTURE_BUFFER, materialsBufferObject);
@@ -720,9 +720,10 @@ public class VoxelLightmapping {
     }
 
     private static class VoxelField {
-        int ny, py, w, d;
+        int w, d;
+        Vector3i min;
+        Vector3i max;
         byte[] field;
-        int h() { return py - ny + 1; }
     }
 
     private VoxelField buildVoxelField() throws IOException {
@@ -757,8 +758,8 @@ public class VoxelLightmapping {
         VoxelField res = new VoxelField();
         res.w = dims.x;
         res.d = dims.z;
-        res.ny = min.y;
-        res.py = max.y;
+        res.min = min;
+        res.max = max;
         res.field = field;
         return res;
     }
@@ -766,9 +767,13 @@ public class VoxelLightmapping {
     private ArrayList<Face> buildFaces(VoxelField vf) {
         System.out.println("Building faces...");
         /* Greedy-meshing */
-        GreedyMeshing gm = new GreedyMeshing(0, vf.ny, 0, vf.py, vf.w, vf.d);
+        GreedyMeshing gm = new GreedyMeshing(vf.min.x, vf.min.y, vf.min.z, vf.max.x, vf.max.y, vf.max.z, vf.w, vf.d);
         ArrayList<Face> faces = new ArrayList<>();
-        gm.mesh(vf.field, faces);
+        gm.mesh(vf.field, new GreedyMeshing.FaceConsumer() {
+            public void consume(int u0, int v0, int u1, int v1, int p, int s, int v) {
+                faces.add(new Face(u0, v0, u1, v1, p, s, v));
+            }
+        });
         System.out.println("Num faces: " + faces.size());
         return faces;
     }
@@ -781,7 +786,7 @@ public class VoxelLightmapping {
         System.out.println("Num voxels after culling: " + numRetainedVoxels);
         /* Greedy voxeling */
         ArrayList<Voxel> voxels = new ArrayList<>();
-        GreedyVoxels gv = new GreedyVoxels(field.ny, field.py, field.w, field.d, (x, y, z, w, h, d, v) ->
+        GreedyVoxels gv = new GreedyVoxels(field.min.y, field.max.y, field.w, field.d, (x, y, z, w, h, d, v) ->
                 voxels.add(new Voxel(x, y, z, w - 1, h - 1, d - 1, v)));
         gv.singleOpaque = true;
         gv.merge(field.field);
