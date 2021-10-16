@@ -1,6 +1,11 @@
 # lwjgl3-demos + GraalVM native image
 
-Demos for LWJGL 3, compiled to native executable by GraalVM native-image utility.
+Demo suite for LWJGL 3, as described in the upstream [repo](https://github.com/LWJGL/lwjgl3-demos).
+
+---
+
+This fork provides build scripts to compile the project to native executable using
+the GraalVM native-image utility.
 
 All demos in [src](src/org/lwjgl/demo) are included in the build. Most demos are portable
 across different OSes, but some are GPU-specific, like the [Vulkan demos](src/org/lwjgl/demo/vulkan)

@@ -865,14 +865,6 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
-  "name":"org.lwjgl.demo.vulkan.NvRayTracingExample",
-  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
-},
-{
-  "name":"org.lwjgl.demo.vulkan.NvRayTracingHybridExample",
-  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
-},
-{
   "name":"org.lwjgl.demo.vulkan.TriangleDemo",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -902,6 +894,10 @@
 },
 {
   "name":"org.lwjgl.demo.vulkan.raytracing.SimpleTriangle",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.vulkan.raytracing.SimpleTriangleRayQuery",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
@@ -2106,6 +2102,17 @@
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceProperties2",
+  "allDeclaredFields":true,
+  "allPublicFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true,
+  "allPublicConstructors":true,
+  "allDeclaredClasses":true,
+  "allPublicClasses":true
+},
+{
+  "name":"org.lwjgl.vulkan.VkPhysicalDeviceRayQueryFeaturesKHR",
   "allDeclaredFields":true,
   "allPublicFields":true,
   "allDeclaredMethods":true,

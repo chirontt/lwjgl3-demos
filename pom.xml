@@ -42,12 +42,6 @@
             </properties>
         </profile>
         <profile>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.eclipse.platform</groupId>
-                            <artifactId>org.eclipse.swt</artifactId>
-                        </exclusion>
-                    </exclusions>
             <id>windows-amd64</id>
             <activation>
                 <os>
@@ -81,12 +75,6 @@
             </properties>
         </profile>
         <profile>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.eclipse.platform</groupId>
-                            <artifactId>org.eclipse.swt</artifactId>
-                        </exclusion>
-                    </exclusions>
             <id>linux-amd64</id>
             <activation>
                 <os>
@@ -315,12 +303,14 @@
                 </executions>
                 <configuration>
                     <target>
-                        <!-- add the Main-Class attribute to the shaded uber jar's manifest -->
+                        <!-- add extra attributes to the shaded uber jar's manifest -->
                         <jar destfile="${project.build.directory}/${project.artifactId}-${project.version}-no-deps-${platform}.jar"
                              update="true">
                             <manifest>
-                                <attribute name="Main-Class"
-                                           value="${exec.mainClass}"/>
+                                <attribute name="Ant-Version" value=" "/>
+                                <attribute name="Created-By" value="Apache Maven ${maven.version}"/>
+                                <attribute name="Build-Jdk" value="${java.version}"/>
+                                <attribute name="Main-Class" value="${exec.mainClass}"/>
                             </manifest>
                         </jar>
                         <!-- move unneeded .dll/.txt files created by the native-image build -->
