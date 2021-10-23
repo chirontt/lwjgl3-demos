@@ -281,6 +281,7 @@
     {"pattern":"\\Qorg/lwjgl/demo/opengl/textures/texturedQuad.vs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/textures/texturedSphere.fs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/textures/texturedSphere.vs\\E"}, 
+    {"pattern":"\\Qorg/lwjgl/demo/opengl/transform/arrow.png\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/uniformarray-fs.glsl\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/uniformarray-vs.glsl\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/space_back6.jpg\\E"}, 

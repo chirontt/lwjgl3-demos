@@ -849,6 +849,10 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.opengl.transform.OrientedQuads",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.vulkan.ClearScreenDemo",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },

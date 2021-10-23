@@ -16,7 +16,7 @@ ext {
     lwjglVersion = project.version
     jomlVersion = '1.10.3-SNAPSHOT'
     swtMavenVersion = '3.105.3'  //contains Eclipse SWT 4.6.2.9 software
-    graalvmVersion = '21.2.0'
+    graalvmVersion = '21.3.0'
 
     //LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, par, shaderc, vma, vulkan
     lwjglModules = [
@@ -140,7 +140,7 @@ task extractLwjglManifest(type: Copy) {
                                        .collect { zipTree(it) }
     }
     include 'META-INF/MANIFEST.MF'
-    into "$buildDir/tmp/lwjglCoreArchive"
+    into "$buildDir/tmp"
 }
 
 //create a stand-alone executable uber jar

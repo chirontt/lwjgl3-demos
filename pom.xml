@@ -16,7 +16,7 @@
         <joml.version>1.10.3-SNAPSHOT</joml.version>
         <native.maven.plugin.version>0.9.5</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
-        <graalvm.version>21.2.0</graalvm.version>
+        <graalvm.version>21.3.0</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
         <!-- Can be overwritten via -D property during mvn invoke to specify a different demo.
              The package "org.lwjgl.demo." is prepended automatically. -->
@@ -194,7 +194,7 @@
                                 <artifactItem>
                                     <groupId>org.lwjgl</groupId>
                                     <artifactId>lwjgl</artifactId>
-                                    <outputDirectory>${project.build.directory}/tmp/lwjglCoreArchive</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/tmp</outputDirectory>
                                     <includes>META-INF/MANIFEST.MF</includes>
                                 </artifactItem>
                             </artifactItems>
@@ -237,7 +237,7 @@
                                 <transformer
                                     implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
                                     <resource>META-INF/MANIFEST.MF</resource>
-                                    <file>${project.build.directory}/tmp/lwjglCoreArchive/META-INF/MANIFEST.MF</file>
+                                    <file>${project.build.directory}/tmp/META-INF/MANIFEST.MF</file>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -307,7 +307,7 @@
                         <jar destfile="${project.build.directory}/${project.artifactId}-${project.version}-no-deps-${platform}.jar"
                              update="true">
                             <manifest>
-                                <attribute name="Ant-Version" value=" "/>
+                                <attribute name="Ant-Version" value="${ant.version}"/>
                                 <attribute name="Created-By" value="Apache Maven ${maven.version}"/>
                                 <attribute name="Build-Jdk" value="${java.version}"/>
                                 <attribute name="Main-Class" value="${exec.mainClass}"/>
