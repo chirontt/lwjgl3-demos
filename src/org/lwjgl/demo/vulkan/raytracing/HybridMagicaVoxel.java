@@ -54,11 +54,9 @@ public class HybridMagicaVoxel {
         if (DEBUG) {
             // When we are in debug mode, enable all LWJGL debug flags
             Configuration.DEBUG.set(true);
-            Configuration.DISABLE_CHECKS.set(false);
             Configuration.DEBUG_FUNCTIONS.set(true);
             Configuration.DEBUG_LOADER.set(true);
             Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
-            Configuration.DEBUG_MEMORY_ALLOCATOR_INTERNAL.set(true);
             Configuration.DEBUG_STACK.set(true);
         } else {
             Configuration.DISABLE_CHECKS.set(true);
@@ -435,21 +433,19 @@ public class HybridMagicaVoxel {
                 // Check if the device supports all needed features
                 VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures = VkPhysicalDeviceAccelerationStructureFeaturesKHR
                         .malloc(stack)
-                        .sType$Default()
-                        .pNext(NULL);
+                        .sType$Default();
                 VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayTracingPipelineFeatures = VkPhysicalDeviceRayTracingPipelineFeaturesKHR
                         .malloc(stack)
-                        .sType$Default()
-                        .pNext(accelerationStructureFeatures.address());
+                        .sType$Default();
                 VkPhysicalDeviceVulkan12Features vulkan12Features = VkPhysicalDeviceVulkan12Features
                         .malloc(stack)
+                        .sType$Default();
+                vkGetPhysicalDeviceFeatures2(dev, VkPhysicalDeviceFeatures2
+                        .calloc(stack)
                         .sType$Default()
-                        .pNext(rayTracingPipelineFeatures.address());
-                VkPhysicalDeviceFeatures2 physicalDeviceFeatures2 = VkPhysicalDeviceFeatures2
-                        .malloc(stack)
-                        .sType$Default()
-                        .pNext(vulkan12Features.address());
-                vkGetPhysicalDeviceFeatures2(dev, physicalDeviceFeatures2);
+                        .pNext(vulkan12Features)
+                        .pNext(rayTracingPipelineFeatures)
+                        .pNext(accelerationStructureFeatures));
 
                 // If any of the above is not supported, we continue with the next physical device
                 if (!vulkan12Features.bufferDeviceAddress() ||
@@ -466,16 +462,15 @@ public class HybridMagicaVoxel {
                 // Retrieve physical device properties (limits, offsets, alignments, ...)
                 VkPhysicalDeviceAccelerationStructurePropertiesKHR accelerationStructureProperties = VkPhysicalDeviceAccelerationStructurePropertiesKHR
                         .malloc(stack)
-                        .sType$Default()
-                        .pNext(NULL);
+                        .sType$Default();
                 VkPhysicalDeviceRayTracingPipelinePropertiesKHR rayTracingProperties = VkPhysicalDeviceRayTracingPipelinePropertiesKHR
                         .malloc(stack)
-                        .sType$Default()
-                        .pNext(accelerationStructureProperties.address());
+                        .sType$Default();
                 VkPhysicalDeviceProperties2 props = VkPhysicalDeviceProperties2
-                        .malloc(stack)
+                        .calloc(stack)
                         .sType$Default()
-                        .pNext(rayTracingProperties.address());
+                        .pNext(rayTracingProperties)
+                        .pNext(accelerationStructureProperties);
                 vkGetPhysicalDeviceProperties2(dev, props);
 
                 // Check queue families
@@ -506,24 +501,21 @@ public class HybridMagicaVoxel {
             if (DEBUG) {
                 ppEnabledLayerNames = stack.pointers(stack.UTF8("VK_LAYER_KHRONOS_validation"));
             }
-            VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures = VkPhysicalDeviceAccelerationStructureFeaturesKHR
-                    .calloc(stack)
-                    .sType$Default()
-                    .accelerationStructure(true);
-            VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayTracingFeatures = VkPhysicalDeviceRayTracingPipelineFeaturesKHR
-                    .calloc(stack)
-                    .sType$Default()
-                    .pNext(accelerationStructureFeatures.address())
-                    .rayTracingPipeline(true);
-            VkPhysicalDeviceVulkan12Features vulkan12Features = VkPhysicalDeviceVulkan12Features
-                    .calloc(stack)
-                    .sType$Default()
-                    .pNext(rayTracingFeatures.address())
-                    .bufferDeviceAddress(true);
             VkDeviceCreateInfo pCreateInfo = VkDeviceCreateInfo
                     .calloc(stack)
                     .sType$Default()
-                    .pNext(vulkan12Features.address())
+                    .pNext(VkPhysicalDeviceVulkan12Features
+                            .calloc(stack)
+                            .sType$Default()
+                            .bufferDeviceAddress(true))
+                    .pNext(VkPhysicalDeviceRayTracingPipelineFeaturesKHR
+                            .calloc(stack)
+                            .sType$Default()
+                            .rayTracingPipeline(true))
+                    .pNext(VkPhysicalDeviceAccelerationStructureFeaturesKHR
+                            .calloc(stack)
+                            .sType$Default()
+                            .accelerationStructure(true))
                     .pQueueCreateInfos(VkDeviceQueueCreateInfo
                             .calloc(1, stack)
                             .sType$Default()
@@ -644,7 +636,8 @@ public class HybridMagicaVoxel {
             int imageCount = min(max(pSurfaceCapabilities.minImageCount() + 1, 3), pSurfaceCapabilities.maxImageCount());
             ColorFormatAndSpace surfaceFormat = determineSurfaceFormat(deviceAndQueueFamilies.physicalDevice, surface);
             Vector2i swapchainExtents = determineSwapchainExtents(pSurfaceCapabilities);
-            VkSwapchainCreateInfoKHR pCreateInfo = VkSwapchainCreateInfoKHR
+            LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
+            _CHECK_(vkCreateSwapchainKHR(device, VkSwapchainCreateInfoKHR
                 .calloc(stack)
                 .sType$Default()
                 .surface(surface)
@@ -659,9 +652,7 @@ public class HybridMagicaVoxel {
                 .compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
                 .presentMode(determineBestPresentMode())
                 .clipped(true)
-                .oldSwapchain(swapchain != null ? swapchain.swapchain : VK_NULL_HANDLE);
-            LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
-            _CHECK_(vkCreateSwapchainKHR(device, pCreateInfo, null, pSwapchain),
+                .oldSwapchain(swapchain != null ? swapchain.swapchain : VK_NULL_HANDLE), null, pSwapchain),
                     "Failed to create swap chain");
             if (swapchain != null) {
                 swapchain.free();
@@ -726,18 +717,6 @@ public class HybridMagicaVoxel {
                 aai.free();
         }
         try (MemoryStack stack = stackPush()) {
-            VkImageCreateInfo imageCreateInfo = VkImageCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .imageType(VK_IMAGE_TYPE_2D)
-                    .format(depthFormat)
-                    .mipLevels(1)
-                    .arrayLayers(1)
-                    .samples(VK_SAMPLE_COUNT_1_BIT)
-                    .tiling(VK_IMAGE_TILING_OPTIMAL)
-                    .usage(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT // <- write to depth when rasterizing
-                         | VK_IMAGE_USAGE_SAMPLED_BIT) // <- read from depth when ray tracing
-                    .extent(e -> e.set(swapchain.width, swapchain.height, 1));
             VkImageViewCreateInfo depthStencilViewCreateInfo = VkImageViewCreateInfo
                     .calloc(stack)
                     .sType$Default()
@@ -752,7 +731,18 @@ public class HybridMagicaVoxel {
             AllocationAndImage[] allocations = new AllocationAndImage[swapchain.images.length];
             LongBuffer pDepthStencilView = stack.mallocLong(1);
             for (int i = 0; i < swapchain.images.length; i++) {
-                _CHECK_(vmaCreateImage(vmaAllocator, imageCreateInfo,
+                _CHECK_(vmaCreateImage(vmaAllocator, VkImageCreateInfo
+                        .calloc(stack)
+                        .sType$Default()
+                        .imageType(VK_IMAGE_TYPE_2D)
+                        .format(depthFormat)
+                        .mipLevels(1)
+                        .arrayLayers(1)
+                        .samples(VK_SAMPLE_COUNT_1_BIT)
+                        .tiling(VK_IMAGE_TILING_OPTIMAL)
+                        .usage(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT // <- write to depth when rasterizing
+                             | VK_IMAGE_USAGE_SAMPLED_BIT) // <- read from depth when ray tracing
+                        .extent(e -> e.set(swapchain.width, swapchain.height, 1)),
                         VmaAllocationCreateInfo
                             .calloc(stack)
                             .usage(VMA_MEMORY_USAGE_GPU_ONLY), pDepthStencilImage, pAllocation,
@@ -796,17 +786,6 @@ public class HybridMagicaVoxel {
             for (AllocationAndImage aai : old)
                 aai.free();
         try (MemoryStack stack = stackPush()) {
-            VkImageCreateInfo imageCreateInfo = VkImageCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .imageType(VK_IMAGE_TYPE_2D)
-                    .format(format)
-                    .mipLevels(1)
-                    .arrayLayers(1)
-                    .samples(VK_SAMPLE_COUNT_1_BIT)
-                    .tiling(VK_IMAGE_TILING_OPTIMAL)
-                    .usage(usage)
-                    .extent(e -> e.set(swapchain.width, swapchain.height, 1));
             VkImageViewCreateInfo imageViewCreateInfo = VkImageViewCreateInfo
                     .calloc(stack)
                     .sType$Default()
@@ -822,7 +801,17 @@ public class HybridMagicaVoxel {
             LongBuffer pImageView = stack.mallocLong(1);
             VkCommandBuffer cmdBuffer = createCommandBuffer(commandPoolTransient);
             for (int i = 0; i < swapchain.images.length; i++) {
-                _CHECK_(vmaCreateImage(vmaAllocator, imageCreateInfo,
+                _CHECK_(vmaCreateImage(vmaAllocator, VkImageCreateInfo
+                        .calloc(stack)
+                        .sType$Default()
+                        .imageType(VK_IMAGE_TYPE_2D)
+                        .format(format)
+                        .mipLevels(1)
+                        .arrayLayers(1)
+                        .samples(VK_SAMPLE_COUNT_1_BIT)
+                        .tiling(VK_IMAGE_TILING_OPTIMAL)
+                        .usage(usage)
+                        .extent(e -> e.set(swapchain.width, swapchain.height, 1)),
                         VmaAllocationCreateInfo
                             .calloc(stack)
                             .usage(VMA_MEMORY_USAGE_GPU_ONLY), pImage, pAllocation, null),
@@ -1194,7 +1183,8 @@ public class HybridMagicaVoxel {
             VkRenderPassCreateInfo renderPassInfo = VkRenderPassCreateInfo
                     .calloc(stack)
                     .sType$Default()
-                    .pAttachments(VkAttachmentDescription.calloc(2, stack)
+                    .pAttachments(VkAttachmentDescription
+                            .calloc(2, stack)
                             .apply(0, d -> d
                                     .format(VK_FORMAT_R8G8B8A8_SNORM)
                                     .samples(VK_SAMPLE_COUNT_1_BIT)
@@ -1225,7 +1215,8 @@ public class HybridMagicaVoxel {
                                     .calloc(stack)
                                     .attachment(1)
                                     .layout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)))
-                    .pDependencies(VkSubpassDependency.calloc(1, stack)
+                    .pDependencies(VkSubpassDependency
+                            .calloc(1, stack)
                             .srcSubpass(VK_SUBPASS_EXTERNAL)
                             .srcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT |
                                     VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
@@ -1258,48 +1249,6 @@ public class HybridMagicaVoxel {
 
     private static Pipeline createRasterPipeline() throws IOException {
         try (MemoryStack stack = stackPush()) {
-            VkPipelineInputAssemblyStateCreateInfo pInputAssemblyState = VkPipelineInputAssemblyStateCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-            VkPipelineRasterizationStateCreateInfo pRasterizationState = VkPipelineRasterizationStateCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .polygonMode(VK_POLYGON_MODE_FILL)
-                    .cullMode(VK_CULL_MODE_BACK_BIT)
-                    .frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE)
-                    .lineWidth(1.0f);
-            VkPipelineColorBlendAttachmentState.Buffer colorWriteMask = VkPipelineColorBlendAttachmentState
-                    .calloc(1, stack)
-                    .colorWriteMask(0xF); // <- RGBA
-            VkPipelineColorBlendStateCreateInfo pColorBlendState = VkPipelineColorBlendStateCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .pAttachments(colorWriteMask);
-            VkPipelineViewportStateCreateInfo pViewportState = VkPipelineViewportStateCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .viewportCount(1)
-                    .scissorCount(1);
-            VkPipelineDynamicStateCreateInfo pDynamicState = VkPipelineDynamicStateCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .pDynamicStates(stack.ints(VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR));
-            VkPipelineDepthStencilStateCreateInfo pDepthStencilState = VkPipelineDepthStencilStateCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .depthTestEnable(true)
-                    .depthWriteEnable(true)
-                    .depthCompareOp(VK_COMPARE_OP_GREATER_OR_EQUAL) // <- we use reverse depth
-                    .back(stencil -> stencil
-                            .failOp(VK_STENCIL_OP_KEEP)
-                            .passOp(VK_STENCIL_OP_KEEP)
-                            .compareOp(VK_COMPARE_OP_ALWAYS));
-            pDepthStencilState.front(pDepthStencilState.back());
-            VkPipelineMultisampleStateCreateInfo pMultisampleState = VkPipelineMultisampleStateCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .rasterizationSamples(VK_SAMPLE_COUNT_1_BIT);
             VkPipelineShaderStageCreateInfo.Buffer pStages = VkPipelineShaderStageCreateInfo
                     .calloc(2, stack);
             String pkg = HybridMagicaVoxel.class.getName().toLowerCase().replace('.', '/') + "/";
@@ -1307,53 +1256,75 @@ public class HybridMagicaVoxel {
                     null, stack, device, pkg + "raster.vs.glsl", VK_SHADER_STAGE_VERTEX_BIT);
             loadShader(pStages.get(1).sType$Default(), 
                     null, stack, device, pkg + "raster.fs.glsl", VK_SHADER_STAGE_FRAGMENT_BIT);
-            VkDescriptorSetLayoutBinding.Buffer layoutBinding = VkDescriptorSetLayoutBinding
-                    .calloc(1, stack)
-                    .binding(0)
-                    .descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-                    .descriptorCount(1)
-                    .stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
-            VkDescriptorSetLayoutCreateInfo descriptorLayout = VkDescriptorSetLayoutCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .pBindings(layoutBinding);
             LongBuffer pDescriptorSetLayout = stack.mallocLong(1);
-            _CHECK_(vkCreateDescriptorSetLayout(device, descriptorLayout, null, pDescriptorSetLayout),
+            _CHECK_(vkCreateDescriptorSetLayout(device, VkDescriptorSetLayoutCreateInfo
+                    .calloc(stack)
+                    .sType$Default()
+                    .pBindings(VkDescriptorSetLayoutBinding
+                            .calloc(1, stack)
+                            .binding(0)
+                            .descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+                            .descriptorCount(1)
+                            .stageFlags(VK_SHADER_STAGE_VERTEX_BIT)), null, pDescriptorSetLayout),
                     "Failed to create descriptor set layout");
-            VkPipelineLayoutCreateInfo layoutCreateInfo = VkPipelineLayoutCreateInfo
-                    .calloc(stack)
-                    .sType$Default()
-                    .pSetLayouts(pDescriptorSetLayout);
             LongBuffer pPipelineLayout = stack.mallocLong(1);
-            _CHECK_(vkCreatePipelineLayout(device, layoutCreateInfo, null, pPipelineLayout),
-                    "Failed to create pipeline layout");
-            VkVertexInputBindingDescription.Buffer bindingDescriptor = VkVertexInputBindingDescription
-                    .calloc(1, stack)
-                    .apply(0, d -> d.binding(0).stride(4 * Short.BYTES).inputRate(VK_VERTEX_INPUT_RATE_VERTEX));
-            VkVertexInputAttributeDescription.Buffer attributeDescriptions = VkVertexInputAttributeDescription
-                    .calloc(1, stack)
-                    .apply(0, d -> d.binding(0).location(0).format(VK_FORMAT_R16G16B16A16_UNORM).offset(0));
-            VkPipelineVertexInputStateCreateInfo pVertexInputState = VkPipelineVertexInputStateCreateInfo
+            _CHECK_(vkCreatePipelineLayout(device, VkPipelineLayoutCreateInfo
                     .calloc(stack)
                     .sType$Default()
-                    .pVertexBindingDescriptions(bindingDescriptor)
-                    .pVertexAttributeDescriptions(attributeDescriptions);
-            VkGraphicsPipelineCreateInfo.Buffer pipelineCreateInfo = VkGraphicsPipelineCreateInfo
+                    .pSetLayouts(pDescriptorSetLayout), null, pPipelineLayout),
+                    "Failed to create pipeline layout");
+            LongBuffer pPipelines = stack.mallocLong(1);
+            _CHECK_(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, VkGraphicsPipelineCreateInfo
                     .calloc(1, stack)
                     .sType$Default()
                     .layout(pPipelineLayout.get(0))
                     .renderPass(renderPass)
-                    .pVertexInputState(pVertexInputState)
-                    .pInputAssemblyState(pInputAssemblyState)
-                    .pRasterizationState(pRasterizationState)
-                    .pColorBlendState(pColorBlendState)
-                    .pMultisampleState(pMultisampleState)
-                    .pViewportState(pViewportState)
-                    .pDepthStencilState(pDepthStencilState)
+                    .pVertexInputState(VkPipelineVertexInputStateCreateInfo
+                            .calloc(stack)
+                            .sType$Default()
+                            .pVertexBindingDescriptions(VkVertexInputBindingDescription
+                                    .calloc(1, stack)
+                                    .apply(0, d -> d.binding(0).stride(4 * Short.BYTES).inputRate(VK_VERTEX_INPUT_RATE_VERTEX)))
+                            .pVertexAttributeDescriptions(VkVertexInputAttributeDescription
+                                    .calloc(1, stack)
+                                    .apply(0, d -> d.binding(0).location(0).format(VK_FORMAT_R16G16B16A16_UNORM).offset(0))))
+                    .pInputAssemblyState(VkPipelineInputAssemblyStateCreateInfo
+                            .calloc(stack)
+                            .sType$Default()
+                            .topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST))
+                    .pRasterizationState(VkPipelineRasterizationStateCreateInfo
+                            .calloc(stack)
+                            .sType$Default()
+                            .polygonMode(VK_POLYGON_MODE_FILL)
+                            .cullMode(VK_CULL_MODE_BACK_BIT)
+                            .frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE)
+                            .lineWidth(1.0f))
+                    .pColorBlendState(VkPipelineColorBlendStateCreateInfo
+                            .calloc(stack)
+                            .sType$Default()
+                            .pAttachments(VkPipelineColorBlendAttachmentState
+                                    .calloc(1, stack)
+                                    .colorWriteMask(0xF)))
+                    .pMultisampleState(VkPipelineMultisampleStateCreateInfo
+                            .calloc(stack)
+                            .sType$Default()
+                            .rasterizationSamples(VK_SAMPLE_COUNT_1_BIT))
+                    .pViewportState(VkPipelineViewportStateCreateInfo
+                            .calloc(stack)
+                            .sType$Default()
+                            .viewportCount(1)
+                            .scissorCount(1))
+                    .pDepthStencilState(VkPipelineDepthStencilStateCreateInfo
+                            .calloc(stack)
+                            .sType$Default()
+                            .depthTestEnable(true)
+                            .depthWriteEnable(true)
+                            .depthCompareOp(VK_COMPARE_OP_GREATER_OR_EQUAL))
                     .pStages(pStages)
-                    .pDynamicState(pDynamicState);
-            LongBuffer pPipelines = stack.mallocLong(1);
-            _CHECK_(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, pipelineCreateInfo, null, pPipelines),
+                    .pDynamicState(VkPipelineDynamicStateCreateInfo
+                            .calloc(stack)
+                            .sType$Default()
+                            .pDynamicStates(stack.ints(VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR))), null, pPipelines),
                     "Failed to create raster pipeline");
             pStages.forEach(stage -> vkDestroyShaderModule(device, stage.module(), null));
             return new Pipeline(pPipelineLayout.get(0), pDescriptorSetLayout.get(0), pPipelines.get(0));
@@ -1647,20 +1618,18 @@ public class HybridMagicaVoxel {
                         .accelerationStructure(blas.accelerationStructure));
 
             // Create a single instance for our TLAS
-            VkAccelerationStructureInstanceKHR instance = VkAccelerationStructureInstanceKHR
-                    .calloc(stack)
-                    .accelerationStructureReference(blasDeviceAddress)
-                    .mask(~0) // <- we do not want to mask-away any geometry, so use 0b11111111
-                    .flags(VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR)
-                    .transform(VkTransformMatrixKHR
-                            .calloc(stack)
-                            .matrix(new Matrix4x3f().scale(POSITION_SCALE).getTransposed(stack.mallocFloat(12))));
-
             // This instance data also needs to reside in a GPU buffer, so copy it
             AllocationAndBuffer instanceData = createBuffer(
                     VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR |
                     VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT,
-                    memByteBuffer(instance.address(), VkAccelerationStructureInstanceKHR.SIZEOF),
+                    memByteBuffer(VkAccelerationStructureInstanceKHR
+                            .calloc(stack)
+                            .accelerationStructureReference(blasDeviceAddress)
+                            .mask(~0) // <- we do not want to mask-away any geometry, so use 0b11111111
+                            .flags(VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR)
+                            .transform(VkTransformMatrixKHR
+                                    .calloc(stack)
+                                    .matrix(new Matrix4x3f().scale(POSITION_SCALE).getTransposed(stack.mallocFloat(12)))).address(), VkAccelerationStructureInstanceKHR.SIZEOF),
                     16, // <- VUID-vkCmdBuildAccelerationStructuresKHR-pInfos-03715
                     null);
 
@@ -1960,13 +1929,12 @@ public class HybridMagicaVoxel {
                                         .descriptorCount(numSets)))
                         .maxSets(numSets), null, pDescriptorPool),
                     "Failed to create descriptor pool");
-            VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = VkDescriptorSetAllocateInfo
+            LongBuffer pDescriptorSets = stack.mallocLong(numSets);
+            _CHECK_(vkAllocateDescriptorSets(device, VkDescriptorSetAllocateInfo
                     .calloc(stack)
                     .sType$Default()
                     .descriptorPool(pDescriptorPool.get(0))
-                    .pSetLayouts(repeat(stack, rayTracingPipeline.descriptorSetLayout, numSets));
-            LongBuffer pDescriptorSets = stack.mallocLong(numSets);
-            _CHECK_(vkAllocateDescriptorSets(device, descriptorSetAllocateInfo, pDescriptorSets),
+                    .pSetLayouts(repeat(stack, rayTracingPipeline.descriptorSetLayout, numSets)), pDescriptorSets),
                     "Failed to allocate descriptor set");
             long[] sets = new long[pDescriptorSets.remaining()];
             pDescriptorSets.get(sets, 0, sets.length);
@@ -1984,8 +1952,7 @@ public class HybridMagicaVoxel {
                                 .pNext(VkWriteDescriptorSetAccelerationStructureKHR
                                         .calloc(stack)
                                         .sType$Default()
-                                        .pAccelerationStructures(stack.longs(tlas.accelerationStructure))
-                                        .address()))
+                                        .pAccelerationStructures(stack.longs(tlas.accelerationStructure))))
                         .apply(wds -> wds
                                 .sType$Default()
                                 .descriptorType(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE)
@@ -2061,13 +2028,12 @@ public class HybridMagicaVoxel {
                                         .descriptorCount(numSets)))
                         .maxSets(numSets), null, pDescriptorPool),
                     "Failed to create descriptor pool");
-            VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = VkDescriptorSetAllocateInfo
+            LongBuffer pDescriptorSets = stack.mallocLong(numSets);
+            _CHECK_(vkAllocateDescriptorSets(device, VkDescriptorSetAllocateInfo
                     .calloc(stack)
                     .sType$Default()
                     .descriptorPool(pDescriptorPool.get(0))
-                    .pSetLayouts(repeat(stack, rasterPipeline.descriptorSetLayout, numSets));
-            LongBuffer pDescriptorSets = stack.mallocLong(numSets);
-            _CHECK_(vkAllocateDescriptorSets(device, descriptorSetAllocateInfo, pDescriptorSets),
+                    .pSetLayouts(repeat(stack, rasterPipeline.descriptorSetLayout, numSets)), pDescriptorSets),
                     "Failed to allocate descriptor set");
             long[] sets = new long[pDescriptorSets.remaining()];
             pDescriptorSets.get(sets, 0, sets.length);
@@ -2402,7 +2368,6 @@ public class HybridMagicaVoxel {
         commandPoolTransient = createCommandPool(VK_COMMAND_POOL_CREATE_TRANSIENT_BIT);
         depthStencilImages = createDepthStencilImages();
         normalImages = createNormalImages();
-        depthStencilImages = createDepthStencilImages();
         sampler = createSampler();
         queryPool = createQueryPool();
         geometry = createGeometry();

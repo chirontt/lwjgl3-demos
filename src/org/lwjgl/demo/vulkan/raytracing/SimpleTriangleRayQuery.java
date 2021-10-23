@@ -51,11 +51,9 @@ public class SimpleTriangleRayQuery {
         if (DEBUG) {
             // When we are in debug mode, enable all LWJGL debug flags
             Configuration.DEBUG.set(true);
-            Configuration.DISABLE_CHECKS.set(false);
             Configuration.DEBUG_FUNCTIONS.set(true);
             Configuration.DEBUG_LOADER.set(true);
             Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
-            Configuration.DEBUG_MEMORY_ALLOCATOR_INTERNAL.set(true);
             Configuration.DEBUG_STACK.set(true);
         } else {
             Configuration.DISABLE_CHECKS.set(true);
@@ -386,21 +384,19 @@ public class SimpleTriangleRayQuery {
                 // Check if the device supports all needed features
                 VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures = VkPhysicalDeviceAccelerationStructureFeaturesKHR
                         .malloc(stack)
-                        .sType$Default()
-                        .pNext(NULL);
+                        .sType$Default();
                 VkPhysicalDeviceRayQueryFeaturesKHR rayQueryFeatures = VkPhysicalDeviceRayQueryFeaturesKHR
                         .malloc(stack)
-                        .sType$Default()
-                        .pNext(accelerationStructureFeatures.address());
+                        .sType$Default();
                 VkPhysicalDeviceBufferDeviceAddressFeaturesKHR bufferDeviceAddressFeatures = VkPhysicalDeviceBufferDeviceAddressFeaturesKHR
                         .malloc(stack)
+                        .sType$Default();
+                vkGetPhysicalDeviceFeatures2(dev, VkPhysicalDeviceFeatures2
+                        .calloc(stack)
                         .sType$Default()
-                        .pNext(rayQueryFeatures.address());
-                VkPhysicalDeviceFeatures2 physicalDeviceFeatures2 = VkPhysicalDeviceFeatures2
-                        .malloc(stack)
-                        .sType$Default()
-                        .pNext(bufferDeviceAddressFeatures.address());
-                vkGetPhysicalDeviceFeatures2(dev, physicalDeviceFeatures2);
+                        .pNext(bufferDeviceAddressFeatures)
+                        .pNext(rayQueryFeatures)
+                        .pNext(accelerationStructureFeatures));
 
                 // If any of the above is not supported, we continue with the next physical device
                 if (!bufferDeviceAddressFeatures.bufferDeviceAddress() ||
@@ -417,13 +413,11 @@ public class SimpleTriangleRayQuery {
                 // Retrieve physical device properties (limits, offsets, alignments, ...)
                 VkPhysicalDeviceAccelerationStructurePropertiesKHR accelerationStructureProperties = VkPhysicalDeviceAccelerationStructurePropertiesKHR
                         .malloc(stack)
+                        .sType$Default();
+                vkGetPhysicalDeviceProperties2(dev, VkPhysicalDeviceProperties2
+                        .calloc(stack)
                         .sType$Default()
-                        .pNext(NULL);
-                VkPhysicalDeviceProperties2 props = VkPhysicalDeviceProperties2
-                        .malloc(stack)
-                        .sType$Default()
-                        .pNext(accelerationStructureProperties.address());
-                vkGetPhysicalDeviceProperties2(dev, props);
+                        .pNext(accelerationStructureProperties));
 
                 // Check queue families
                 QueueFamilies queuesFamilies = obtainQueueFamilies(dev);
@@ -451,29 +445,25 @@ public class SimpleTriangleRayQuery {
             if (DEBUG) {
                 ppEnabledLayerNames = stack.pointers(stack.UTF8("VK_LAYER_KHRONOS_validation"));
             }
-            VkPhysicalDeviceBufferDeviceAddressFeaturesKHR bufferDeviceAddressFeatures = VkPhysicalDeviceBufferDeviceAddressFeaturesKHR
-                    .calloc(stack)
-                    .sType$Default()
-                    .bufferDeviceAddress(true);
-            VkPhysicalDeviceDescriptorIndexingFeaturesEXT indexingFeatures = VkPhysicalDeviceDescriptorIndexingFeaturesEXT
-                    .calloc(stack)
-                    .sType$Default()
-                    .pNext(bufferDeviceAddressFeatures.address())
-                    .runtimeDescriptorArray(true);
-            VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures = VkPhysicalDeviceAccelerationStructureFeaturesKHR
-                    .calloc(stack)
-                    .sType$Default()
-                    .pNext(indexingFeatures.address())
-                    .accelerationStructure(true);
-            VkPhysicalDeviceRayQueryFeaturesKHR rayQueryFeatures = VkPhysicalDeviceRayQueryFeaturesKHR
-                    .calloc(stack)
-                    .sType$Default()
-                    .pNext(accelerationStructureFeatures.address())
-                    .rayQuery(true);
             VkDeviceCreateInfo pCreateInfo = VkDeviceCreateInfo
                     .calloc(stack)
                     .sType$Default()
-                    .pNext(rayQueryFeatures.address())
+                    .pNext(VkPhysicalDeviceRayQueryFeaturesKHR
+                            .calloc(stack)
+                            .sType$Default()
+                            .rayQuery(true))
+                    .pNext(VkPhysicalDeviceAccelerationStructureFeaturesKHR
+                            .calloc(stack)
+                            .sType$Default()
+                            .accelerationStructure(true))
+                    .pNext(VkPhysicalDeviceDescriptorIndexingFeaturesEXT
+                            .calloc(stack)
+                            .sType$Default()
+                            .runtimeDescriptorArray(true))
+                    .pNext(VkPhysicalDeviceBufferDeviceAddressFeaturesKHR
+                            .calloc(stack)
+                            .sType$Default()
+                            .bufferDeviceAddress(true))
                     .pQueueCreateInfos(VkDeviceQueueCreateInfo
                             .calloc(1, stack)
                             .sType$Default()
@@ -572,7 +562,8 @@ public class SimpleTriangleRayQuery {
             int imageCount = min(max(pSurfaceCapabilities.minImageCount() + 1, 3), pSurfaceCapabilities.maxImageCount());
             ColorFormatAndSpace surfaceFormat = determineSurfaceFormat(deviceAndQueueFamilies.physicalDevice, surface);
             Vector2i swapchainExtents = determineSwapchainExtents(pSurfaceCapabilities);
-            VkSwapchainCreateInfoKHR pCreateInfo = VkSwapchainCreateInfoKHR
+            LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
+            _CHECK_(vkCreateSwapchainKHR(device, VkSwapchainCreateInfoKHR
                 .calloc(stack)
                 .sType$Default()
                 .surface(surface)
@@ -587,9 +578,7 @@ public class SimpleTriangleRayQuery {
                 .compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
                 .presentMode(VK_PRESENT_MODE_FIFO_KHR)
                 .clipped(true)
-                .oldSwapchain(swapchain != null ? swapchain.swapchain : VK_NULL_HANDLE);
-            LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
-            _CHECK_(vkCreateSwapchainKHR(device, pCreateInfo, null, pSwapchain),
+                .oldSwapchain(swapchain != null ? swapchain.swapchain : VK_NULL_HANDLE), null, pSwapchain),
                     "Failed to create swap chain");
             if (swapchain != null) {
                 swapchain.free();
@@ -1093,20 +1082,18 @@ public class SimpleTriangleRayQuery {
                         .accelerationStructure(blas.accelerationStructure));
 
             // Create a single instance for our TLAS
-            VkAccelerationStructureInstanceKHR instance = VkAccelerationStructureInstanceKHR
-                    .calloc(stack)
-                    .accelerationStructureReference(blasDeviceAddress)
-                    .mask(~0) // <- we do not want to mask-away any geometry, so use 0b11111111
-                    .flags(VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR)
-                    .transform(VkTransformMatrixKHR
-                            .calloc(stack)
-                            .matrix(new Matrix4x3f().getTransposed(stack.mallocFloat(12))));
-
             // This instance data also needs to reside in a GPU buffer, so copy it
             AllocationAndBuffer instanceData = createBuffer(
                     VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR |
                     VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR,
-                    memByteBuffer(instance.address(), VkAccelerationStructureInstanceKHR.SIZEOF),
+                    memByteBuffer(VkAccelerationStructureInstanceKHR
+                            .calloc(stack)
+                            .accelerationStructureReference(blasDeviceAddress)
+                            .mask(~0) // <- we do not want to mask-away any geometry, so use 0b11111111
+                            .flags(VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR)
+                            .transform(VkTransformMatrixKHR
+                                    .calloc(stack)
+                                    .matrix(new Matrix4x3f().getTransposed(stack.mallocFloat(12)))).address(), VkAccelerationStructureInstanceKHR.SIZEOF),
                     16, // <- VUID-vkCmdBuildAccelerationStructuresKHR-pInfos-03715
                     null);
 
@@ -1309,13 +1296,12 @@ public class SimpleTriangleRayQuery {
                                         .descriptorCount(numSets)))
                         .maxSets(numSets), null, pDescriptorPool),
                     "Failed to create descriptor pool");
-            VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = VkDescriptorSetAllocateInfo
+            LongBuffer pDescriptorSets = stack.mallocLong(numSets);
+            _CHECK_(vkAllocateDescriptorSets(device, VkDescriptorSetAllocateInfo
                     .calloc(stack)
                     .sType$Default()
                     .descriptorPool(pDescriptorPool.get(0))
-                    .pSetLayouts(repeat(stack, computePipeline.descriptorSetLayout, numSets));
-            LongBuffer pDescriptorSets = stack.mallocLong(numSets);
-            _CHECK_(vkAllocateDescriptorSets(device, descriptorSetAllocateInfo, pDescriptorSets),
+                    .pSetLayouts(repeat(stack, computePipeline.descriptorSetLayout, numSets)), pDescriptorSets),
                     "Failed to allocate descriptor set");
             long[] sets = new long[pDescriptorSets.remaining()];
             pDescriptorSets.get(sets, 0, sets.length);
@@ -1333,8 +1319,7 @@ public class SimpleTriangleRayQuery {
                                 .pNext(VkWriteDescriptorSetAccelerationStructureKHR
                                         .calloc(stack)
                                         .sType$Default()
-                                        .pAccelerationStructures(stack.longs(tlas.accelerationStructure))
-                                        .address()))
+                                        .pAccelerationStructures(stack.longs(tlas.accelerationStructure))))
                         .apply(wds -> wds
                                 .sType$Default()
                                 .descriptorType(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE)
