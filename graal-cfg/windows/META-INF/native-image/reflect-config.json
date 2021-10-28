@@ -889,7 +889,7 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
-  "name":"org.lwjgl.demo.vulkan.raytracing.SignedDistanceCubes",
+  "name":"org.lwjgl.demo.vulkan.raytracing.SdfBricks",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {

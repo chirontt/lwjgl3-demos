@@ -14,7 +14,7 @@
         <lwjgl.version>${project.version}</lwjgl.version>
         <swt.maven.version>3.105.3</swt.maven.version> <!-- contains Eclipse SWT 4.6.2.9 software -->
         <joml.version>1.10.3-SNAPSHOT</joml.version>
-        <native.maven.plugin.version>0.9.5</native.maven.plugin.version>
+        <native.maven.plugin.version>0.9.6</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
         <graalvm.version>21.3.0</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
@@ -194,6 +194,7 @@
                                 <artifactItem>
                                     <groupId>org.lwjgl</groupId>
                                     <artifactId>lwjgl</artifactId>
+                                    <version>${lwjgl.version}</version>
                                     <outputDirectory>${project.build.directory}/tmp</outputDirectory>
                                     <includes>META-INF/MANIFEST.MF</includes>
                                 </artifactItem>
