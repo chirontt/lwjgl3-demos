@@ -741,6 +741,10 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.opengl.shader.DownsamplingDemo",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.opengl.shader.GameOfLife",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
