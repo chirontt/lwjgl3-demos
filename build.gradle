@@ -1,10 +1,10 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.6'
+    id 'org.graalvm.buildtools.native' version '0.9.7.1'
 }
 
-wrapper {
-    gradleVersion = '7.2'
+tasks.wrapper {
+    gradleVersion = '7.3'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -182,6 +182,8 @@ task removeUnneededDllFiles {
                 include name: '*.txt'
             }
         }
+        ant.move(file: "$buildDir/$nativeImageDirName/reports",
+                 tofile: "$buildDir/tmp/$nativeImageDirName/reports")
     }
 }
 

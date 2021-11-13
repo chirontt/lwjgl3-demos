@@ -14,7 +14,7 @@
         <lwjgl.version>${project.version}</lwjgl.version>
         <swt.maven.version>3.105.3</swt.maven.version> <!-- contains Eclipse SWT 4.6.2.9 software -->
         <joml.version>1.10.3-SNAPSHOT</joml.version>
-        <native.maven.plugin.version>0.9.6</native.maven.plugin.version>
+        <native.maven.plugin.version>0.9.7.1</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
         <graalvm.version>21.3.0</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
@@ -321,6 +321,8 @@
                                 <include name="*.txt"/>
                             </fileset>
                         </move>
+                        <move file="${project.build.directory}/${native.image.dir.name}/reports"
+                              tofile="${project.build.directory}/tmp/${native.image.dir.name}/reports"/>
                     </target>
                 </configuration>
             </plugin>
