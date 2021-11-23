@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.lwjgl</groupId>
     <artifactId>lwjgl3-demos</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.1-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -13,7 +13,7 @@
         <maven.shade.plugin.version>3.2.4</maven.shade.plugin.version>
         <lwjgl.version>${project.version}</lwjgl.version>
         <swt.maven.version>3.105.3</swt.maven.version> <!-- contains Eclipse SWT 4.6.2.9 software -->
-        <joml.version>1.10.2</joml.version>
+        <joml.version>1.10.3-SNAPSHOT</joml.version>
         <native.maven.plugin.version>0.9.7.1</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
         <graalvm.version>21.3.0</graalvm.version>

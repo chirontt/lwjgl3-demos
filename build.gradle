@@ -10,11 +10,11 @@ tasks.wrapper {
 
 group = 'org.lwjgl'
 description = 'LWJGL3 demos with native image by GraalVM'
-version = '3.3.0'
+version = '3.3.1-SNAPSHOT'
 
 ext {
     lwjglVersion = project.version
-    jomlVersion = '1.10.2'
+    jomlVersion = '1.10.3-SNAPSHOT'
     swtMavenVersion = '3.105.3'  //contains Eclipse SWT 4.6.2.9 software
     graalvmVersion = '21.3.0'
 
