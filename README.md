@@ -1,6 +1,7 @@
 # lwjgl3-demos + GraalVM native image
 
-Demo suite for LWJGL 3, as described in the upstream [repo](https://github.com/LWJGL/lwjgl3-demos).
+Demo suite for LWJGL 3, as described in the [upstream repo](https://github.com/LWJGL/lwjgl3-demos)
+with screenshots.
 
 ---
 

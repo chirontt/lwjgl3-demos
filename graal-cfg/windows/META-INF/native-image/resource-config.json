@@ -316,7 +316,6 @@
     {"pattern":"\\Qwindows/x64/org/lwjgl/opengl/lwjgl_opengl.dll\\E"}, 
     {"pattern":"\\Qwindows/x64/org/lwjgl/par/lwjgl_par.dll\\E"}, 
     {"pattern":"\\Qwindows/x64/org/lwjgl/shaderc/shaderc.dll\\E"}, 
-    {"pattern":"\\Qwindows/x64/org/lwjgl/shaderc/shaderc_spvc.dll\\E"}, 
     {"pattern":"\\Qwindows/x64/org/lwjgl/stb/lwjgl_stb.dll\\E"}, 
     {"pattern":"\\Qwindows/x64/org/lwjgl/vma/lwjgl_vma.dll\\E"}
   ]},

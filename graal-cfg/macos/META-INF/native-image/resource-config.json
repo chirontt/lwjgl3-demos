@@ -10,7 +10,6 @@
     {"pattern":"\\Qmacos/x64/org/lwjgl/opengl/liblwjgl_opengl.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/par/liblwjgl_par.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/shaderc/libshaderc.dylib\\E"}, 
-    {"pattern":"\\Qmacos/x64/org/lwjgl/shaderc/libshaderc_spvc.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/stb/liblwjgl_stb.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/vma/liblwjgl_vma.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/vulkan/libMoltenVK.dylib\\E"}, 

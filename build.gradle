@@ -10,11 +10,11 @@ tasks.wrapper {
 
 group = 'org.lwjgl'
 description = 'LWJGL3 demos with native image by GraalVM'
-version = '3.3.0-SNAPSHOT'
+version = '3.3.0'
 
 ext {
     lwjglVersion = project.version
-    jomlVersion = '1.10.3-SNAPSHOT'
+    jomlVersion = '1.10.2'
     swtMavenVersion = '3.105.3'  //contains Eclipse SWT 4.6.2.9 software
     graalvmVersion = '21.3.0'
 
@@ -184,6 +184,10 @@ task removeUnneededDllFiles {
         }
         ant.move(file: "$buildDir/$nativeImageDirName/reports",
                  tofile: "$buildDir/tmp/$nativeImageDirName/reports")
+        if (file("$buildDir/$nativeImageDirName/sources").exists()) {
+            ant.move(file: "$buildDir/$nativeImageDirName/sources",
+                     tofile: "$buildDir/tmp/$nativeImageDirName/sources")
+        }
     }
 }
 
