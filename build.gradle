@@ -1,10 +1,11 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.7.1'
+    id 'org.graalvm.buildtools.native' version '0.9.9'
+    id 'com.google.osdetector' version '1.7.0'
 }
 
 tasks.wrapper {
-    gradleVersion = '7.3'
+    gradleVersion = '7.3.3'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -12,10 +13,33 @@ group = 'org.lwjgl'
 description = 'LWJGL3 demos with native image by GraalVM'
 version = '3.3.0'
 
+//returns the <os>-<arch> platform string suitable for retrieval of LWJGL natives
+//(if <arch> is blank, it implies "x86_64")
+def getCurrentPlatform() {
+    def os = osdetector.os
+    def lwjglOS = os == 'linux' ? 'linux' :
+                  os == 'osx' ? 'macos' :
+                  os == 'windows' ? 'windows' :
+                  'unknown'
+    if (lwjglOS == 'unknown')
+        throw new GradleException('Unsupported OS: ' + os)
+
+    def arch = osdetector.arch
+    def lwjglArch = arch == 'x86_32' ? 'x86' :
+                    arch == 'x86_64' ? '' :
+                    arch == 'arm_32' ? 'arm32' :
+                    arch == 'aarch_64' ? 'arm64' :
+                    'unknown'
+    if (lwjglArch == 'unknown')
+        throw new GradleException('Unsupported Architecture: ' + arch)
+
+    return (lwjglArch == '' ? lwjglOS : (lwjglOS + '-' + lwjglArch))
+}
+
 ext {
     lwjglVersion = project.version
     jomlVersion = '1.10.2'
-    swtMavenVersion = '3.105.3'  //contains Eclipse SWT 4.6.2.9 software
+    swtMavenVersion = '3.116.100'  //contains Eclipse SWT 4.9.4.4 software
     graalvmVersion = '21.3.0'
 
     //LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, par, shaderc, vma, vulkan
@@ -40,39 +64,41 @@ repositories {
     mavenLocal()
 }
 
-//detect the OS (assuming 64-bit, on Intel/AMD hardware)
-private static String getCurrentPlatform() {
-    def currentOS = org.gradle.internal.os.OperatingSystem.current()
-    return currentOS.isLinux() ? 'linux' :
-           currentOS.isMacOsX() ? 'macos' :
-           currentOS.isWindows() ? 'windows' :
-           'unknown'
-}
-
 dependencies {
     implementation "org.joml:joml:$jomlVersion"
     //for compiling GraalVM substitution classes
     compileOnly "org.graalvm.nativeimage:svm:$graalvmVersion"
 
-    //OS-specific SWT library (64-bit Intel/AMD hardware only)
+    //SWT library specific to <os>-<arch> platform string
+    //(for 64-bit platforms only)
     switch (currentPlatform) {
-        case 'linux':
+        case 'linux':  //implicitly 'x86_64' architecture
             implementation("org.eclipse.platform:org.eclipse.swt.gtk.linux.x86_64:$swtMavenVersion") {
                 exclude group: 'org.eclipse.platform', module: 'org.eclipse.swt'
             }
             break
-        case 'macos':
+        case 'linux-arm64':
+            implementation("org.eclipse.platform:org.eclipse.swt.gtk.linux.aarch64:$swtMavenVersion") {
+                exclude group: 'org.eclipse.platform', module: 'org.eclipse.swt'
+            }
+            break
+        case 'macos':  //implicitly 'x86_64' architecture
             implementation("org.eclipse.platform:org.eclipse.swt.cocoa.macosx.x86_64:$swtMavenVersion") {
                 exclude group: 'org.eclipse.platform', module: 'org.eclipse.swt'
             }
             break
-        case 'windows':
+        case 'macos-arm64':
+            implementation("org.eclipse.platform:org.eclipse.swt.cocoa.macosx.aarch64:$swtMavenVersion") {
+                exclude group: 'org.eclipse.platform', module: 'org.eclipse.swt'
+            }
+            break
+        case 'windows':  //implicitly 'x86_64' architecture
             implementation("org.eclipse.platform:org.eclipse.swt.win32.win32.x86_64:$swtMavenVersion") {
                 exclude group: 'org.eclipse.platform', module: 'org.eclipse.swt'
             }
             break
         default:
-            throw new GradleException('Unknown OS: ' + currentPlatform)
+            throw new GradleException('Unknown platform for SWT: ' + currentPlatform)
     }
 
     //get recommended dependency versions from the LWJGL BOM
@@ -82,9 +108,8 @@ dependencies {
     lwjglModules.each {
         implementation "org.lwjgl:$it"
         if (it != 'lwjgl-cuda' && it != 'lwjgl-egl') { //cuda, egl have no native modules
-            //use natives for 64-bit Intel/AMD platforms only
             if (it == 'lwjgl-vulkan') {
-                if (currentPlatform == 'macos') {
+                if (osdetector.os == 'osx') {
                     //Vulkan natives exist for Mac OSX only
                     runtimeOnly "org.lwjgl:$it::natives-$currentPlatform"
                 }
@@ -182,8 +207,10 @@ task removeUnneededDllFiles {
                 include name: '*.txt'
             }
         }
-        ant.move(file: "$buildDir/$nativeImageDirName/reports",
-                 tofile: "$buildDir/tmp/$nativeImageDirName/reports")
+        if (file("$buildDir/$nativeImageDirName/reports").exists()) {
+            ant.move(file: "$buildDir/$nativeImageDirName/reports",
+                     tofile: "$buildDir/tmp/$nativeImageDirName/reports")
+        }
         if (file("$buildDir/$nativeImageDirName/sources").exists()) {
             ant.move(file: "$buildDir/$nativeImageDirName/sources",
                      tofile: "$buildDir/tmp/$nativeImageDirName/sources")
@@ -196,6 +223,7 @@ graalvmNative {
         main {
             imageName = project.name
             mainClass = project.mainClassName
+            debug = true
             verbose = true
             fallback = false
 

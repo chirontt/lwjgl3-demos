@@ -1,21 +1,38 @@
 [
 {
+  "name":"java.lang.Boolean",
+  "methods":[{"name":"getBoolean","parameterTypes":["java.lang.String"] }]}
+,
+{
   "name":"java.lang.ClassLoader",
   "methods":[
     {"name":"getPlatformClassLoader","parameterTypes":[] }, 
     {"name":"loadClass","parameterTypes":["java.lang.String"] }
-  ]
-},
+  ]}
+,
 {
-  "name":"java.lang.NoSuchMethodError"
-},
+  "name":"java.lang.NoSuchMethodError"}
+,
 {
-  "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"
-},
+  "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"}
+,
 {
   "name":"org.eclipse.swt.graphics.Device",
-  "methods":[{"name":"logProc","parameterTypes":["long","long","long","long"] }]
-},
+  "methods":[{"name":"logProc","parameterTypes":["long","long","long","long"] }]}
+,
+{
+  "name":"org.eclipse.swt.internal.SessionManagerDBus",
+  "methods":[{"name":"g_signal_handler","parameterTypes":["long","long","long","long","long"] }]}
+,
+{
+  "name":"org.eclipse.swt.internal.cairo.cairo_rectangle_int_t",
+  "fields":[
+    {"name":"height"}, 
+    {"name":"width"}, 
+    {"name":"x"}, 
+    {"name":"y"}
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GTypeInfo",
   "fields":[
@@ -29,12 +46,12 @@
     {"name":"instance_size"}, 
     {"name":"n_preallocs"}, 
     {"name":"value_table"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkEvent",
-  "fields":[{"name":"type"}]
-},
+  "fields":[{"name":"type"}]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkEventButton",
   "fields":[
@@ -49,8 +66,8 @@
     {"name":"x_root"}, 
     {"name":"y"}, 
     {"name":"y_root"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkEventCrossing",
   "fields":[
@@ -66,21 +83,22 @@
     {"name":"x_root"}, 
     {"name":"y"}, 
     {"name":"y_root"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkEventFocus",
   "fields":[
     {"name":"in"}, 
     {"name":"send_event"}, 
     {"name":"window"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkEventKey",
   "fields":[
     {"name":"group"}, 
     {"name":"hardware_keycode"}, 
+    {"name":"is_modifier"}, 
     {"name":"keyval"}, 
     {"name":"length"}, 
     {"name":"send_event"}, 
@@ -88,8 +106,8 @@
     {"name":"string"}, 
     {"name":"time"}, 
     {"name":"window"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkEventMotion",
   "fields":[
@@ -104,33 +122,8 @@
     {"name":"x_root"}, 
     {"name":"y"}, 
     {"name":"y_root"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkEventProperty",
-  "fields":[
-    {"name":"atom"}, 
-    {"name":"send_event"}, 
-    {"name":"state"}, 
-    {"name":"time"}, 
-    {"name":"window"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkEventScroll",
-  "fields":[
-    {"name":"device"}, 
-    {"name":"direction"}, 
-    {"name":"send_event"}, 
-    {"name":"state"}, 
-    {"name":"time"}, 
-    {"name":"window"}, 
-    {"name":"x"}, 
-    {"name":"x_root"}, 
-    {"name":"y"}, 
-    {"name":"y_root"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkEventWindowState",
   "fields":[
@@ -138,8 +131,8 @@
     {"name":"new_window_state"}, 
     {"name":"send_event"}, 
     {"name":"window"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkGeometry",
   "fields":[
@@ -154,8 +147,16 @@
     {"name":"min_width"}, 
     {"name":"width_inc"}, 
     {"name":"win_gravity"}
-  ]
-},
+  ]}
+,
+{
+  "name":"org.eclipse.swt.internal.gtk.GdkKeymapKey",
+  "fields":[
+    {"name":"group"}, 
+    {"name":"keycode"}, 
+    {"name":"level"}
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkRGBA",
   "fields":[
@@ -163,8 +164,8 @@
     {"name":"blue"}, 
     {"name":"green"}, 
     {"name":"red"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkRectangle",
   "fields":[
@@ -172,12 +173,11 @@
     {"name":"width"}, 
     {"name":"x"}, 
     {"name":"y"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GdkWindowAttr",
   "fields":[
-    {"name":"colormap"}, 
     {"name":"cursor"}, 
     {"name":"event_mask"}, 
     {"name":"height"}, 
@@ -191,8 +191,8 @@
     {"name":"wmclass_name"}, 
     {"name":"x"}, 
     {"name":"y"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GtkAllocation",
   "fields":[
@@ -200,8 +200,8 @@
     {"name":"width"}, 
     {"name":"x"}, 
     {"name":"y"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GtkBorder",
   "fields":[
@@ -209,15 +209,15 @@
     {"name":"left"}, 
     {"name":"right"}, 
     {"name":"top"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.GtkRequisition",
   "fields":[
     {"name":"height"}, 
     {"name":"width"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.XAnyEvent",
   "fields":[
@@ -225,12 +225,12 @@
     {"name":"send_event"}, 
     {"name":"serial"}, 
     {"name":"window"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.XEvent",
-  "fields":[{"name":"type"}]
-},
+  "fields":[{"name":"type"}]}
+,
 {
   "name":"org.eclipse.swt.internal.gtk.XExposeEvent",
   "fields":[
@@ -239,8 +239,8 @@
     {"name":"width"}, 
     {"name":"x"}, 
     {"name":"y"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.opengl.glx.XVisualInfo",
   "fields":[
@@ -254,21 +254,32 @@
     {"name":"screen"}, 
     {"name":"visual"}, 
     {"name":"visualid"}
-  ]
-},
+  ]}
+,
+{
+  "name":"org.eclipse.swt.widgets.Control",
+  "methods":[
+    {"name":"gestureBeginProc","parameterTypes":["long","long","long"] }, 
+    {"name":"gestureEndProc","parameterTypes":["long","long","long"] }, 
+    {"name":"magnifyProc","parameterTypes":["long","double","long"] }, 
+    {"name":"rotateProc","parameterTypes":["long","double","double","long"] }, 
+    {"name":"swipeProc","parameterTypes":["long","double","double","long"] }
+  ]}
+,
 {
   "name":"org.eclipse.swt.widgets.Display",
   "methods":[
     {"name":"allChildrenProc","parameterTypes":["long","long"] }, 
     {"name":"caretProc","parameterTypes":["long"] }, 
     {"name":"cellDataProc","parameterTypes":["long","long","long","long","long"] }, 
+    {"name":"changeValue","parameterTypes":["long","int","double","long"] }, 
     {"name":"checkIfEventProc","parameterTypes":["long","long","long"] }, 
     {"name":"emissionProc","parameterTypes":["long","long","long","long"] }, 
     {"name":"eventProc","parameterTypes":["long","long"] }, 
-    {"name":"filterProc","parameterTypes":["long","long","long"] }, 
     {"name":"idleProc","parameterTypes":["long"] }, 
-    {"name":"menuPositionProc","parameterTypes":["long","long","long","long","long"] }, 
+    {"name":"keysChangedProc","parameterTypes":["long","long"] }, 
     {"name":"mouseHoverProc","parameterTypes":["long"] }, 
+    {"name":"notifyProc","parameterTypes":["long","long","long"] }, 
     {"name":"rendererClassInitProc","parameterTypes":["long","long"] }, 
     {"name":"rendererGetPreferredWidthProc","parameterTypes":["long","long","long","long"] }, 
     {"name":"rendererRenderProc","parameterTypes":["long","long","long","long","long","long"] }, 
@@ -283,14 +294,14 @@
     {"name":"windowProc","parameterTypes":["long","long","long","long"] }, 
     {"name":"windowProc","parameterTypes":["long","long","long","long","long"] }, 
     {"name":"windowTimerProc","parameterTypes":["long"] }
-  ]
-},
+  ]}
+,
 {
   "name":"org.graalvm.nativebridge.jni.JNIExceptionWrapperEntryPoints",
-  "methods":[{"name":"getClassName","parameterTypes":["java.lang.Class"] }]
-},
+  "methods":[{"name":"getClassName","parameterTypes":["java.lang.Class"] }]}
+,
 {
   "name":"org.lwjgl.system.CallbackI",
-  "methods":[{"name":"callback","parameterTypes":["long","long"] }]
-}
+  "methods":[{"name":"callback","parameterTypes":["long","long"] }]}
+
 ]

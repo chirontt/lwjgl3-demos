@@ -4,14 +4,14 @@
   "methods":[
     {"name":"getPlatformClassLoader","parameterTypes":[] }, 
     {"name":"loadClass","parameterTypes":["java.lang.String"] }
-  ]
-},
+  ]}
+,
 {
-  "name":"java.lang.NoSuchMethodError"
-},
+  "name":"java.lang.NoSuchMethodError"}
+,
 {
-  "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"
-},
+  "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"}
+,
 {
   "name":"org.eclipse.swt.internal.opengl.win32.PIXELFORMATDESCRIPTOR",
   "fields":[
@@ -41,8 +41,8 @@
     {"name":"iPixelType"}, 
     {"name":"nSize"}, 
     {"name":"nVersion"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.ACTCTX",
   "fields":[
@@ -55,32 +55,30 @@
     {"name":"lpSource"}, 
     {"name":"wLangId"}, 
     {"name":"wProcessorArchitecture"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.win32.DLLVERSIONINFO",
-  "fields":[
-    {"name":"cbSize"}, 
-    {"name":"dwBuildNumber"}, 
-    {"name":"dwMajorVersion"}, 
-    {"name":"dwMinorVersion"}, 
-    {"name":"dwPlatformID"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.HIGHCONTRAST",
   "fields":[
     {"name":"cbSize"}, 
     {"name":"dwFlags"}, 
     {"name":"lpszDefaultScheme"}
-  ]
-},
+  ]}
+,
+{
+  "name":"org.eclipse.swt.internal.win32.INITCOMMONCONTROLSEX",
+  "fields":[
+    {"name":"dwICC"}, 
+    {"name":"dwSize"}
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.LOGFONT",
   "fields":[
     {"name":"lfCharSet"}, 
     {"name":"lfClipPrecision"}, 
     {"name":"lfEscapement"}, 
+    {"name":"lfFaceName"}, 
     {"name":"lfHeight"}, 
     {"name":"lfItalic"}, 
     {"name":"lfOrientation"}, 
@@ -91,12 +89,8 @@
     {"name":"lfUnderline"}, 
     {"name":"lfWeight"}, 
     {"name":"lfWidth"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.win32.LOGFONTW",
-  "fields":[{"name":"lfFaceName"}]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.MENUITEMINFO",
   "fields":[
@@ -112,8 +106,8 @@
     {"name":"hbmpItem"}, 
     {"name":"hbmpUnchecked"}, 
     {"name":"wID"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.MINMAXINFO",
   "fields":[
@@ -127,8 +121,23 @@
     {"name":"ptMinTrackSize_y"}, 
     {"name":"ptReserved_x"}, 
     {"name":"ptReserved_y"}
-  ]
-},
+  ]}
+,
+{
+  "name":"org.eclipse.swt.internal.win32.MONITORINFO",
+  "fields":[
+    {"name":"cbSize"}, 
+    {"name":"dwFlags"}, 
+    {"name":"rcMonitor_bottom"}, 
+    {"name":"rcMonitor_left"}, 
+    {"name":"rcMonitor_right"}, 
+    {"name":"rcMonitor_top"}, 
+    {"name":"rcWork_bottom"}, 
+    {"name":"rcWork_left"}, 
+    {"name":"rcWork_right"}, 
+    {"name":"rcWork_top"}
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.MSG",
   "fields":[
@@ -139,8 +148,8 @@
     {"name":"wParam"}, 
     {"name":"x"}, 
     {"name":"y"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.NONCLIENTMETRICS",
   "fields":[
@@ -153,33 +162,14 @@
     {"name":"iScrollHeight"}, 
     {"name":"iScrollWidth"}, 
     {"name":"iSmCaptionHeight"}, 
-    {"name":"iSmCaptionWidth"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.win32.NONCLIENTMETRICSW",
-  "fields":[
+    {"name":"iSmCaptionWidth"}, 
     {"name":"lfCaptionFont"}, 
     {"name":"lfMenuFont"}, 
     {"name":"lfMessageFont"}, 
     {"name":"lfSmCaptionFont"}, 
     {"name":"lfStatusFont"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.win32.OSVERSIONINFO",
-  "fields":[
-    {"name":"dwBuildNumber"}, 
-    {"name":"dwMajorVersion"}, 
-    {"name":"dwMinorVersion"}, 
-    {"name":"dwOSVersionInfoSize"}, 
-    {"name":"dwPlatformId"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.win32.OSVERSIONINFOW",
-  "fields":[{"name":"szCSDVersion"}]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.PAINTSTRUCT",
   "fields":[
@@ -192,15 +182,15 @@
     {"name":"rgbReserved"}, 
     {"name":"right"}, 
     {"name":"top"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.POINT",
   "fields":[
     {"name":"x"}, 
     {"name":"y"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.RECT",
   "fields":[
@@ -208,8 +198,8 @@
     {"name":"left"}, 
     {"name":"right"}, 
     {"name":"top"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.STARTUPINFO",
   "fields":[
@@ -231,8 +221,8 @@
     {"name":"lpReserved2"}, 
     {"name":"lpTitle"}, 
     {"name":"wShowWindow"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.TEXTMETRIC",
   "fields":[
@@ -252,17 +242,8 @@
     {"name":"tmStruckOut"}, 
     {"name":"tmUnderlined"}, 
     {"name":"tmWeight"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.win32.TEXTMETRICW",
-  "fields":[
-    {"name":"tmBreakChar"}, 
-    {"name":"tmDefaultChar"}, 
-    {"name":"tmFirstChar"}, 
-    {"name":"tmLastChar"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.WINDOWPLACEMENT",
   "fields":[
@@ -277,8 +258,8 @@
     {"name":"right"}, 
     {"name":"showCmd"}, 
     {"name":"top"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.WINDOWPOS",
   "fields":[
@@ -289,8 +270,8 @@
     {"name":"hwndInsertAfter"}, 
     {"name":"x"}, 
     {"name":"y"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.internal.win32.WNDCLASS",
   "fields":[
@@ -304,8 +285,8 @@
     {"name":"lpszClassName"}, 
     {"name":"lpszMenuName"}, 
     {"name":"style"}
-  ]
-},
+  ]}
+,
 {
   "name":"org.eclipse.swt.widgets.Display",
   "methods":[
@@ -313,14 +294,14 @@
     {"name":"messageProc","parameterTypes":["long","long","long","long"] }, 
     {"name":"msgFilterProc","parameterTypes":["long","long","long"] }, 
     {"name":"windowProc","parameterTypes":["long","long","long","long"] }
-  ]
-},
+  ]}
+,
 {
   "name":"org.graalvm.nativebridge.jni.JNIExceptionWrapperEntryPoints",
-  "methods":[{"name":"getClassName","parameterTypes":["java.lang.Class"] }]
-},
+  "methods":[{"name":"getClassName","parameterTypes":["java.lang.Class"] }]}
+,
 {
   "name":"org.lwjgl.system.CallbackI",
-  "methods":[{"name":"callback","parameterTypes":["long","long"] }]
-}
+  "methods":[{"name":"callback","parameterTypes":["long","long"] }]}
+
 ]
