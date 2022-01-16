@@ -12,9 +12,9 @@
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <maven.shade.plugin.version>3.2.4</maven.shade.plugin.version>
         <lwjgl.version>${project.version}</lwjgl.version>
-        <swt.maven.version>3.105.3</swt.maven.version> <!-- contains Eclipse SWT 4.6.2.9 software -->
-        <joml.version>1.10.3-SNAPSHOT</joml.version>
-        <native.maven.plugin.version>0.9.7.1</native.maven.plugin.version>
+        <swt.maven.version>3.116.100</swt.maven.version> <!-- contains Eclipse SWT 4.9.4.4 software -->
+        <joml.version>1.10.4-SNAPSHOT</joml.version>
+        <native.maven.plugin.version>0.9.9</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
         <graalvm.version>21.3.0</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
@@ -30,17 +30,7 @@
     <description>LWJGL3 demos with native image by GraalVM</description>
 
     <profiles>
-        <profile>
-            <id>windows</id>
-            <activation>
-                <os>
-                    <family>Windows</family>
-                </os>
-            </activation>
-            <properties>
-                <platform>windows</platform>
-            </properties>
-        </profile>
+        <!-- profiles based on OS platforms (64-bit only) -->
         <profile>
             <id>windows-amd64</id>
             <activation>
@@ -49,6 +39,9 @@
                     <arch>amd64</arch>
                 </os>
             </activation>
+            <properties>
+                <platform>windows</platform>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -64,17 +57,6 @@
             </dependencies>
         </profile>
         <profile>
-            <id>linux</id>
-            <activation>
-                <os>
-                    <family>Linux</family>
-                </os>
-            </activation>
-            <properties>
-                <platform>linux</platform>
-            </properties>
-        </profile>
-        <profile>
             <id>linux-amd64</id>
             <activation>
                 <os>
@@ -82,6 +64,9 @@
                     <arch>amd64</arch>
                 </os>
             </activation>
+            <properties>
+                <platform>linux</platform>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -97,15 +82,29 @@
             </dependencies>
         </profile>
         <profile>
-            <id>mac</id>
+            <id>linux-arm64</id>
             <activation>
                 <os>
-                    <family>Mac</family>
+                    <family>Linux</family>
+                    <arch>arm64</arch>
                 </os>
             </activation>
             <properties>
-                <platform>macos</platform>
+                <platform>linux-arm64</platform>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.platform</groupId>
+                    <artifactId>org.eclipse.swt.gtk.linux.aarch64</artifactId>
+                    <version>${swt.maven.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.platform</groupId>
+                            <artifactId>org.eclipse.swt</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+            </dependencies>
         </profile>
         <profile>
             <id>mac-amd64</id>
@@ -115,6 +114,9 @@
                     <arch>amd64</arch>
                 </os>
             </activation>
+            <properties>
+                <platform>macos</platform>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.eclipse.platform</groupId>
@@ -132,6 +134,37 @@
                     <artifactId>lwjgl-vulkan</artifactId>
                     <version>${lwjgl.version}</version>
                     <classifier>natives-macos</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>mac-arm64</id>
+            <activation>
+                <os>
+                    <family>Mac</family>
+                    <arch>arm64</arch>
+                </os>
+            </activation>
+            <properties>
+                <platform>macos-arm64</platform>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.platform</groupId>
+                    <artifactId>org.eclipse.swt.cocoa.macosx.aarch64</artifactId>
+                    <version>${swt.maven.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.platform</groupId>
+                            <artifactId>org.eclipse.swt</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.lwjgl</groupId>
+                    <artifactId>lwjgl-vulkan</artifactId>
+                    <version>${lwjgl.version}</version>
+                    <classifier>natives-macos-arm64</classifier>
                 </dependency>
             </dependencies>
         </profile>
@@ -322,7 +355,8 @@
                             </fileset>
                         </move>
                         <move file="${project.build.directory}/${native.image.dir.name}/reports"
-                              tofile="${project.build.directory}/tmp/${native.image.dir.name}/reports"/>
+                              tofile="${project.build.directory}/tmp/${native.image.dir.name}/reports"
+                              failonerror="false" quiet="true"/>
                     </target>
                 </configuration>
             </plugin>
