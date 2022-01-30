@@ -1,17 +1,21 @@
 [
 {
+  "name":"java.lang.Boolean",
+  "methods":[{"name":"getBoolean","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"java.lang.ClassLoader",
   "methods":[
     {"name":"getPlatformClassLoader","parameterTypes":[] }, 
     {"name":"loadClass","parameterTypes":["java.lang.String"] }
-  ]}
-,
+  ]
+},
 {
-  "name":"java.lang.NoSuchMethodError"}
-,
+  "name":"java.lang.NoSuchMethodError"
+},
 {
-  "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"}
-,
+  "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"
+},
 {
   "name":"org.eclipse.swt.internal.opengl.win32.PIXELFORMATDESCRIPTOR",
   "fields":[
@@ -41,8 +45,8 @@
     {"name":"iPixelType"}, 
     {"name":"nSize"}, 
     {"name":"nVersion"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.ACTCTX",
   "fields":[
@@ -55,23 +59,23 @@
     {"name":"lpSource"}, 
     {"name":"wLangId"}, 
     {"name":"wProcessorArchitecture"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.HIGHCONTRAST",
   "fields":[
     {"name":"cbSize"}, 
     {"name":"dwFlags"}, 
     {"name":"lpszDefaultScheme"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.INITCOMMONCONTROLSEX",
   "fields":[
     {"name":"dwICC"}, 
     {"name":"dwSize"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.LOGFONT",
   "fields":[
@@ -89,8 +93,8 @@
     {"name":"lfUnderline"}, 
     {"name":"lfWeight"}, 
     {"name":"lfWidth"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.MENUITEMINFO",
   "fields":[
@@ -106,8 +110,8 @@
     {"name":"hbmpItem"}, 
     {"name":"hbmpUnchecked"}, 
     {"name":"wID"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.MINMAXINFO",
   "fields":[
@@ -121,8 +125,8 @@
     {"name":"ptMinTrackSize_y"}, 
     {"name":"ptReserved_x"}, 
     {"name":"ptReserved_y"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.MONITORINFO",
   "fields":[
@@ -136,8 +140,8 @@
     {"name":"rcWork_left"}, 
     {"name":"rcWork_right"}, 
     {"name":"rcWork_top"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.MSG",
   "fields":[
@@ -148,8 +152,8 @@
     {"name":"wParam"}, 
     {"name":"x"}, 
     {"name":"y"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.NONCLIENTMETRICS",
   "fields":[
@@ -168,8 +172,8 @@
     {"name":"lfMessageFont"}, 
     {"name":"lfSmCaptionFont"}, 
     {"name":"lfStatusFont"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.PAINTSTRUCT",
   "fields":[
@@ -182,15 +186,15 @@
     {"name":"rgbReserved"}, 
     {"name":"right"}, 
     {"name":"top"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.POINT",
   "fields":[
     {"name":"x"}, 
     {"name":"y"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.RECT",
   "fields":[
@@ -198,8 +202,8 @@
     {"name":"left"}, 
     {"name":"right"}, 
     {"name":"top"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.STARTUPINFO",
   "fields":[
@@ -221,8 +225,8 @@
     {"name":"lpReserved2"}, 
     {"name":"lpTitle"}, 
     {"name":"wShowWindow"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.TEXTMETRIC",
   "fields":[
@@ -242,8 +246,8 @@
     {"name":"tmStruckOut"}, 
     {"name":"tmUnderlined"}, 
     {"name":"tmWeight"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.WINDOWPLACEMENT",
   "fields":[
@@ -258,8 +262,8 @@
     {"name":"right"}, 
     {"name":"showCmd"}, 
     {"name":"top"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.WINDOWPOS",
   "fields":[
@@ -270,8 +274,8 @@
     {"name":"hwndInsertAfter"}, 
     {"name":"x"}, 
     {"name":"y"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.internal.win32.WNDCLASS",
   "fields":[
@@ -285,8 +289,8 @@
     {"name":"lpszClassName"}, 
     {"name":"lpszMenuName"}, 
     {"name":"style"}
-  ]}
-,
+  ]
+},
 {
   "name":"org.eclipse.swt.widgets.Display",
   "methods":[
@@ -294,14 +298,18 @@
     {"name":"messageProc","parameterTypes":["long","long","long","long"] }, 
     {"name":"msgFilterProc","parameterTypes":["long","long","long"] }, 
     {"name":"windowProc","parameterTypes":["long","long","long","long"] }
-  ]}
-,
+  ]
+},
 {
-  "name":"org.graalvm.nativebridge.jni.JNIExceptionWrapperEntryPoints",
-  "methods":[{"name":"getClassName","parameterTypes":["java.lang.Class"] }]}
-,
+  "name":"org.graalvm.jniutils.JNIExceptionWrapperEntryPoints",
+  "methods":[{"name":"getClassName","parameterTypes":["java.lang.Class"] }]
+},
 {
   "name":"org.lwjgl.system.CallbackI",
-  "methods":[{"name":"callback","parameterTypes":["long","long"] }]}
-
+  "methods":[{"name":"callback","parameterTypes":["long","long"] }]
+},
+{
+  "name":"org.lwjgl.system.ThreadLocalUtil",
+  "methods":[{"name":"setupEnvData","parameterTypes":[] }]
+}
 ]

@@ -16,7 +16,7 @@
         <joml.version>1.10.4-SNAPSHOT</joml.version>
         <native.maven.plugin.version>0.9.9</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
-        <graalvm.version>21.3.0</graalvm.version>
+        <graalvm.version>22.0.0.2</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
         <!-- Can be overwritten via -D property during mvn invoke to specify a different demo.
              The package "org.lwjgl.demo." is prepended automatically. -->
@@ -56,6 +56,19 @@
                 </dependency>
             </dependencies>
         </profile>
+        <!-- Windows arm64 not supported, due to no SWT library available for it -->
+        <!-- profile>
+            <id>windows-arm64</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <platform>windows-arm64</platform>
+            </properties>
+        </profile -->
         <profile>
             <id>linux-amd64</id>
             <activation>
@@ -86,7 +99,7 @@
             <activation>
                 <os>
                     <family>Linux</family>
-                    <arch>arm64</arch>
+                    <arch>aarch64</arch>
                 </os>
             </activation>
             <properties>
@@ -111,7 +124,7 @@
             <activation>
                 <os>
                     <family>Mac</family>
-                    <arch>amd64</arch>
+                    <!-- <arch>amd64</arch> --> <!-- doesn't work -->
                 </os>
             </activation>
             <properties>
@@ -142,7 +155,7 @@
             <activation>
                 <os>
                     <family>Mac</family>
-                    <arch>arm64</arch>
+                    <arch>aarch64</arch>
                 </os>
             </activation>
             <properties>
@@ -351,6 +364,7 @@
                         <move todir="${project.build.directory}/tmp/${native.image.dir.name}">
                             <fileset dir="${project.build.directory}/${native.image.dir.name}">
                                 <include name="*.dll"/>
+                                <include name="*.pdb"/>
                                 <include name="*.txt"/>
                             </fileset>
                         </move>

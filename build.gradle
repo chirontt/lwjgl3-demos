@@ -25,9 +25,8 @@ def getCurrentPlatform() {
         throw new GradleException('Unsupported OS: ' + os)
 
     def arch = osdetector.arch
-    def lwjglArch = arch == 'x86_32' ? 'x86' :
-                    arch == 'x86_64' ? '' :
-                    arch == 'arm_32' ? 'arm32' :
+    //consider 64-bit architectures only
+    def lwjglArch = arch == 'x86_64' ? '' :
                     arch == 'aarch_64' ? 'arm64' :
                     'unknown'
     if (lwjglArch == 'unknown')
@@ -40,7 +39,7 @@ ext {
     lwjglVersion = project.version
     jomlVersion = '1.10.4-SNAPSHOT'
     swtMavenVersion = '3.116.100'  //contains Eclipse SWT 4.9.4.4 software
-    graalvmVersion = '21.3.0'
+    graalvmVersion = '22.0.0.2'
 
     //LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, par, shaderc, vma, vulkan
     lwjglModules = [
@@ -97,6 +96,8 @@ dependencies {
                 exclude group: 'org.eclipse.platform', module: 'org.eclipse.swt'
             }
             break
+        //Windows arm64 not supported for now, due to no SWT library available for it
+        case 'windows-arm64':
         default:
             throw new GradleException('Unknown platform for SWT: ' + currentPlatform)
     }
@@ -204,6 +205,7 @@ task removeUnneededDllFiles {
         ant.move(todir: "$buildDir/tmp/$nativeImageDirName") {
             fileset(dir: "$buildDir/$nativeImageDirName") {
                 include name: '*.dll'
+                include name: '*.pdb'
                 include name: '*.txt'
             }
         }
@@ -231,6 +233,7 @@ graalvmNative {
             buildArgs.add('--native-image-info')
             buildArgs.add("-H:Path=$buildDir/$nativeImageDirName")
             buildArgs.add("-H:TempDirectory=$buildDir/tmp/$nativeImageDirName")
+            //buildArgs.add('-H:+TraceNativeToolUsage')
 
             useFatJar = false
         }

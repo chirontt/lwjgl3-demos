@@ -9,10 +9,7 @@ import com.oracle.svm.core.annotate.RecomputeFieldValue.Kind;
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
 
-//temporarily disabled since build 2 of LWJGL 3.3.1-SNAPSHOT for now,
-//as resultant native image has crashed at app startup
-//even before reaching this substitution code.
-//@TargetClass(org.lwjgl.system.ThreadLocalUtil.class)
+@TargetClass(org.lwjgl.system.ThreadLocalUtil.class)
 final class Target_org_lwjgl_system_ThreadLocalUtil {
 
     @Alias
@@ -29,8 +26,6 @@ final class Target_org_lwjgl_system_ThreadLocalUtil {
 
     @Substitute
     public static void setFunctionMissingAddresses(int functionCount) {
-        //testing...
-		System.out.println("ThreadLocalUtil.setFunctionMissingAddresses() with functionCount=" + functionCount);
         long ptr = JNI_NATIVE_INTERFACE + CAPABILITIES_OFFSET;
         if (functionCount == 0) {
             long missingCaps = memGetAddress(ptr);
