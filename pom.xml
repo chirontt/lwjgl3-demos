@@ -7,14 +7,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.plugin.version>3.9.0</maven.compiler.plugin.version>
         <maven.shade.plugin.version>3.2.4</maven.shade.plugin.version>
         <lwjgl.version>${project.version}</lwjgl.version>
         <swt.maven.version>3.116.100</swt.maven.version> <!-- contains Eclipse SWT 4.9.4.4 software -->
-        <joml.version>1.10.4-SNAPSHOT</joml.version>
-        <native.maven.plugin.version>0.9.9</native.maven.plugin.version>
+        <joml.version>1.10.5-SNAPSHOT</joml.version>
+        <native.maven.plugin.version>0.9.10</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
         <graalvm.version>22.0.0.2</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>

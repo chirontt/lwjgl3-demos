@@ -166,12 +166,3 @@ e.g. to print out some debug info in the console:
 
 )
 
-## Compressed native executable
-
-The resulting `lwjgl3-demos` executable file, whether produced by Gradle or Maven build script,
-can be further reduced in size via compression using the [UPX](https://upx.github.io) utility,
-as described [here](https://medium.com/graalvm/compressed-graalvm-native-images-4d233766a214).
-
-For example, the resulting `lwjgl3-demos.exe` native application file produced in Windows
-is normally 68MB in size, but is compressed to 24MB with the UPX command: `upx --best lwjgl3-demos.exe`
-

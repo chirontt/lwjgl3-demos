@@ -890,9 +890,6 @@
       "pattern":"\\Qorg/lwjgl/demo/vulkan/raytracing/simplesphere/raymiss.glsl\\E"
     }, 
     {
-      "pattern":"\\Qorg/lwjgl/demo/vulkan/raytracing/simpletriangle/closesthit.glsl\\E"
-    }, 
-    {
       "pattern":"\\Qorg/lwjgl/demo/vulkan/raytracing/simpletriangle/raygen.glsl\\E"
     }, 
     {

@@ -1,11 +1,11 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.9'
+    id 'org.graalvm.buildtools.native' version '0.9.10'
     id 'com.google.osdetector' version '1.7.0'
 }
 
 tasks.wrapper {
-    gradleVersion = '7.3.3'
+    gradleVersion = '7.4'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -37,7 +37,7 @@ def getCurrentPlatform() {
 
 ext {
     lwjglVersion = project.version
-    jomlVersion = '1.10.4-SNAPSHOT'
+    jomlVersion = '1.10.5-SNAPSHOT'
     swtMavenVersion = '3.116.100'  //contains Eclipse SWT 4.9.4.4 software
     graalvmVersion = '22.0.0.2'
 
