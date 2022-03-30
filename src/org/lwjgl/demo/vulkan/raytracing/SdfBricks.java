@@ -517,10 +517,6 @@ public class SdfBricks {
                             .calloc(stack)
                             .sType$Default()
                             .accelerationStructure(true))
-                    .pNext(VkPhysicalDeviceDescriptorIndexingFeaturesEXT
-                            .calloc(stack)
-                            .sType$Default()
-                            .runtimeDescriptorArray(true))
                     .pNext(VkPhysicalDeviceBufferDeviceAddressFeaturesKHR
                             .calloc(stack)
                             .sType$Default()
@@ -561,8 +557,7 @@ public class SdfBricks {
             PointerBuffer pAllocator = stack.mallocPointer(1);
             _CHECK_(vmaCreateAllocator(VmaAllocatorCreateInfo
                         .calloc(stack)
-                        .flags(VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT | 
-                               VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT)
+                        .flags(VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT)
                         .physicalDevice(deviceAndQueueFamilies.physicalDevice)
                         .device(device)
                         .pVulkanFunctions(VmaVulkanFunctions
@@ -646,7 +641,7 @@ public class SdfBricks {
             IntBuffer pPresentModes = stack.mallocInt(presentModeCount);
             _CHECK_(vkGetPhysicalDeviceSurfacePresentModesKHR(deviceAndQueueFamilies.physicalDevice, surface, pPresentModeCount, pPresentModes),
                     "Failed to get presentation modes");
-            int imageCount = min(max(pSurfaceCapabilities.minImageCount() + 1, 3), pSurfaceCapabilities.maxImageCount());
+            int imageCount = min(max(pSurfaceCapabilities.minImageCount(), 2), pSurfaceCapabilities.maxImageCount());
             ColorFormatAndSpace surfaceFormat = determineSurfaceFormat(deviceAndQueueFamilies.physicalDevice, surface);
             Vector2i swapchainExtents = determineSwapchainExtents(pSurfaceCapabilities);
             LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
@@ -1132,7 +1127,6 @@ public class SdfBricks {
 
             // Create a buffer that will hold the final BLAS
             AllocationAndBuffer accelerationStructureBuffer = createBuffer(
-                    VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR |
                     VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR, buildSizesInfo.accelerationStructureSize(),
                     null, 256, null);
 
@@ -1178,10 +1172,10 @@ public class SdfBricks {
             vkCmdBuildAccelerationStructuresKHR(
                     cmdBuf,
                     pInfos,
-                    stack.pointers(
+                    pointersOfElements(stack,
                             VkAccelerationStructureBuildRangeInfoKHR
-                            .calloc(1, stack)
-                            .primitiveCount(geometry.numAabbs)));
+                                    .calloc(1, stack)
+                                    .primitiveCount(geometry.numAabbs)));
 
             // Finally submit command buffer and register callback when fence signals to 
             // dispose of resources
@@ -1208,13 +1202,14 @@ public class SdfBricks {
                     VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR |
                     VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR,
                     memByteBuffer(VkAccelerationStructureInstanceKHR
-                            .calloc(stack)
+                            .calloc(1, stack)
                             .accelerationStructureReference(blasDeviceAddress)
                             .mask(~0) // <- we do not want to mask-away any geometry, so use 0b11111111
-                            .flags(VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR)
+                            .flags(VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR |
+                                   VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR)
                             .transform(VkTransformMatrixKHR
                                     .calloc(stack)
-                                    .matrix(new Matrix4x3f().getTransposed(stack.mallocFloat(12)))).address(), VkAccelerationStructureInstanceKHR.SIZEOF),
+                                    .matrix(new Matrix4x3f().getTransposed(stack.mallocFloat(12))))),
                     16, // <- VUID-vkCmdBuildAccelerationStructuresKHR-pInfos-03715
                     null);
 
@@ -1252,7 +1247,6 @@ public class SdfBricks {
 
             // Create a buffer that will hold the final TLAS
             AllocationAndBuffer accelerationStructureBuffer = createBuffer(
-                    VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR |
                     VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR, buildSizesInfo.accelerationStructureSize(), null,
                     256,
                     null);
@@ -1299,10 +1293,10 @@ public class SdfBricks {
             vkCmdBuildAccelerationStructuresKHR(
                     cmdBuf,
                     pInfos,
-                    stack.pointers(
+                    pointersOfElements(stack,
                             VkAccelerationStructureBuildRangeInfoKHR
-                            .calloc(1, stack)
-                            .primitiveCount(1))); // <- number of BLASes!
+                                    .calloc(1, stack)
+                                    .primitiveCount(1))); // <- number of BLASes!
 
             // insert barrier to let tracing wait for the TLAS build
             vkCmdPipelineBarrier(cmdBuf,

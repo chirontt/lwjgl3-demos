@@ -266,9 +266,7 @@ public class ClearScreenDemo {
                     VkDebugUtilsMessengerCreateInfoEXT
                         .calloc(stack)
                         .sType$Default()
-                        .messageSeverity(VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
-                                         VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
-                                         VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                        .messageSeverity(VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
                                          VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
                         .messageType(VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
                                      VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
@@ -480,7 +478,7 @@ public class ClearScreenDemo {
             IntBuffer pPresentModes = stack.mallocInt(presentModeCount);
             _CHECK_(vkGetPhysicalDeviceSurfacePresentModesKHR(deviceAndQueueFamilies.physicalDevice, surface, pPresentModeCount, pPresentModes),
                     "Failed to get presentation modes");
-            int imageCount = min(max(pSurfaceCapabilities.minImageCount() + 1, 3), pSurfaceCapabilities.maxImageCount());
+            int imageCount = min(max(pSurfaceCapabilities.minImageCount(), 2), pSurfaceCapabilities.maxImageCount());
             ColorFormatAndSpace surfaceFormat = determineSurfaceFormat(deviceAndQueueFamilies.physicalDevice, surface);
             Vector2i swapchainExtents = determineSwapchainExtents(pSurfaceCapabilities);
             LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
