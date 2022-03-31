@@ -8,18 +8,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.release>11</maven.compiler.release>
-        <maven.compiler.plugin.version>3.9.0</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
         <maven.shade.plugin.version>3.2.4</maven.shade.plugin.version>
         <lwjgl.version>${project.version}</lwjgl.version>
         <swt.maven.version>3.116.100</swt.maven.version> <!-- contains Eclipse SWT 4.9.4.4 software -->
-        <joml.version>1.10.4</joml.version>
+        <joml.version>1.10.5-SNAPSHOT</joml.version>
         <native.maven.plugin.version>0.9.10</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
         <graalvm.version>22.0.0.2</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
-        <!-- Can be overwritten via -D property during mvn invoke to specify a different demo.
-             The package "org.lwjgl.demo." is prepended automatically. -->
-        <class>bgfx.Bump</class>
+        <!-- default exec application is the demo launcher, but specific demo class
+             can be launched directly via the following property during mvn invoke.
+             (the package "org.lwjgl.demo." is prepended automatically, if not present) -->
+        <class></class>
         <!-- system properties for the application when run by exec:exec command;
              can be specified on the command line with -Dsys.props="..."
         -->
@@ -360,7 +361,8 @@
                             </manifest>
                         </jar>
                         <!-- move unneeded .dll/.txt files created by the native-image build -->
-                        <move todir="${project.build.directory}/tmp/${native.image.dir.name}">
+                        <move todir="${project.build.directory}/tmp/${native.image.dir.name}"
+                              failonerror="false" quiet="true">
                             <fileset dir="${project.build.directory}/${native.image.dir.name}">
                                 <include name="*.dll"/>
                                 <include name="*.pdb"/>

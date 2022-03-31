@@ -3,6 +3,9 @@
   "name":"[B"
 },
 {
+  "name":"[F"
+},
+{
   "name":"[Ljava.lang.String;"
 },
 {
@@ -441,6 +444,26 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.intro.Intro1",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.intro.Intro2",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.intro.Intro3",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.intro.Intro4",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.intro.Intro5",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.opengl.PolygonDrawer",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -834,6 +857,10 @@
 },
 {
   "name":"org.lwjgl.demo.vulkan.raytracing.SimpleTriangleRayQuery",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.vulkan.raytracing.VoxelChunks",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {

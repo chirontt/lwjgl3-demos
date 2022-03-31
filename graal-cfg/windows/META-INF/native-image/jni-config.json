@@ -17,6 +17,95 @@
   "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"
 },
 {
+  "name":"org.eclipse.swt.browser.WebSite$1"
+},
+{
+  "name":"org.eclipse.swt.browser.WebSite$2"
+},
+{
+  "name":"org.eclipse.swt.browser.WebSite$3"
+},
+{
+  "name":"org.eclipse.swt.browser.WebSite$4"
+},
+{
+  "name":"org.eclipse.swt.browser.WebSite$5"
+},
+{
+  "name":"org.eclipse.swt.internal.ole.win32.COMObject",
+  "methods":[
+    {"name":"callback0","parameterTypes":["long[]"] }, 
+    {"name":"callback1","parameterTypes":["long[]"] }, 
+    {"name":"callback10","parameterTypes":["long[]"] }, 
+    {"name":"callback11","parameterTypes":["long[]"] }, 
+    {"name":"callback12","parameterTypes":["long[]"] }, 
+    {"name":"callback13","parameterTypes":["long[]"] }, 
+    {"name":"callback14","parameterTypes":["long[]"] }, 
+    {"name":"callback15","parameterTypes":["long[]"] }, 
+    {"name":"callback16","parameterTypes":["long[]"] }, 
+    {"name":"callback17","parameterTypes":["long[]"] }, 
+    {"name":"callback2","parameterTypes":["long[]"] }, 
+    {"name":"callback3","parameterTypes":["long[]"] }, 
+    {"name":"callback4","parameterTypes":["long[]"] }, 
+    {"name":"callback5","parameterTypes":["long[]"] }, 
+    {"name":"callback6","parameterTypes":["long[]"] }, 
+    {"name":"callback7","parameterTypes":["long[]"] }, 
+    {"name":"callback8","parameterTypes":["long[]"] }, 
+    {"name":"callback9","parameterTypes":["long[]"] }
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.ole.win32.CONTROLINFO",
+  "fields":[
+    {"name":"cAccel"}, 
+    {"name":"cb"}, 
+    {"name":"dwFlags"}, 
+    {"name":"hAccel"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.ole.win32.DISPPARAMS",
+  "fields":[
+    {"name":"cArgs"}, 
+    {"name":"cNamedArgs"}, 
+    {"name":"rgdispidNamedArgs"}, 
+    {"name":"rgvarg"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.ole.win32.EXCEPINFO",
+  "fields":[
+    {"name":"bstrDescription"}, 
+    {"name":"bstrHelpFile"}, 
+    {"name":"bstrSource"}, 
+    {"name":"dwHelpContext"}, 
+    {"name":"pfnDeferredFillIn"}, 
+    {"name":"pvReserved"}, 
+    {"name":"scode"}, 
+    {"name":"wCode"}, 
+    {"name":"wReserved"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.ole.win32.GUID",
+  "fields":[
+    {"name":"Data1"}, 
+    {"name":"Data2"}, 
+    {"name":"Data3"}, 
+    {"name":"Data4"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.ole.win32.OLEINPLACEFRAMEINFO",
+  "fields":[
+    {"name":"cAccelEntries"}, 
+    {"name":"cb"}, 
+    {"name":"fMDIApp"}, 
+    {"name":"haccel"}, 
+    {"name":"hwndFrame"}
+  ]
+},
+{
   "name":"org.eclipse.swt.internal.opengl.win32.PIXELFORMATDESCRIPTOR",
   "fields":[
     {"name":"bReserved"}, 
@@ -59,6 +148,45 @@
     {"name":"lpSource"}, 
     {"name":"wLangId"}, 
     {"name":"wProcessorArchitecture"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.BITMAP",
+  "fields":[
+    {"name":"bmBits"}, 
+    {"name":"bmBitsPixel"}, 
+    {"name":"bmHeight"}, 
+    {"name":"bmPlanes"}, 
+    {"name":"bmType"}, 
+    {"name":"bmWidth"}, 
+    {"name":"bmWidthBytes"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.DOCHOSTUIINFO",
+  "fields":[
+    {"name":"cbSize"}, 
+    {"name":"dwDoubleClick"}, 
+    {"name":"dwFlags"}, 
+    {"name":"pchHostCss"}, 
+    {"name":"pchHostNS"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.GUITHREADINFO",
+  "fields":[
+    {"name":"bottom"}, 
+    {"name":"cbSize"}, 
+    {"name":"flags"}, 
+    {"name":"hwndActive"}, 
+    {"name":"hwndCapture"}, 
+    {"name":"hwndCaret"}, 
+    {"name":"hwndFocus"}, 
+    {"name":"hwndMenuOwner"}, 
+    {"name":"hwndMoveSize"}, 
+    {"name":"left"}, 
+    {"name":"right"}, 
+    {"name":"top"}
   ]
 },
 {
@@ -155,6 +283,63 @@
   ]
 },
 {
+  "name":"org.eclipse.swt.internal.win32.NMCUSTOMDRAW",
+  "fields":[
+    {"name":"bottom"}, 
+    {"name":"dwDrawStage"}, 
+    {"name":"dwItemSpec"}, 
+    {"name":"hdc"}, 
+    {"name":"lItemlParam"}, 
+    {"name":"left"}, 
+    {"name":"right"}, 
+    {"name":"top"}, 
+    {"name":"uItemState"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.NMHDR",
+  "fields":[
+    {"name":"code"}, 
+    {"name":"hwndFrom"}, 
+    {"name":"idFrom"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.NMTREEVIEW",
+  "fields":[
+    {"name":"action"}, 
+    {"name":"hdr"}, 
+    {"name":"itemNew"}, 
+    {"name":"itemOld"}, 
+    {"name":"ptDrag"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.NMTTDISPINFO",
+  "fields":[
+    {"name":"hinst"}, 
+    {"name":"lParam"}, 
+    {"name":"lpszText"}, 
+    {"name":"szText"}, 
+    {"name":"uFlags"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.NMTVDISPINFO",
+  "fields":[
+    {"name":"cChildren"}, 
+    {"name":"cchTextMax"}, 
+    {"name":"hItem"}, 
+    {"name":"iImage"}, 
+    {"name":"iSelectedImage"}, 
+    {"name":"lParam"}, 
+    {"name":"mask"}, 
+    {"name":"pszText"}, 
+    {"name":"state"}, 
+    {"name":"stateMask"}
+  ]
+},
+{
   "name":"org.eclipse.swt.internal.win32.NONCLIENTMETRICS",
   "fields":[
     {"name":"cbSize"}, 
@@ -205,6 +390,30 @@
   ]
 },
 {
+  "name":"org.eclipse.swt.internal.win32.SCROLLBARINFO",
+  "fields":[
+    {"name":"cbSize"}, 
+    {"name":"dxyLineButton"}, 
+    {"name":"rcScrollBar"}, 
+    {"name":"reserved"}, 
+    {"name":"rgstate"}, 
+    {"name":"xyThumbBottom"}, 
+    {"name":"xyThumbTop"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.SCROLLINFO",
+  "fields":[
+    {"name":"cbSize"}, 
+    {"name":"fMask"}, 
+    {"name":"nMax"}, 
+    {"name":"nMin"}, 
+    {"name":"nPage"}, 
+    {"name":"nPos"}, 
+    {"name":"nTrackPos"}
+  ]
+},
+{
   "name":"org.eclipse.swt.internal.win32.STARTUPINFO",
   "fields":[
     {"name":"cb"}, 
@@ -232,20 +441,66 @@
   "fields":[
     {"name":"tmAscent"}, 
     {"name":"tmAveCharWidth"}, 
+    {"name":"tmBreakChar"}, 
     {"name":"tmCharSet"}, 
+    {"name":"tmDefaultChar"}, 
     {"name":"tmDescent"}, 
     {"name":"tmDigitizedAspectX"}, 
     {"name":"tmDigitizedAspectY"}, 
     {"name":"tmExternalLeading"}, 
+    {"name":"tmFirstChar"}, 
     {"name":"tmHeight"}, 
     {"name":"tmInternalLeading"}, 
     {"name":"tmItalic"}, 
+    {"name":"tmLastChar"}, 
     {"name":"tmMaxCharWidth"}, 
     {"name":"tmOverhang"}, 
     {"name":"tmPitchAndFamily"}, 
     {"name":"tmStruckOut"}, 
     {"name":"tmUnderlined"}, 
     {"name":"tmWeight"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.TVHITTESTINFO",
+  "fields":[
+    {"name":"flags"}, 
+    {"name":"hItem"}, 
+    {"name":"x"}, 
+    {"name":"y"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.TVINSERTSTRUCT",
+  "fields":[
+    {"name":"cChildren"}, 
+    {"name":"cchTextMax"}, 
+    {"name":"hInsertAfter"}, 
+    {"name":"hItem"}, 
+    {"name":"hParent"}, 
+    {"name":"iImage"}, 
+    {"name":"iIntegral"}, 
+    {"name":"iSelectedImage"}, 
+    {"name":"lParam"}, 
+    {"name":"mask"}, 
+    {"name":"pszText"}, 
+    {"name":"state"}, 
+    {"name":"stateMask"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.TVITEM",
+  "fields":[
+    {"name":"cChildren"}, 
+    {"name":"cchTextMax"}, 
+    {"name":"hItem"}, 
+    {"name":"iImage"}, 
+    {"name":"iSelectedImage"}, 
+    {"name":"lParam"}, 
+    {"name":"mask"}, 
+    {"name":"pszText"}, 
+    {"name":"state"}, 
+    {"name":"stateMask"}
   ]
 },
 {
@@ -292,6 +547,31 @@
   ]
 },
 {
+  "name":"org.eclipse.swt.ole.win32.OleClientSite$2"
+},
+{
+  "name":"org.eclipse.swt.ole.win32.OleClientSite$3"
+},
+{
+  "name":"org.eclipse.swt.ole.win32.OleClientSite$4"
+},
+{
+  "name":"org.eclipse.swt.ole.win32.OleControlSite$1"
+},
+{
+  "name":"org.eclipse.swt.ole.win32.OleControlSite$2"
+},
+{
+  "name":"org.eclipse.swt.ole.win32.OleEventSink$1"
+},
+{
+  "name":"org.eclipse.swt.ole.win32.OleFrame",
+  "methods":[{"name":"getMsgProc","parameterTypes":["long","long","long"] }]
+},
+{
+  "name":"org.eclipse.swt.ole.win32.OleFrame$1"
+},
+{
   "name":"org.eclipse.swt.widgets.Display",
   "methods":[
     {"name":"foregroundIdleProc","parameterTypes":["long","long","long"] }, 
@@ -311,5 +591,18 @@
 {
   "name":"org.lwjgl.system.ThreadLocalUtil",
   "methods":[{"name":"setupEnvData","parameterTypes":[] }]
+},
+{
+  "name":"sun.management.VMManagementImpl",
+  "fields":[
+    {"name":"compTimeMonitoringSupport"}, 
+    {"name":"currentThreadCpuTimeSupport"}, 
+    {"name":"objectMonitorUsageSupport"}, 
+    {"name":"otherThreadCpuTimeSupport"}, 
+    {"name":"remoteDiagnosticCommandsSupport"}, 
+    {"name":"synchronizerUsageSupport"}, 
+    {"name":"threadAllocatedMemorySupport"}, 
+    {"name":"threadContentionMonitoringSupport"}
+  ]
 }
 ]

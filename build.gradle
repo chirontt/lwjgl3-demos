@@ -5,7 +5,7 @@ plugins {
 }
 
 tasks.wrapper {
-    gradleVersion = '7.4'
+    gradleVersion = '7.4.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -37,7 +37,7 @@ def getCurrentPlatform() {
 
 ext {
     lwjglVersion = project.version
-    jomlVersion = '1.10.4'
+    jomlVersion = '1.10.5-SNAPSHOT'
     swtMavenVersion = '3.116.100'  //contains Eclipse SWT 4.9.4.4 software
     graalvmVersion = '22.0.0.2'
 
@@ -143,9 +143,11 @@ compileJava {
 }
 
 run {
-    //default demo to be run is bgfx.Bump
+    //default application to be run is the demo launcher,
+    //but specific demo class can be run directly as an argument, e.g. bgfx.Bump
     //(the package "org.lwjgl.demo." is prepended automatically)
-    args 'bgfx.Bump'
+    //
+    //args 'bgfx.Bump'
 
     //get system properties specified from the command line (for debugging, etc.)
     //and pass them on to the running application's JVM

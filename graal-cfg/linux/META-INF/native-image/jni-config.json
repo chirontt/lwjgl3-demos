@@ -17,6 +17,39 @@
   "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"
 },
 {
+  "name":"org.eclipse.swt.browser.WebKit",
+  "methods":[
+    {"name":"JSDOMEventProc","parameterTypes":["long","long","long"] }, 
+    {"name":"Proc","parameterTypes":["long","long"] }, 
+    {"name":"Proc","parameterTypes":["long","long","long"] }, 
+    {"name":"Proc","parameterTypes":["long","long","long","long"] }, 
+    {"name":"Proc","parameterTypes":["long","long","long","long","long"] }
+  ]
+},
+{
+  "name":"org.eclipse.swt.browser.WebKit$WebKitExtension",
+  "methods":[{"name":"initializeWebExtensions_callback","parameterTypes":["long","long"] }]
+},
+{
+  "name":"org.eclipse.swt.browser.WebKit$Webkit2AsyncToSync",
+  "methods":[
+    {"name":"getCookie_callback","parameterTypes":["long","long","long"] }, 
+    {"name":"getText_callback","parameterTypes":["long","long","long"] }, 
+    {"name":"runjavascript_callback","parameterTypes":["long","long","long"] }, 
+    {"name":"setCookie_callback","parameterTypes":["long","long","long"] }
+  ]
+},
+{
+  "name":"org.eclipse.swt.browser.WebkitGDBus",
+  "methods":[
+    {"name":"authenticatePeerCB","parameterTypes":["long","long","long","long"] }, 
+    {"name":"callExtensionAsyncCB","parameterTypes":["long","long","long"] }, 
+    {"name":"handleMethodCB","parameterTypes":["long","long","long","long","long","long","long","long"] }, 
+    {"name":"newConnectionCB","parameterTypes":["long","long","long"] }, 
+    {"name":"newConnectionToExtensionCB","parameterTypes":["long","long","long"] }
+  ]
+},
+{
   "name":"org.eclipse.swt.graphics.Device",
   "methods":[{"name":"logProc","parameterTypes":["long","long","long","long"] }]
 },
@@ -303,5 +336,18 @@
 {
   "name":"org.lwjgl.system.CallbackI",
   "methods":[{"name":"callback","parameterTypes":["long","long"] }]
+},
+{
+  "name":"sun.management.VMManagementImpl",
+  "fields":[
+    {"name":"compTimeMonitoringSupport"}, 
+    {"name":"currentThreadCpuTimeSupport"}, 
+    {"name":"objectMonitorUsageSupport"}, 
+    {"name":"otherThreadCpuTimeSupport"}, 
+    {"name":"remoteDiagnosticCommandsSupport"}, 
+    {"name":"synchronizerUsageSupport"}, 
+    {"name":"threadAllocatedMemorySupport"}, 
+    {"name":"threadContentionMonitoringSupport"}
+  ]
 }
 ]

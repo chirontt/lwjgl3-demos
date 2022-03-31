@@ -2,6 +2,9 @@
   "resources":{
   "includes":[
     {
+      "pattern":"\\Qlibswt-atk-gtk-4944r26.so\\E"
+    }, 
+    {
       "pattern":"\\Qlibswt-cairo-gtk-4944r26.so\\E"
     }, 
     {
@@ -12,6 +15,9 @@
     }, 
     {
       "pattern":"\\Qlibswt-pi3-gtk-4944r26.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-webkit-gtk-4944r26.so\\E"
     }, 
     {
       "pattern":"\\Qlinux/x64/org/lwjgl/assimp/libassimp.so\\E"
@@ -123,6 +129,9 @@
     }, 
     {
       "pattern":"\\Qorg/lwjgl/demo/bgfx/textures/fieldstone-rgba.dds\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/lwjgl/demo/demos-data.properties\\E"
     }, 
     {
       "pattern":"\\Qorg/lwjgl/demo/game/voxelgame/boundingboxes.fs.glsl\\E"
@@ -953,6 +962,15 @@
       "pattern":"\\Qorg/lwjgl/demo/vulkan/raytracing/simpletrianglerayquery/compute.glsl\\E"
     }, 
     {
+      "pattern":"\\Qorg/lwjgl/demo/vulkan/raytracing/voxelchunks/closesthit.glsl\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/lwjgl/demo/vulkan/raytracing/voxelchunks/raygen.glsl\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/lwjgl/demo/vulkan/raytracing/voxelchunks/raymiss.glsl\\E"
+    }, 
+    {
       "pattern":"\\Qorg/lwjgl/demo/vulkan/triangle.frag\\E"
     }, 
     {
@@ -963,7 +981,13 @@
     }, 
     {
       "pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.vert\\E"
+    }, 
+    {
+      "pattern":"\\Qwebkitextensions4944r26/libswt-webkit2extension-gtk-4944r26.so\\E"
     }
   ]},
-  "bundles":[]
+  "bundles":[{
+      "name":"org.eclipse.swt.internal.SWTMessages",
+      "locales":[""]
+    }]
 }
