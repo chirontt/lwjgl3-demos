@@ -14,6 +14,10 @@
   "name":"java.lang.NoSuchMethodError"
 },
 {
+  "name":"java.lang.Throwable",
+  "methods":[{"name":"addSuppressed","parameterTypes":["java.lang.Throwable"] }]
+},
+{
   "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"
 },
 {
@@ -270,6 +274,109 @@
     {"name":"count"}, 
     {"name":"height"}, 
     {"name":"width"}, 
+    {"name":"x"}, 
+    {"name":"y"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.gtk3.GdkEvent",
+  "fields":[{"name":"type"}]
+},
+{
+  "name":"org.eclipse.swt.internal.gtk3.GdkEventCrossing",
+  "fields":[
+    {"name":"detail"}, 
+    {"name":"focus"}, 
+    {"name":"mode"}, 
+    {"name":"send_event"}, 
+    {"name":"state"}, 
+    {"name":"subwindow"}, 
+    {"name":"time"}, 
+    {"name":"window"}, 
+    {"name":"x"}, 
+    {"name":"x_root"}, 
+    {"name":"y"}, 
+    {"name":"y_root"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.gtk3.GdkEventFocus",
+  "fields":[
+    {"name":"in"}, 
+    {"name":"send_event"}, 
+    {"name":"window"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.gtk3.GdkEventKey",
+  "fields":[
+    {"name":"group"}, 
+    {"name":"hardware_keycode"}, 
+    {"name":"is_modifier"}, 
+    {"name":"keyval"}, 
+    {"name":"length"}, 
+    {"name":"send_event"}, 
+    {"name":"state"}, 
+    {"name":"string"}, 
+    {"name":"time"}, 
+    {"name":"window"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.gtk3.GdkEventMotion",
+  "fields":[
+    {"name":"axes"}, 
+    {"name":"device"}, 
+    {"name":"is_hint"}, 
+    {"name":"send_event"}, 
+    {"name":"state"}, 
+    {"name":"time"}, 
+    {"name":"window"}, 
+    {"name":"x"}, 
+    {"name":"x_root"}, 
+    {"name":"y"}, 
+    {"name":"y_root"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.gtk3.GdkEventWindowState",
+  "fields":[
+    {"name":"changed_mask"}, 
+    {"name":"new_window_state"}, 
+    {"name":"send_event"}, 
+    {"name":"window"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.gtk3.GdkGeometry",
+  "fields":[
+    {"name":"base_height"}, 
+    {"name":"base_width"}, 
+    {"name":"height_inc"}, 
+    {"name":"max_aspect"}, 
+    {"name":"max_height"}, 
+    {"name":"max_width"}, 
+    {"name":"min_aspect"}, 
+    {"name":"min_height"}, 
+    {"name":"min_width"}, 
+    {"name":"width_inc"}, 
+    {"name":"win_gravity"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.gtk3.GdkWindowAttr",
+  "fields":[
+    {"name":"cursor"}, 
+    {"name":"event_mask"}, 
+    {"name":"height"}, 
+    {"name":"override_redirect"}, 
+    {"name":"title"}, 
+    {"name":"visual"}, 
+    {"name":"wclass"}, 
+    {"name":"width"}, 
+    {"name":"window_type"}, 
+    {"name":"wmclass_class"}, 
+    {"name":"wmclass_name"}, 
     {"name":"x"}, 
     {"name":"y"}
   ]

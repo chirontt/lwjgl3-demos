@@ -2,22 +2,22 @@
   "resources":{
   "includes":[
     {
-      "pattern":"\\Qlibswt-atk-gtk-4944r26.so\\E"
+      "pattern":"\\Qlibswt-atk-gtk-4950r5.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-cairo-gtk-4944r26.so\\E"
+      "pattern":"\\Qlibswt-cairo-gtk-4950r5.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-glx-gtk-4944r26.so\\E"
+      "pattern":"\\Qlibswt-glx-gtk-4950r5.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-gtk-4944r26.so\\E"
+      "pattern":"\\Qlibswt-gtk-4950r5.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-pi3-gtk-4944r26.so\\E"
+      "pattern":"\\Qlibswt-pi3-gtk-4950r5.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-webkit-gtk-4944r26.so\\E"
+      "pattern":"\\Qlibswt-webkit-gtk-4950r5.so\\E"
     }, 
     {
       "pattern":"\\Qlinux/arm64/org/lwjgl/assimp/libassimp.so\\E"
@@ -51,6 +51,9 @@
     }, 
     {
       "pattern":"\\Qlinux/arm64/org/lwjgl/vma/liblwjgl_vma.so\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/eclipse/swt/internal/SWTMessages.properties\\E"
     }, 
     {
       "pattern":"\\Qorg/eclipse/swt/internal/gtk/swt_functional_gtk_3_20.css\\E"
@@ -983,11 +986,11 @@
       "pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.vert\\E"
     }, 
     {
-      "pattern":"\\Qwebkitextensions4944r26/libswt-webkit2extension-gtk-4944r26.so\\E"
+      "pattern":"\\Qwebkitextensions4950r5/libswt-webkit2extension-gtk-4950r5.so\\E"
     }
   ]},
   "bundles":[{
       "name":"org.eclipse.swt.internal.SWTMessages",
-      "locales":[""]
+      "locales":["und"]
     }]
 }

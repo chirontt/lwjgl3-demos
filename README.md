@@ -52,8 +52,8 @@ To build and run the demos in standard JVM with Gradle, execute the `run` task:
 
 	gradlew run
 
-By default, the [Bump](src/org/lwjgl/demo/bgfx/Bump.java) demo is executed
-by the above `run` task without parameter. To run a different demo, e.g.
+By default, the graphical demo launcher application is executed
+by the above `run` task without parameter. To run a specific demo, e.g.
 [WavefrontObjDemo](src/org/lwjgl/demo/opengl/assimp/WavefrontObjDemo.java), execute the `run` task
 with that specific demo class as parameter:
 
@@ -68,7 +68,7 @@ The above tasks can use any standard JDK 11+.
 
 ### Produce native executable
 
-To generate native executable, GraalVM 21+ need be set up as mentioned in
+To generate native executable, GraalVM 22+ need be set up as mentioned in
 *GraalVM pre-requisites* section above.
 
 Once GraalVM is set up and available in the path, run the `nativeCompile` task:
@@ -87,10 +87,19 @@ The resulting `lwjgl3-demos` file is (in Linux):
 
 )
 
-which can then be run directly with a demo class as parameter
-(e.g. [DepthEdgeShaderDemo20](src/org/lwjgl/demo/opengl/fbo/DepthEdgeShaderDemo20.java)):
+which can then be run to show the graphical demo launcher application:
+
+	./build/native-image-linux/lwjgl3-demos
+
+Or to run a demo class directly as a parameter (e.g.
+[DepthEdgeShaderDemo20](src/org/lwjgl/demo/opengl/fbo/DepthEdgeShaderDemo20.java)):
 
 	./build/native-image-linux/lwjgl3-demos opengl.fbo.DepthEdgeShaderDemo20
+
+Or to run a demo class directly with its own parameters (e.g.
+[Bump](src/org/lwjgl/demo/bgfx/Bump.java)):
+
+	./build/native-image-linux/lwjgl3-demos bgfx.Bump --gl --intel
 
 System properties can be passed on to the running demo with the -D parameter,
 e.g. to print out some debug info in the console:
@@ -99,6 +108,8 @@ e.g. to print out some debug info in the console:
 
 (or if building on a Windows machine:
 
+	build\native-image-windows\lwjgl3-demos.exe
+	build\native-image-windows\lwjgl3-demos.exe bgfx.Bump --gl --intel
 	build\native-image-windows\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20
 	build\native-image-windows\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20 -Dorg.lwjgl.util.Debug=true
 
@@ -114,8 +125,8 @@ To build and run the demos in standard JVM with Maven, execute the
 	mvnw compile
 	mvnw exec:exec
 
-By default, the [Bump](src/org/lwjgl/demo/bgfx/Bump.java) demo is executed
-by the above `exec:exec` task without parameter. To run a different demo, e.g.
+By default, the graphical demo launcher application is executed
+by the above `exec:exec` task without parameter. To run a specific demo, e.g.
 [WavefrontObjDemo](src/org/lwjgl/demo/opengl/assimp/WavefrontObjDemo.java), execute the `exec:exec` task
 with that specific demo class as value of the property `class`:
 
@@ -130,7 +141,7 @@ The above tasks can use any standard JDK 11+.
 
 ### Produce native executable
 
-To generate native executable, GraalVM 21+ need be set up as mentioned in
+To generate native executable, GraalVM 22+ need be set up as mentioned in
 *GraalVM pre-requisites* section above.
 
 Once GraalVM is set up and available in the path, run the `package` task:
@@ -149,10 +160,19 @@ The resulting `lwjgl3-demos` file is (in Linux):
 
 )
 
-which can then be run directly with a demo class as parameter
-(e.g. [Demo33Ubo](src/org/lwjgl/demo/opengl/raytracing/Demo33Ubo.java)):
+which can then be run to show the graphical demo launcher application:
+
+	./target/native-image-linux/lwjgl3-demos
+
+Or to run a demo class directly as a parameter (e.g.
+[Demo33Ubo](src/org/lwjgl/demo/opengl/raytracing/Demo33Ubo.java)):
 
 	./target/native-image-linux/lwjgl3-demos opengl.raytracing.Demo33Ubo
+
+Or to run a demo class directly with its own parameters (e.g.
+[Bump](src/org/lwjgl/demo/bgfx/Bump.java)):
+
+	./target/native-image-linux/lwjgl3-demos bgfx.Bump --gl --intel
 
 System properties can be passed on to the running demo with the -D parameter,
 e.g. to print out some debug info in the console:
@@ -161,6 +181,8 @@ e.g. to print out some debug info in the console:
 
 (or if building on a Windows machine:
 
+	target\native-image-windows\lwjgl3-demos.exe
+	target\native-image-windows\lwjgl3-demos.exe bgfx.Bump --gl --intel
 	target\native-image-windows\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo
 	target\native-image-windows\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo -Dorg.lwjgl.util.Debug=true
 

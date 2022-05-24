@@ -2,6 +2,9 @@
   "resources":{
   "includes":[
     {
+      "pattern":"\\Qorg/eclipse/swt/internal/SWTMessages.properties\\E"
+    }, 
+    {
       "pattern":"\\Qorg/lwjgl/demo/bgfx/shaders/dx11/fs_bump.bin\\E"
     }, 
     {
@@ -923,10 +926,13 @@
       "pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.vert\\E"
     }, 
     {
-      "pattern":"\\Qswt-wgl-win32-4944r26.dll\\E"
+      "pattern":"\\Qswt-wgl-win32-4950r5.dll\\E"
     }, 
     {
-      "pattern":"\\Qswt-win32-4944r26.dll\\E"
+      "pattern":"\\Qswt-win32-4950r5.dll\\E"
+    }, 
+    {
+      "pattern":"\\QWebView2Loader.dll\\E"
     }, 
     {
       "pattern":"\\Qwindows/x64/org/lwjgl/assimp/assimp.dll\\E"

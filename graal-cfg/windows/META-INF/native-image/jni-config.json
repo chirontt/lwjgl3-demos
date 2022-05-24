@@ -14,6 +14,10 @@
   "name":"java.lang.NoSuchMethodError"
 },
 {
+  "name":"java.lang.Throwable",
+  "methods":[{"name":"addSuppressed","parameterTypes":["java.lang.Throwable"] }]
+},
+{
   "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"
 },
 {
@@ -357,6 +361,22 @@
     {"name":"lfMessageFont"}, 
     {"name":"lfSmCaptionFont"}, 
     {"name":"lfStatusFont"}
+  ]
+},
+{
+  "name":"org.eclipse.swt.internal.win32.OSVERSIONINFOEX",
+  "fields":[
+    {"name":"dwBuildNumber"}, 
+    {"name":"dwMajorVersion"}, 
+    {"name":"dwMinorVersion"}, 
+    {"name":"dwOSVersionInfoSize"}, 
+    {"name":"dwPlatformId"}, 
+    {"name":"szCSDVersion"}, 
+    {"name":"wProductType"}, 
+    {"name":"wReserved"}, 
+    {"name":"wServicePackMajor"}, 
+    {"name":"wServicePackMinor"}, 
+    {"name":"wSuiteMask"}
   ]
 },
 {

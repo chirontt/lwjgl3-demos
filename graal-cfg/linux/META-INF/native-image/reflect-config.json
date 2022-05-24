@@ -48,7 +48,8 @@
 },
 {
   "name":"java.nio.DirectByteBuffer",
-  "allDeclaredFields":true
+  "allDeclaredFields":true,
+  "unsafeAllocated":true
 },
 {
   "name":"java.nio.DirectCharBufferU",
@@ -64,7 +65,8 @@
 },
 {
   "name":"java.nio.DirectIntBufferU",
-  "allDeclaredFields":true
+  "allDeclaredFields":true,
+  "unsafeAllocated":true
 },
 {
   "name":"java.nio.DirectLongBufferU",
@@ -280,7 +282,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIColor4D",
@@ -905,21 +908,24 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.system.libffi.FFIClosure",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.system.libffi.FFIType",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.util.par.ParShapesMesh",
