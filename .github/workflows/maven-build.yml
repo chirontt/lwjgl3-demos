@@ -33,11 +33,11 @@ jobs:
           javac -version
 
       - name: Build with Maven Wrapper (Linux)
-        run: ./mvnw -B package
+        run: ./mvnw -V -B package
         if: runner.os != 'Windows'
 
       - name: Build with Maven Wrapper (Windows)
-        run: .\mvnw.cmd -B package
+        run: .\mvnw.cmd -V -B package
         if: runner.os == 'Windows'
 
       - name: Package Linux artifact

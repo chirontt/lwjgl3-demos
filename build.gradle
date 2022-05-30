@@ -11,7 +11,7 @@ tasks.wrapper {
 
 group = 'org.lwjgl'
 description = 'LWJGL3 demos with native image by GraalVM'
-version = '3.3.1'
+version = '3.3.2-SNAPSHOT'
 
 //returns the <os>-<arch> platform string suitable for retrieval of LWJGL natives
 //(if <arch> is blank, it implies "x86_64")

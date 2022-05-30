@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.lwjgl</groupId>
     <artifactId>lwjgl3-demos</artifactId>
-    <version>3.3.1</version>
+    <version>3.3.2-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -124,7 +124,7 @@
             <activation>
                 <os>
                     <family>Mac</family>
-                    <!-- <arch>amd64</arch> --> <!-- doesn't work -->
+                    <arch>x86_64</arch>
                 </os>
             </activation>
             <properties>
