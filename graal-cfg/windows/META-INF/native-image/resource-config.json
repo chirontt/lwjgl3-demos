@@ -2,6 +2,36 @@
   "resources":{
   "includes":[
     {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/assimp/assimp.dll.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/bgfx/bgfx.dll.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/glfw/glfw.dll.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/jemalloc/jemalloc.dll.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/lwjgl.dll.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/opengl/lwjgl_opengl.dll.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/par/lwjgl_par.dll.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/shaderc/shaderc.dll.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/stb/lwjgl_stb.dll.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QWebView2Loader.dll\\E"
+    }, 
+    {
       "pattern":"\\Qorg/eclipse/swt/internal/SWTMessages.properties\\E"
     }, 
     {
@@ -926,13 +956,10 @@
       "pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.vert\\E"
     }, 
     {
-      "pattern":"\\Qswt-wgl-win32-4950r5.dll\\E"
+      "pattern":"\\Qswt-wgl-win32-4952r11.dll\\E"
     }, 
     {
-      "pattern":"\\Qswt-win32-4950r5.dll\\E"
-    }, 
-    {
-      "pattern":"\\QWebView2Loader.dll\\E"
+      "pattern":"\\Qswt-win32-4952r11.dll\\E"
     }, 
     {
       "pattern":"\\Qwindows/x64/org/lwjgl/assimp/assimp.dll\\E"

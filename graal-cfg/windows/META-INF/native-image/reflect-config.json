@@ -72,11 +72,13 @@
 },
 {
   "name":"java.nio.DirectLongBufferU",
-  "allDeclaredFields":true
+  "allDeclaredFields":true,
+  "unsafeAllocated":true
 },
 {
   "name":"java.nio.DirectShortBufferU",
-  "allDeclaredFields":true
+  "allDeclaredFields":true,
+  "unsafeAllocated":true
 },
 {
   "name":"java.nio.MappedByteBuffer",
@@ -292,70 +294,80 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIFace",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIFace$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIFile",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIFileIO",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIMaterial",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIMesh",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIScene",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIVector3D",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.assimp.AIVector3D$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.bgfx.BGFXCaps",
@@ -410,14 +422,16 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.bgfx.BGFXTransientVertexBuffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.bgfx.BGFXVertexLayout",
@@ -884,7 +898,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.system.CallbackI",
@@ -938,6 +953,7 @@
 },
 {
   "name":"org.lwjgl.util.par.ParShapesMesh",
+  "unsafeAllocated":true,
   "methods":[{"name":"<init>","parameterTypes":["java.nio.ByteBuffer"] }]
 },
 {
@@ -1050,35 +1066,40 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkAttachmentDescription",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkAttachmentDescription$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkAttachmentReference",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkAttachmentReference$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkBindAccelerationStructureMemoryInfoNV",
@@ -1113,7 +1134,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkBufferImageCopy",
@@ -1134,28 +1156,32 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkClearDepthStencilValue",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkClearValue",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkClearValue$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkCommandBuffer",
@@ -1169,21 +1195,24 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkCommandBufferBeginInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkCommandPoolCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkComponentMapping",
@@ -1197,7 +1226,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDebugReportCallbackEXT",
@@ -1225,21 +1255,24 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDescriptorBufferInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDescriptorBufferInfo$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDescriptorImageInfo",
@@ -1260,49 +1293,56 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDescriptorPoolSize",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDescriptorPoolSize$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDescriptorSetAllocateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDescriptorSetLayoutBinding",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDescriptorSetLayoutBinding$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDevice",
@@ -1316,49 +1356,56 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDeviceQueueCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkDeviceQueueCreateInfo$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkExtensionProperties",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkExtensionProperties$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkExtent2D",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkExtent3D",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkFenceCreateInfo",
@@ -1372,14 +1419,16 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkFramebufferCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkGeometryAABBNV",
@@ -1414,14 +1463,16 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkImageBlit",
@@ -1456,7 +1507,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkImageMemoryBarrier",
@@ -1477,14 +1529,16 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkImageViewCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkInstance",
@@ -1498,28 +1552,32 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkLayerProperties",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkLayerProperties$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkMemoryAllocateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkMemoryBarrier",
@@ -1540,7 +1598,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkMemoryRequirements2KHR",
@@ -1554,14 +1613,16 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkOffset2D",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkOffset3D",
@@ -1582,7 +1643,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDevice8BitStorageFeaturesKHR",
@@ -1596,21 +1658,24 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceAccelerationStructurePropertiesKHR",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceBufferDeviceAddressFeaturesKHR",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceDescriptorIndexingFeaturesEXT",
@@ -1631,7 +1696,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceFloat16Int8FeaturesKHR",
@@ -1645,42 +1711,48 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceProperties",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceProperties2",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceRayQueryFeaturesKHR",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceRayTracingPipelineFeaturesKHR",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceRayTracingPipelinePropertiesKHR",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceRayTracingPropertiesNV",
@@ -1694,112 +1766,128 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPhysicalDeviceVulkan12Features",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineColorBlendStateCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineDynamicStateCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineInputAssemblyStateCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineLayoutCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineMultisampleStateCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineRasterizationStateCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkPresentInfoKHR",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkQueryPoolCreateInfo",
@@ -1820,14 +1908,16 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkQueueFamilyProperties$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkRayTracingPipelineCreateInfoNV",
@@ -1855,28 +1945,32 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkRect2D$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkRenderPassBeginInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkRenderPassCreateInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSamplerCreateInfo",
@@ -1890,7 +1984,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSemaphoreTypeCreateInfoKHR",
@@ -1904,7 +1999,8 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSpecializationInfo",
@@ -1932,126 +2028,144 @@
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSubmitInfo",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSubpassDependency",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSubpassDependency$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSubpassDescription",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSubpassDescription$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSurfaceFormatKHR",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSurfaceFormatKHR$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkSwapchainCreateInfoKHR",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkVertexInputAttributeDescription",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkVertexInputAttributeDescription$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkVertexInputBindingDescription",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkVertexInputBindingDescription$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkViewport",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkViewport$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkWriteDescriptorSet",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkWriteDescriptorSet$Buffer",
   "allDeclaredFields":true,
   "allDeclaredMethods":true,
   "allDeclaredConstructors":true,
-  "allDeclaredClasses":true
+  "allDeclaredClasses":true,
+  "unsafeAllocated":true
 },
 {
   "name":"org.lwjgl.vulkan.VkWriteDescriptorSetAccelerationStructureNV",
@@ -2084,6 +2198,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"sun.security.provider.SHA5$SHA384",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"sun.security.provider.X509Factory",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -2097,6 +2215,10 @@
 },
 {
   "name":"sun.security.rsa.RSASignature$SHA256withRSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSASignature$SHA384withRSA",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {

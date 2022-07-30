@@ -27,7 +27,8 @@
     {"name":"Proc","parameterTypes":["long","long"] }, 
     {"name":"Proc","parameterTypes":["long","long","long"] }, 
     {"name":"Proc","parameterTypes":["long","long","long","long"] }, 
-    {"name":"Proc","parameterTypes":["long","long","long","long","long"] }
+    {"name":"Proc","parameterTypes":["long","long","long","long","long"] }, 
+    {"name":"RequestProc","parameterTypes":["long","long"] }
   ]
 },
 {

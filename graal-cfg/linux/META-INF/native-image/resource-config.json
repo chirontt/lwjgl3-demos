@@ -2,22 +2,46 @@
   "resources":{
   "includes":[
     {
-      "pattern":"\\Qlibswt-atk-gtk-4950r5.so\\E"
+      "pattern":"\\QMETA-INF/linux/x64/org/lwjgl/bgfx/libbgfx.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-cairo-gtk-4950r5.so\\E"
+      "pattern":"\\QMETA-INF/linux/x64/org/lwjgl/glfw/libglfw.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-glx-gtk-4950r5.so\\E"
+      "pattern":"\\QMETA-INF/linux/x64/org/lwjgl/jemalloc/libjemalloc.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-gtk-4950r5.so\\E"
+      "pattern":"\\QMETA-INF/linux/x64/org/lwjgl/liblwjgl.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-pi3-gtk-4950r5.so\\E"
+      "pattern":"\\QMETA-INF/linux/x64/org/lwjgl/opengl/liblwjgl_opengl.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-webkit-gtk-4950r5.so\\E"
+      "pattern":"\\QMETA-INF/linux/x64/org/lwjgl/par/liblwjgl_par.so.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/linux/x64/org/lwjgl/shaderc/libshaderc.so.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/linux/x64/org/lwjgl/stb/liblwjgl_stb.so.sha1\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-atk-gtk-4952r11.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-cairo-gtk-4952r11.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-glx-gtk-4952r11.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-gtk-4952r11.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-pi3-gtk-4952r11.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-webkit-gtk-4952r11.so\\E"
     }, 
     {
       "pattern":"\\Qlinux/x64/org/lwjgl/assimp/libassimp.so\\E"
@@ -986,7 +1010,7 @@
       "pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.vert\\E"
     }, 
     {
-      "pattern":"\\Qwebkitextensions4950r5/libswt-webkit2extension-gtk-4950r5.so\\E"
+      "pattern":"\\Qwebkitextensions4952r11/libswt-webkit2extension-gtk-4952r11.so\\E"
     }
   ]},
   "bundles":[{

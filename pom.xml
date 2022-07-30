@@ -11,11 +11,11 @@
         <maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
         <maven.shade.plugin.version>3.2.4</maven.shade.plugin.version>
         <lwjgl.version>${project.version}</lwjgl.version>
-        <swt.maven.version>3.119.0</swt.maven.version> <!-- contains Eclipse SWT 4.9.5.0 software -->
+        <swt.maven.version>3.120.0</swt.maven.version> <!-- contains Eclipse SWT 4.9.5.2 software -->
         <joml.version>1.10.5-SNAPSHOT</joml.version>
-        <native.maven.plugin.version>0.9.11</native.maven.plugin.version>
+        <native.maven.plugin.version>0.9.13</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
-        <graalvm.version>22.1.0.1</graalvm.version>
+        <graalvm.version>22.2.0</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
         <!-- default exec application is the demo launcher, but specific demo class
              can be launched directly via the following property during mvn invoke.
@@ -54,10 +54,14 @@
                         </exclusion>
                     </exclusions>
                 </dependency>
+                <dependency>
+                    <groupId>org.lwjgl</groupId>
+                    <artifactId>lwjgl-bgfx</artifactId>
+                    <classifier>natives-${platform}</classifier>
+                </dependency>
             </dependencies>
         </profile>
-        <!-- Windows arm64 not supported, due to no SWT library available for it -->
-        <!-- profile>
+        <profile>
             <id>windows-arm64</id>
             <activation>
                 <os>
@@ -68,7 +72,31 @@
             <properties>
                 <platform>windows-arm64</platform>
             </properties>
-        </profile -->
+            <dependencies>
+                <!-- No SWT library is yet available for Windows on ARM64;
+                     temporarily use the x64 library, at least for successful compile
+                     (but SWT demos won't work though) -->
+                <dependency>
+                    <groupId>org.eclipse.platform</groupId>
+                    <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
+                    <version>${swt.maven.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.platform</groupId>
+                            <artifactId>org.eclipse.swt</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <!-- No BGFX native library is yet available for Windows on ARM64;
+                     temporarily use the x64 native library, at least for required native loading
+                     at runtime (but BGFX demos won't work though) -->
+                <dependency>
+                    <groupId>org.lwjgl</groupId>
+                    <artifactId>lwjgl-bgfx</artifactId>
+                    <classifier>natives-windows</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <id>linux-amd64</id>
             <activation>
@@ -91,6 +119,11 @@
                             <artifactId>org.eclipse.swt</artifactId>
                         </exclusion>
                     </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.lwjgl</groupId>
+                    <artifactId>lwjgl-bgfx</artifactId>
+                    <classifier>natives-${platform}</classifier>
                 </dependency>
             </dependencies>
         </profile>
@@ -116,6 +149,11 @@
                             <artifactId>org.eclipse.swt</artifactId>
                         </exclusion>
                     </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.lwjgl</groupId>
+                    <artifactId>lwjgl-bgfx</artifactId>
+                    <classifier>natives-${platform}</classifier>
                 </dependency>
             </dependencies>
         </profile>
@@ -145,8 +183,12 @@
                 <dependency>
                     <groupId>org.lwjgl</groupId>
                     <artifactId>lwjgl-vulkan</artifactId>
-                    <version>${lwjgl.version}</version>
-                    <classifier>natives-macos</classifier>
+                    <classifier>natives-${platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.lwjgl</groupId>
+                    <artifactId>lwjgl-bgfx</artifactId>
+                    <classifier>natives-${platform}</classifier>
                 </dependency>
             </dependencies>
         </profile>
@@ -176,8 +218,12 @@
                 <dependency>
                     <groupId>org.lwjgl</groupId>
                     <artifactId>lwjgl-vulkan</artifactId>
-                    <version>${lwjgl.version}</version>
-                    <classifier>natives-macos-arm64</classifier>
+                    <classifier>natives-${platform}</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>org.lwjgl</groupId>
+                    <artifactId>lwjgl-bgfx</artifactId>
+                    <classifier>natives-${platform}</classifier>
                 </dependency>
             </dependencies>
         </profile>
@@ -324,9 +370,6 @@
                         <buildArg>-H:Path=${project.build.directory}/${native.image.dir.name}</buildArg>
                     </buildArgs>
                     <skip>false</skip>
-                    <!-- temp fix for the "Unsupported OptionOrigin" error in GraalVM 22.1.0 version in Windows
-                         (see https://github.com/oracle/graal/issues/4502) -->
-                    <useArgFile>false</useArgFile>
                     <!-- use the uber jar for native image compiling 
                          if long classpath is a problem in Windows
                     -->
@@ -469,7 +512,7 @@
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-vulkan</artifactId>
         </dependency>
-        <!-- LWJGL native modules for the above (except cuda, vulkan) -->
+        <!-- LWJGL native modules for the above (except bgfx, cuda, vulkan) -->
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
@@ -478,11 +521,6 @@
         <dependency>
             <groupId>org.lwjgl</groupId>
             <artifactId>lwjgl-assimp</artifactId>
-            <classifier>natives-${platform}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-bgfx</artifactId>
             <classifier>natives-${platform}</classifier>
         </dependency>
         <dependency>

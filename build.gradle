@@ -1,11 +1,11 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.11'
+    id 'org.graalvm.buildtools.native' version '0.9.13'
     id 'com.google.osdetector' version '1.7.0'
 }
 
 tasks.wrapper {
-    gradleVersion = '7.4.2'
+    gradleVersion = '7.5'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -38,8 +38,8 @@ def getCurrentPlatform() {
 ext {
     lwjglVersion = project.version
     jomlVersion = '1.10.5-SNAPSHOT'
-    swtMavenVersion = '3.119.0'  //contains Eclipse SWT 4.9.5.0 software
-    graalvmVersion = '22.1.0.1'
+    swtMavenVersion = '3.120.0'  //contains Eclipse SWT 4.9.5.2 software
+    graalvmVersion = '22.2.0'
 
     //LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, par, shaderc, vma, vulkan
     lwjglModules = [
@@ -96,8 +96,14 @@ dependencies {
                 exclude group: 'org.eclipse.platform', module: 'org.eclipse.swt'
             }
             break
-        //Windows arm64 not supported for now, due to no SWT library available for it
         case 'windows-arm64':
+            //No SWT library is yet available for Windows on ARM64;
+            //temporarily use the x64 library, at least for successful compile
+            //(but SWT demos won't work though)
+            implementation("org.eclipse.platform:org.eclipse.swt.win32.win32.x86_64:$swtMavenVersion") {
+                exclude group: 'org.eclipse.platform', module: 'org.eclipse.swt'
+            }
+            break
         default:
             throw new GradleException('Unknown platform for SWT: ' + currentPlatform)
     }
@@ -109,7 +115,16 @@ dependencies {
     lwjglModules.each {
         implementation "org.lwjgl:$it"
         if (it != 'lwjgl-cuda' && it != 'lwjgl-egl') { //cuda, egl have no native modules
-            if (it == 'lwjgl-vulkan') {
+            if (it == 'lwjgl-bgfx') {
+                if (currentPlatform == 'windows-arm64') {
+                    //No BGFX native library is yet available for Windows on ARM64;
+                    //temporarily use the x64 native library, at least for required native loading
+                    //at runtime (but BGFX demos won't work though)
+                    runtimeOnly "org.lwjgl:$it::natives-windows"
+                } else {
+                    runtimeOnly "org.lwjgl:$it::natives-$currentPlatform"
+                }
+            } else if (it == 'lwjgl-vulkan') {
                 if (osdetector.os == 'osx') {
                     //Vulkan natives exist for Mac OSX only
                     runtimeOnly "org.lwjgl:$it::natives-$currentPlatform"
@@ -229,7 +244,7 @@ graalvmNative {
         main {
             imageName = project.name
             mainClass = project.mainClassName
-            debug = true
+            debug = false
             verbose = true
             fallback = false
 
@@ -240,11 +255,6 @@ graalvmNative {
             //buildArgs.add('-H:+TraceNativeToolUsage')
 
             useFatJar = false
-            if (currentPlatform.startsWith('windows')) {
-                //temp fix for the "Unsupported OptionOrigin" error in GraalVM 22.1.0 version in Windows
-                //(see https://github.com/oracle/graal/issues/4502)
-                useArgFile = false
-            }
         }
     }
 }

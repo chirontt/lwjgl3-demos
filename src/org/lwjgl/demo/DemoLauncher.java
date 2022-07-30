@@ -346,6 +346,11 @@ public class DemoLauncher {
             String key = (String) prop.getKey();
             if (key.startsWith("org.lwjgl")) {
                 newProcessCommand.add("-D" + key + "=" + prop.getValue());
+            } else if (key.equals("native.image.config.dir")) {
+                String value = (String) prop.getValue();
+                if (value != null && !value.trim().isEmpty()) {
+                    newProcessCommand.add("-agentlib:native-image-agent=config-merge-dir=" + value);
+                }
             }
         }
         String classpath = ManagementFactory.getRuntimeMXBean().getClassPath();

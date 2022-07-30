@@ -605,6 +605,10 @@
   "methods":[{"name":"getClassName","parameterTypes":["java.lang.Class"] }]
 },
 {
+  "name":"org.lwjgl.demo.opengl.shader.DownsamplingDemo",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.system.CallbackI",
   "methods":[{"name":"callback","parameterTypes":["long","long"] }]
 },
