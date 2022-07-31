@@ -26,6 +26,7 @@ jobs:
           version: ${{ matrix.graalvm-version }}
           java-version: ${{ matrix.java-version }}
           components: 'native-image'
+          set-java-home: 'true'
 
       - name: Report Java version
         run: |
@@ -37,7 +38,9 @@ jobs:
         if: runner.os != 'Windows'
 
       - name: Fix the svm.jar of GraalVM ${{ matrix.graalvm-version }} for JDK ${{ matrix.java-version }} (Windows)
-        run: copy /y lib\svm-${{matrix.graalvm-version}}-MODIFIED.jar %GRAALVM_HOME%\lib\svm\builder\svm.jar
+        run: |
+          echo GRAALVM_HOME: $env:GRAALVM_HOME
+          copy /y lib\svm-${{matrix.graalvm-version}}-MODIFIED.jar $env:GRAALVM_HOME\lib\svm\builder\svm.jar
         if: runner.os == 'Windows' && matrix.java-version == '17'
 
       - name: Build with Maven Wrapper (Windows)
