@@ -36,6 +36,10 @@ jobs:
         run: ./mvnw -V -B package
         if: runner.os != 'Windows'
 
+      - name: Fix the svm.jar of GraalVM ${{ matrix.graalvm-version }} for JDK ${{ matrix.java-version }} (Windows)
+        run: copy /y lib\svm-${{matrix.graalvm-version}}-MODIFIED.jar %GRAALVM_HOME%\lib\svm\builder\svm.jar
+        if: runner.os == 'Windows' && matrix.java-version == '17'
+
       - name: Build with Maven Wrapper (Windows)
         run: .\mvnw.cmd -V -B package
         if: runner.os == 'Windows'

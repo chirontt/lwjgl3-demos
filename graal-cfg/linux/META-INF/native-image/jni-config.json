@@ -32,26 +32,12 @@
   ]
 },
 {
-  "name":"org.eclipse.swt.browser.WebKit$WebKitExtension",
-  "methods":[{"name":"initializeWebExtensions_callback","parameterTypes":["long","long"] }]
-},
-{
   "name":"org.eclipse.swt.browser.WebKit$Webkit2AsyncToSync",
   "methods":[
     {"name":"getCookie_callback","parameterTypes":["long","long","long"] }, 
     {"name":"getText_callback","parameterTypes":["long","long","long"] }, 
     {"name":"runjavascript_callback","parameterTypes":["long","long","long"] }, 
     {"name":"setCookie_callback","parameterTypes":["long","long","long"] }
-  ]
-},
-{
-  "name":"org.eclipse.swt.browser.WebkitGDBus",
-  "methods":[
-    {"name":"authenticatePeerCB","parameterTypes":["long","long","long","long"] }, 
-    {"name":"callExtensionAsyncCB","parameterTypes":["long","long","long"] }, 
-    {"name":"handleMethodCB","parameterTypes":["long","long","long","long","long","long","long","long"] }, 
-    {"name":"newConnectionCB","parameterTypes":["long","long","long"] }, 
-    {"name":"newConnectionToExtensionCB","parameterTypes":["long","long","long"] }
   ]
 },
 {
@@ -87,107 +73,6 @@
   ]
 },
 {
-  "name":"org.eclipse.swt.internal.gtk.GdkEvent",
-  "fields":[{"name":"type"}]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkEventButton",
-  "fields":[
-    {"name":"axes"}, 
-    {"name":"button"}, 
-    {"name":"device"}, 
-    {"name":"send_event"}, 
-    {"name":"state"}, 
-    {"name":"time"}, 
-    {"name":"window"}, 
-    {"name":"x"}, 
-    {"name":"x_root"}, 
-    {"name":"y"}, 
-    {"name":"y_root"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkEventCrossing",
-  "fields":[
-    {"name":"detail"}, 
-    {"name":"focus"}, 
-    {"name":"mode"}, 
-    {"name":"send_event"}, 
-    {"name":"state"}, 
-    {"name":"subwindow"}, 
-    {"name":"time"}, 
-    {"name":"window"}, 
-    {"name":"x"}, 
-    {"name":"x_root"}, 
-    {"name":"y"}, 
-    {"name":"y_root"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkEventFocus",
-  "fields":[
-    {"name":"in"}, 
-    {"name":"send_event"}, 
-    {"name":"window"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkEventKey",
-  "fields":[
-    {"name":"group"}, 
-    {"name":"hardware_keycode"}, 
-    {"name":"is_modifier"}, 
-    {"name":"keyval"}, 
-    {"name":"length"}, 
-    {"name":"send_event"}, 
-    {"name":"state"}, 
-    {"name":"string"}, 
-    {"name":"time"}, 
-    {"name":"window"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkEventMotion",
-  "fields":[
-    {"name":"axes"}, 
-    {"name":"device"}, 
-    {"name":"is_hint"}, 
-    {"name":"send_event"}, 
-    {"name":"state"}, 
-    {"name":"time"}, 
-    {"name":"window"}, 
-    {"name":"x"}, 
-    {"name":"x_root"}, 
-    {"name":"y"}, 
-    {"name":"y_root"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkEventWindowState",
-  "fields":[
-    {"name":"changed_mask"}, 
-    {"name":"new_window_state"}, 
-    {"name":"send_event"}, 
-    {"name":"window"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkGeometry",
-  "fields":[
-    {"name":"base_height"}, 
-    {"name":"base_width"}, 
-    {"name":"height_inc"}, 
-    {"name":"max_aspect"}, 
-    {"name":"max_height"}, 
-    {"name":"max_width"}, 
-    {"name":"min_aspect"}, 
-    {"name":"min_height"}, 
-    {"name":"min_width"}, 
-    {"name":"width_inc"}, 
-    {"name":"win_gravity"}
-  ]
-},
-{
   "name":"org.eclipse.swt.internal.gtk.GdkKeymapKey",
   "fields":[
     {"name":"group"}, 
@@ -209,24 +94,6 @@
   "fields":[
     {"name":"height"}, 
     {"name":"width"}, 
-    {"name":"x"}, 
-    {"name":"y"}
-  ]
-},
-{
-  "name":"org.eclipse.swt.internal.gtk.GdkWindowAttr",
-  "fields":[
-    {"name":"cursor"}, 
-    {"name":"event_mask"}, 
-    {"name":"height"}, 
-    {"name":"override_redirect"}, 
-    {"name":"title"}, 
-    {"name":"visual"}, 
-    {"name":"wclass"}, 
-    {"name":"width"}, 
-    {"name":"window_type"}, 
-    {"name":"wmclass_class"}, 
-    {"name":"wmclass_name"}, 
     {"name":"x"}, 
     {"name":"y"}
   ]

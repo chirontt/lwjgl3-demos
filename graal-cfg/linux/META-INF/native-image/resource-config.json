@@ -1008,9 +1008,6 @@
     }, 
     {
       "pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.vert\\E"
-    }, 
-    {
-      "pattern":"\\Qwebkitextensions4952r11/libswt-webkit2extension-gtk-4952r11.so\\E"
     }
   ]},
   "bundles":[{
