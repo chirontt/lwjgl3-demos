@@ -49,7 +49,7 @@ jobs:
 
       - name: Build with Gradle Wrapper (Windows)
         run: |
-          echo GRAALVM_HOME: %GRAALVM_HOME%
+          echo GRAALVM_HOME: $env:GRAALVM_HOME
           .\gradlew.bat --no-daemon --info nativeCompile
         if: runner.os == 'Windows'
 
