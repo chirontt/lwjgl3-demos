@@ -458,7 +458,7 @@
             <artifactId>svm</artifactId>
             <version>${graalvm.version}</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/svm-${graalvm.version}-MODIFIED.jar</systemPath>
+            <systemPath>${basedir}/lib/svm-${graalvm.version}-11-MODIFIED.jar</systemPath>
         </dependency>
         <!-- LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, par, shaderc, vma, vulkan -->
         <dependency>

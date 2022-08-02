@@ -40,8 +40,8 @@ jobs:
       - name: Fix the svm.jar of GraalVM ${{ matrix.graalvm-version }} for JDK ${{ matrix.java-version }} (Windows)
         run: |
           dir $env:GRAALVM_HOME\lib\svm\builder
-          copy lib\svm-${{matrix.graalvm-version}}-MODIFIED.jar $env:GRAALVM_HOME\lib\svm\builder\svm.jar
-        if: runner.os == 'Windows' && matrix.java-version == '17'
+          copy lib\svm-${{matrix.graalvm-version}}-${{matrix.java-version}}-MODIFIED.jar $env:GRAALVM_HOME\lib\svm\builder\svm.jar
+        if: runner.os == 'Windows'
 
       - name: Build with Maven Wrapper (Windows)
         run: .\mvnw.cmd -V -B package

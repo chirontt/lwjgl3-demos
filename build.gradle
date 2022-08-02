@@ -66,7 +66,7 @@ repositories {
 dependencies {
     implementation "org.joml:joml:$jomlVersion"
     //for compiling GraalVM substitution classes
-    compileOnly files("lib/svm-$graalvmVersion-MODIFIED.jar")
+    compileOnly files("lib/svm-$graalvmVersion-11-MODIFIED.jar")
 
     //SWT library specific to <os>-<arch> platform string
     //(for 64-bit platforms only)
