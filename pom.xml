@@ -334,6 +334,7 @@
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <version>${native.maven.plugin.version}</version>
+                <extensions>true</extensions>
                 <executions>
                     <!-- execution>
                         <id>test-native</id>
@@ -345,7 +346,7 @@
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>build</goal>
+                            <goal>compile-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
