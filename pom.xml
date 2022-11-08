@@ -13,7 +13,7 @@
         <lwjgl.version>${project.version}</lwjgl.version>
         <swt.maven.version>3.121.0</swt.maven.version> <!-- contains Eclipse SWT 4.9.5.4 software -->
         <joml.version>1.10.5</joml.version>
-        <native.maven.plugin.version>0.9.16</native.maven.plugin.version>
+        <native.maven.plugin.version>0.9.17</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
         <graalvm.version>22.3.0</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
@@ -354,6 +354,9 @@
                     <!-- outputDir>${project.build.directory}/${native.image.dir.name}</outputDir -->
                     <imageName>${project.name}</imageName>
                     <mainClass>${exec.mainClass}</mainClass>
+                    <metadataRepository>
+                        <enabled>false</enabled>
+                    </metadataRepository>
                     <buildArgs>
                         <buildArg>--no-fallback</buildArg>
                         <buildArg>--initialize-at-run-time=org.lwjgl</buildArg>
