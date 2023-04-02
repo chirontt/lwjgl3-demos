@@ -1,11 +1,11 @@
 plugins {
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.9.17'
-    id 'com.google.osdetector' version '1.7.1'
+    id 'org.graalvm.buildtools.native' version '0.9.20'
+    id 'com.google.osdetector' version '1.7.3'
 }
 
 tasks.wrapper {
-    gradleVersion = '7.5.1'
+    gradleVersion = '8.0.2'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -38,8 +38,8 @@ def getCurrentPlatform() {
 ext {
     lwjglVersion = project.version
     jomlVersion = '1.10.5'
-    swtMavenVersion = '3.121.0'  //contains Eclipse SWT 4.9.5.4 software
-    graalvmVersion = '22.3.0'
+    swtMavenVersion = '3.123.0'  //contains Eclipse SWT 4.9.5.8 software
+    graalvmVersion = '22.3.1'
 
     //LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, par, shaderc, vma, vulkan
     lwjglModules = [
@@ -103,7 +103,7 @@ dependencies {
         case 'windows-arm64':
             //No SWT library for Windows on Arm64 is yet available in Maven Central;
             //temporarily use a local custom-built SWT library for Windows on Arm64:
-            implementation 'org.eclipse.platform:org.eclipse.swt.win32.win32.aarch64:3.121.0-SNAPSHOT'
+            implementation "org.eclipse.platform:org.eclipse.swt.win32.win32.aarch64:$swtMavenVersion-SNAPSHOT"
             break
         default:
             throw new GradleException('Unknown platform for SWT: ' + currentPlatform)
@@ -241,6 +241,7 @@ task removeUnneededDllFiles {
 }
 
 graalvmNative {
+    toolchainDetection = false
     binaries {
         main {
             imageName = project.name

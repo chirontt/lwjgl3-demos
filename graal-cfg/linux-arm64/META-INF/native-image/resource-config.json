@@ -2,25 +2,52 @@
   "resources":{
   "includes":[
     {
-      "pattern":"\\Qlibswt-atk-gtk-4954r7.so\\E"
+      "pattern":"\\QMETA-INF/MANIFEST.MF\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-cairo-gtk-4954r7.so\\E"
+      "pattern":"\\QMETA-INF/linux/arm64/org/lwjgl/assimp/libassimp.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-glx-gtk-4954r7.so\\E"
+      "pattern":"\\QMETA-INF/linux/arm64/org/lwjgl/assimp/libdraco.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-gtk-4954r7.so\\E"
+      "pattern":"\\QMETA-INF/linux/arm64/org/lwjgl/glfw/libglfw.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-pi3-gtk-4954r7.so\\E"
+      "pattern":"\\QMETA-INF/linux/arm64/org/lwjgl/jemalloc/libjemalloc.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-webkit-gtk-4954r7.so\\E"
+      "pattern":"\\QMETA-INF/linux/arm64/org/lwjgl/liblwjgl.so.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/linux/arm64/org/lwjgl/opengl/liblwjgl_opengl.so.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/linux/arm64/org/lwjgl/par/liblwjgl_par.so.sha1\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/linux/arm64/org/lwjgl/stb/liblwjgl_stb.so.sha1\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-atk-gtk-4958r2.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-cairo-gtk-4958r2.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-gtk-4958r2.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-pi3-gtk-4958r2.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlibswt-webkit-gtk-4958r2.so\\E"
     }, 
     {
       "pattern":"\\Qlinux/arm64/org/lwjgl/assimp/libassimp.so\\E"
+    }, 
+    {
+      "pattern":"\\Qlinux/arm64/org/lwjgl/assimp/libdraco.so\\E"
     }, 
     {
       "pattern":"\\Qlinux/arm64/org/lwjgl/bgfx/libbgfx.so\\E"
@@ -988,6 +1015,9 @@
   ]},
   "bundles":[{
       "name":"org.eclipse.swt.internal.SWTMessages",
-      "locales":["und"]
+      "locales":[
+        "", 
+        "und"
+      ]
     }]
 }
