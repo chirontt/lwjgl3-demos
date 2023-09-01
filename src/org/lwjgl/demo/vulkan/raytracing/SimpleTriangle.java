@@ -55,6 +55,7 @@ public class SimpleTriangle {
             Configuration.DEBUG_FUNCTIONS.set(true);
             Configuration.DEBUG_LOADER.set(true);
             Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
+            Configuration.DEBUG_MEMORY_ALLOCATOR_FAST.set(true);
             Configuration.DEBUG_STACK.set(true);
         } else {
             Configuration.DISABLE_CHECKS.set(true);
@@ -584,7 +585,7 @@ public class SimpleTriangle {
             int imageCount = min(max(pSurfaceCapabilities.minImageCount(), 2), pSurfaceCapabilities.maxImageCount());
             ColorFormatAndSpace surfaceFormat = determineSurfaceFormat(deviceAndQueueFamilies.physicalDevice, surface);
             Vector2i swapchainExtents = determineSwapchainExtents(pSurfaceCapabilities);
-            LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
+            LongBuffer pSwapchain = stack.mallocLong(1);
             _CHECK_(vkCreateSwapchainKHR(device, VkSwapchainCreateInfoKHR
                 .calloc(stack)
                 .sType$Default()
@@ -1319,7 +1320,7 @@ public class SimpleTriangle {
         if (sbt != null)
             sbt.free();
         try (MemoryStack stack = stackPush()) {
-            int groupCount = 2;
+            int groupCount = 3;
             int groupHandleSize = 32 /* shaderGroupHandleSize is exactly 32 bytes, by definition */;
             // group handles must be properly aligned when writing them to the final GPU buffer, so compute
             // the aligned group handle size
@@ -1330,7 +1331,7 @@ public class SimpleTriangle {
 
             // retrieve the three shader group handles
             ByteBuffer handles = stack.malloc(groupCount * groupHandleSize);
-            _CHECK_(vkGetRayTracingShaderGroupHandlesKHR(device, rayTracingPipeline.pipeline, 0, groupCount, handles),
+            _CHECK_(vkGetRayTracingShaderGroupHandlesKHR(device, rayTracingPipeline.pipeline, 0, 2, handles),
                     "Failed to obtain ray tracing group handles");
 
             // prepare memory with properly aligned group handles

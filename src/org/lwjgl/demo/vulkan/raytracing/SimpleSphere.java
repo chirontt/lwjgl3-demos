@@ -56,6 +56,7 @@ public class SimpleSphere {
             Configuration.DEBUG_FUNCTIONS.set(true);
             Configuration.DEBUG_LOADER.set(true);
             Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
+            Configuration.DEBUG_MEMORY_ALLOCATOR_FAST.set(true);
             Configuration.DEBUG_STACK.set(true);
         } else {
             Configuration.DISABLE_CHECKS.set(true);
@@ -444,7 +445,7 @@ public class SimpleSphere {
         }
     }
 
-    private static final List<String> enumerateSupportedInstanceLayers() {
+    private static List<String> enumerateSupportedInstanceLayers() {
         try (MemoryStack stack = stackPush()) {
             IntBuffer pPropertyCount = stack.mallocInt(1);
             vkEnumerateInstanceLayerProperties(pPropertyCount, null);
@@ -585,7 +586,7 @@ public class SimpleSphere {
             int imageCount = min(max(pSurfaceCapabilities.minImageCount(), 2), pSurfaceCapabilities.maxImageCount());
             ColorFormatAndSpace surfaceFormat = determineSurfaceFormat(deviceAndQueueFamilies.physicalDevice, surface);
             Vector2i swapchainExtents = determineSwapchainExtents(pSurfaceCapabilities);
-            LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
+            LongBuffer pSwapchain = stack.mallocLong(1);
             _CHECK_(vkCreateSwapchainKHR(device, VkSwapchainCreateInfoKHR
                 .calloc(stack)
                 .sType$Default()

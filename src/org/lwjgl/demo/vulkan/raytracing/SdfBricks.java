@@ -63,6 +63,7 @@ public class SdfBricks {
             Configuration.DEBUG_FUNCTIONS.set(true);
             Configuration.DEBUG_LOADER.set(true);
             Configuration.DEBUG_MEMORY_ALLOCATOR.set(true);
+            Configuration.DEBUG_MEMORY_ALLOCATOR_FAST.set(true);
             Configuration.DEBUG_STACK.set(true);
         } else {
             Configuration.DISABLE_CHECKS.set(true);
@@ -477,7 +478,7 @@ public class SdfBricks {
         }
     }
 
-    private static final List<String> enumerateSupportedInstanceLayers() {
+    private static List<String> enumerateSupportedInstanceLayers() {
         try (MemoryStack stack = stackPush()) {
             IntBuffer pPropertyCount = stack.mallocInt(1);
             vkEnumerateInstanceLayerProperties(pPropertyCount, null);
@@ -606,28 +607,6 @@ public class SdfBricks {
         return ret;
     }
 
-    private static int determineBestPresentMode() {
-        try (MemoryStack stack = stackPush()) {
-            IntBuffer pPresentModeCount = stack.mallocInt(1);
-            _CHECK_(vkGetPhysicalDeviceSurfacePresentModesKHR(deviceAndQueueFamilies.physicalDevice, surface, pPresentModeCount, null),
-                    "Failed to get presentation modes count");
-            int presentModeCount = pPresentModeCount.get(0);
-            IntBuffer pPresentModes = stack.mallocInt(presentModeCount);
-            _CHECK_(vkGetPhysicalDeviceSurfacePresentModesKHR(deviceAndQueueFamilies.physicalDevice, surface, pPresentModeCount, pPresentModes),
-                    "Failed to get presentation modes");
-            int presentMode = VK_PRESENT_MODE_FIFO_KHR; // <- FIFO is _always_ supported, by definition
-            for (int i = 0; i < presentModeCount; i++) {
-                int mode = pPresentModes.get(i);
-                if (mode == VK_PRESENT_MODE_MAILBOX_KHR) {
-                    // we prefer mailbox over fifo
-                    presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
-                    break;
-                }
-            }
-            return presentMode;
-        }
-    }
-
     private static Swapchain createSwapchain() {
         try (MemoryStack stack = stackPush()) {
             VkSurfaceCapabilitiesKHR pSurfaceCapabilities = VkSurfaceCapabilitiesKHR
@@ -644,7 +623,7 @@ public class SdfBricks {
             int imageCount = min(max(pSurfaceCapabilities.minImageCount(), 2), pSurfaceCapabilities.maxImageCount());
             ColorFormatAndSpace surfaceFormat = determineSurfaceFormat(deviceAndQueueFamilies.physicalDevice, surface);
             Vector2i swapchainExtents = determineSwapchainExtents(pSurfaceCapabilities);
-            LongBuffer pSwapchain = stack.mallocLong(Long.BYTES);
+            LongBuffer pSwapchain = stack.mallocLong(1);
             _CHECK_(vkCreateSwapchainKHR(device, VkSwapchainCreateInfoKHR
                 .calloc(stack)
                 .sType$Default()
@@ -658,7 +637,7 @@ public class SdfBricks {
                 .imageSharingMode(VK_SHARING_MODE_EXCLUSIVE)
                 .preTransform(pSurfaceCapabilities.currentTransform())
                 .compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
-                .presentMode(determineBestPresentMode())
+                .presentMode(VK_PRESENT_MODE_FIFO_KHR)
                 .clipped(true)
                 .oldSwapchain(swapchain != null ? swapchain.swapchain : VK_NULL_HANDLE), null, pSwapchain),
                     "Failed to create swap chain");
