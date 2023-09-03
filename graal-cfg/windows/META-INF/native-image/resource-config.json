@@ -5,6 +5,9 @@
       "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/assimp/assimp.dll.sha1\\E"
     }, 
     {
+      "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/assimp/draco.dll.sha1\\E"
+    }, 
+    {
       "pattern":"\\QMETA-INF/windows/x64/org/lwjgl/bgfx/bgfx.dll.sha1\\E"
     }, 
     {
@@ -317,12 +320,6 @@
       "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/linearlytransformedcosines/raytracing.glsl\\E"
     }, 
     {
-      "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/photonmap.glsl\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/photonmapBindless.glsl\\E"
-    }, 
-    {
       "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/quad.fs\\E"
     }, 
     {
@@ -357,15 +354,6 @@
     }, 
     {
       "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/rasterInstancedUbo.vs\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/rasterPhotonMap.fs\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/rasterPhotonMap.vs\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/rasterPhotonMapBindless.fs\\E"
     }, 
     {
       "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/raytracing.fs\\E"
@@ -639,6 +627,18 @@
     }, 
     {
       "pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/voxellightmapping2/trace.glsl\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/lwjgl/demo/opengl/sampling/env-square.hdr\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/lwjgl/demo/opengl/sampling/env-square2.hdr\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/lwjgl/demo/opengl/sampling/hsw.fs.glsl\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/lwjgl/demo/opengl/sampling/hsw.vs.glsl\\E"
     }, 
     {
       "pattern":"\\Qorg/lwjgl/demo/opengl/shader/downsampling/downsample.cs.glsl\\E"
@@ -956,13 +956,16 @@
       "pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.vert\\E"
     }, 
     {
-      "pattern":"\\Qswt-wgl-win32-4958r2.dll\\E"
+      "pattern":"\\Qswt-wgl-win32-4960r6.dll\\E"
     }, 
     {
-      "pattern":"\\Qswt-win32-4958r2.dll\\E"
+      "pattern":"\\Qswt-win32-4960r6.dll\\E"
     }, 
     {
       "pattern":"\\Qwindows/x64/org/lwjgl/assimp/assimp.dll\\E"
+    }, 
+    {
+      "pattern":"\\Qwindows/x64/org/lwjgl/assimp/draco.dll\\E"
     }, 
     {
       "pattern":"\\Qwindows/x64/org/lwjgl/bgfx/bgfx.dll\\E"

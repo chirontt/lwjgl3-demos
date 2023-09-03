@@ -638,14 +638,6 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
-  "name":"org.lwjgl.demo.opengl.raytracing.PhotonMappingBindlessDemo",
-  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
-},
-{
-  "name":"org.lwjgl.demo.opengl.raytracing.PhotonMappingDemo",
-  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
-},
-{
   "name":"org.lwjgl.demo.opengl.raytracing.TransformFeedbackDemo",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -715,6 +707,10 @@
 },
 {
   "name":"org.lwjgl.demo.opengl.raytracing.tutorial.Tutorial8_2",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.lwjgl.demo.opengl.sampling.HierarchicalSampleWarping",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
@@ -2262,5 +2258,8 @@
 {
   "name":"sun.security.x509.SubjectKeyIdentifierExtension",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.X509CertImpl"
 }
 ]

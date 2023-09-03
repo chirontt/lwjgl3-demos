@@ -8,14 +8,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.release>11</maven.compiler.release>
-        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
+        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+        <maven.shade.plugin.version>3.5.0</maven.shade.plugin.version>
         <lwjgl.version>${project.version}</lwjgl.version>
         <swt.maven.version>3.124.0</swt.maven.version> <!-- contains Eclipse SWT 4.9.6.0 software -->
         <joml.version>1.10.6-SNAPSHOT</joml.version>
         <native.maven.plugin.version>0.9.25</native.maven.plugin.version>
         <native.image.dir.name>native-image-${platform}</native.image.dir.name>
-        <graalvm.version>22.3.2</graalvm.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
         <!-- default exec application is the demo launcher, but specific demo class
              can be launched directly via the following property during mvn invoke.
@@ -241,7 +240,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -266,7 +265,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <id>unpack</id>
@@ -359,9 +358,11 @@
                     </metadataRepository>
                     <buildArgs>
                         <buildArg>--no-fallback</buildArg>
+                        <buildArg>--initialize-at-build-time=sun.security.x509.X509CertImpl</buildArg>
                         <buildArg>--initialize-at-run-time=org.lwjgl</buildArg>
                         <buildArg>--native-image-info</buildArg>
                         <buildArg>--verbose</buildArg>
+                        <!-- buildArg>-march=native</buildArg --> <!-- only available in GraalVM for JDK 17+ -->
                         <!-- buildArg>-H:+TraceNativeToolUsage</buildArg -->
                         <buildArg>-H:TempDirectory=${project.build.directory}/tmp/${native.image.dir.name}</buildArg>
                         <buildArg>-H:Path=${project.build.directory}/${native.image.dir.name}</buildArg>
@@ -381,7 +382,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>remove-unneeded-dll-files</id>
@@ -453,13 +454,6 @@
             <groupId>org.joml</groupId>
             <artifactId>joml</artifactId>
             <version>${joml.version}</version>
-        </dependency>
-        <!-- for compiling GraalVM substitution classes -->
-        <dependency>
-            <groupId>org.graalvm.sdk</groupId>
-            <artifactId>graal-sdk</artifactId>
-            <version>${graalvm.version}</version>
-            <scope>provided</scope>
         </dependency>
         <!-- LWJGL modules used: minimal OpenGL, plus bgfx, cuda, jemalloc, par, shaderc, vma, vulkan -->
         <dependency>

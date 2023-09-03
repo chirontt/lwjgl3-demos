@@ -1,9 +1,9 @@
 {
   "resources":{
   "includes":[
-    {"pattern":"\\Qlibswt-awt-cocoa-4954r7.jnilib\\E"}, 
-    {"pattern":"\\Qlibswt-cocoa-4954r7.jnilib\\E"}, 
-    {"pattern":"\\Qlibswt-pi-cocoa-4954r7.jnilib\\E"}, 
+    {"pattern":"\\Qlibswt-awt-cocoa-4960r6.jnilib\\E"}, 
+    {"pattern":"\\Qlibswt-cocoa-4960r6.jnilib\\E"}, 
+    {"pattern":"\\Qlibswt-pi-cocoa-4960r6.jnilib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/assimp/libassimp.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/bgfx/libbgfx.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/glfw/libglfw.dylib\\E"}, 
@@ -110,8 +110,6 @@
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/linearlytransformedcosines/quad.fs.glsl\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/linearlytransformedcosines/quad.vs.glsl\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/linearlytransformedcosines/raytracing.glsl\\E"}, 
-    {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/photonmap.glsl\\E"}, 
-    {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/photonmapBindless.glsl\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/quad.fs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/quad.vs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/quad110.fs\\E"}, 
@@ -124,9 +122,6 @@
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/raster.vs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/rasterInstanced.vs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/rasterInstancedUbo.vs\\E"}, 
-    {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/rasterPhotonMap.fs\\E"}, 
-    {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/rasterPhotonMap.vs\\E"}, 
-    {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/rasterPhotonMapBindless.fs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/raytracing.fs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/raytracing.glslcs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/raytracing/raytracing110.fs\\E"}, 
