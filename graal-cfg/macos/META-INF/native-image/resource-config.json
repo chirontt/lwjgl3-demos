@@ -1,9 +1,9 @@
 {
   "resources":{
   "includes":[
-    {"pattern":"\\Qlibswt-awt-cocoa-4960r6.jnilib\\E"}, 
-    {"pattern":"\\Qlibswt-cocoa-4960r6.jnilib\\E"}, 
-    {"pattern":"\\Qlibswt-pi-cocoa-4960r6.jnilib\\E"}, 
+    {"pattern":"\\Qlibswt-awt-cocoa-4963r5.jnilib\\E"}, 
+    {"pattern":"\\Qlibswt-cocoa-4963r5.jnilib\\E"}, 
+    {"pattern":"\\Qlibswt-pi-cocoa-4963r5.jnilib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/assimp/libassimp.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/bgfx/libbgfx.dylib\\E"}, 
     {"pattern":"\\Qmacos/x64/org/lwjgl/glfw/libglfw.dylib\\E"}, 

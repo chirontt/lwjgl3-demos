@@ -11,10 +11,9 @@
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
         <maven.shade.plugin.version>3.5.0</maven.shade.plugin.version>
         <lwjgl.version>${project.version}</lwjgl.version>
-        <swt.maven.version>3.124.0</swt.maven.version> <!-- contains Eclipse SWT 4.9.6.0 software -->
+        <swt.maven.version>3.124.200</swt.maven.version> <!-- contains Eclipse SWT 4.9.6.3 software -->
         <joml.version>1.10.6-SNAPSHOT</joml.version>
-        <native.maven.plugin.version>0.9.25</native.maven.plugin.version>
-        <native.image.dir.name>native-image-${platform}</native.image.dir.name>
+        <native.maven.plugin.version>0.9.28</native.maven.plugin.version>
         <exec.mainClass>org.lwjgl.demo.DemoLauncher</exec.mainClass>
         <!-- default exec application is the demo launcher, but specific demo class
              can be launched directly via the following property during mvn invoke.
@@ -350,7 +349,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- outputDir>${project.build.directory}/${native.image.dir.name}</outputDir -->
                     <imageName>${project.name}</imageName>
                     <mainClass>${exec.mainClass}</mainClass>
                     <metadataRepository>
@@ -362,10 +360,8 @@
                         <buildArg>--initialize-at-run-time=org.lwjgl</buildArg>
                         <buildArg>--native-image-info</buildArg>
                         <buildArg>--verbose</buildArg>
-                        <!-- buildArg>-march=native</buildArg --> <!-- only available in GraalVM for JDK 17+ -->
+                        <buildArg>-march=compatibility</buildArg> <!-- only available in GraalVM for JDK 17+ -->
                         <!-- buildArg>-H:+TraceNativeToolUsage</buildArg -->
-                        <buildArg>-H:TempDirectory=${project.build.directory}/tmp/${native.image.dir.name}</buildArg>
-                        <buildArg>-H:Path=${project.build.directory}/${native.image.dir.name}</buildArg>
                     </buildArgs>
                     <skip>false</skip>
                     <!-- use the uber jar for native image compiling 
@@ -385,7 +381,7 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>remove-unneeded-dll-files</id>
+                        <id>fix-uber-jar-manifest</id>
                         <phase>package</phase>
                         <goals>
                             <goal>run</goal>
@@ -404,18 +400,6 @@
                                 <attribute name="Main-Class" value="${exec.mainClass}"/>
                             </manifest>
                         </jar>
-                        <!-- move unneeded .dll/.txt files created by the native-image build -->
-                        <move todir="${project.build.directory}/tmp/${native.image.dir.name}"
-                              failonerror="false" quiet="true">
-                            <fileset dir="${project.build.directory}/${native.image.dir.name}">
-                                <include name="*.dll"/>
-                                <include name="*.pdb"/>
-                                <include name="*.txt"/>
-                            </fileset>
-                        </move>
-                        <move file="${project.build.directory}/${native.image.dir.name}/reports"
-                              tofile="${project.build.directory}/tmp/${native.image.dir.name}/reports"
-                              failonerror="false" quiet="true"/>
                     </target>
                 </configuration>
             </plugin>

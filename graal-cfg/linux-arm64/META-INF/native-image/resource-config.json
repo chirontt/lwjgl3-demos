@@ -29,19 +29,19 @@
       "pattern":"\\QMETA-INF/linux/arm64/org/lwjgl/stb/liblwjgl_stb.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-atk-gtk-4960r6.so\\E"
+      "pattern":"\\Qlibswt-atk-gtk-4963r5.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-cairo-gtk-4960r6.so\\E"
+      "pattern":"\\Qlibswt-cairo-gtk-4963r5.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-gtk-4960r6.so\\E"
+      "pattern":"\\Qlibswt-gtk-4963r5.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-pi3-gtk-4960r6.so\\E"
+      "pattern":"\\Qlibswt-pi3-gtk-4963r5.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-webkit-gtk-4960r6.so\\E"
+      "pattern":"\\Qlibswt-webkit-gtk-4963r5.so\\E"
     }, 
     {
       "pattern":"\\Qlinux/arm64/org/lwjgl/assimp/libassimp.so\\E"
