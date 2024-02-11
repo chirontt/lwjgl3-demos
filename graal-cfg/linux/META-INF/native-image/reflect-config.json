@@ -742,6 +742,10 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.lwjgl.demo.opengl.shader.RayMarchingVolumeTexture",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.lwjgl.demo.opengl.shader.SimpleQuadAndGridDemo",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },

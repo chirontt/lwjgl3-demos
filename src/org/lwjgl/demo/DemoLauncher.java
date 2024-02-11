@@ -228,10 +228,6 @@ public class DemoLauncher {
         Button button;
         if (Platform.get() == Platform.WINDOWS) {
             button = new Button(group, SWT.RADIO);
-            button.setText("Direct3D 9");
-            button.setData("--d3d9");
-            renderers.add(button);
-            button = new Button(group, SWT.RADIO);
             button.setText("Direct3D 11");
             button.setData("--d3d11");
             renderers.add(button);

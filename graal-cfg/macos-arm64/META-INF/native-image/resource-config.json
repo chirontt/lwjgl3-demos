@@ -248,6 +248,8 @@
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/noverticesprojectedgrid.vs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/planet.fs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/planet.vs\\E"}, 
+    {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/raymarching.fs.glsl\\E"}, 
+    {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/raymarching.vs.glsl\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/simple.fs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shader/simple.vs\\E"}, 
     {"pattern":"\\Qorg/lwjgl/demo/opengl/shadow/omni2dShadow-fs.glsl\\E"}, 
