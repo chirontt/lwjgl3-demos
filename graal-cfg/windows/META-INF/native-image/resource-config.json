@@ -962,10 +962,10 @@
       "pattern":"\\Qorg/lwjgl/demo/vulkan/twoRotatingTriangles.vert\\E"
     }, 
     {
-      "pattern":"\\Qswt-wgl-win32-4963r5.dll\\E"
+      "pattern":"\\Qswt-wgl-win32-4965r11.dll\\E"
     }, 
     {
-      "pattern":"\\Qswt-win32-4963r5.dll\\E"
+      "pattern":"\\Qswt-win32-4965r11.dll\\E"
     }, 
     {
       "pattern":"\\Qwindows/x64/org/lwjgl/assimp/assimp.dll\\E"

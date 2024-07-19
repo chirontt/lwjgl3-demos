@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Mar 14 22:36:28 EDT 2024
+org.eclipse.swt.win32.win32.aarch64-3.125.0-SNAPSHOT.pom>=
+org.eclipse.swt.win32.win32.aarch64-3.125.0-SNAPSHOT.jar>=

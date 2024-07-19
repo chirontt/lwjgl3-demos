@@ -54,6 +54,7 @@ import org.lwjgl.system.Platform;
 public class DemoLauncher {
 
     static final String DEMO_PACKAGE_PREFIX = "org.lwjgl.demo.";
+    static final String NATIVE_IMAGE_CONFIG_DIR_PROPERTY = "native.image.config.dir";
 
     static Tree demosTree;
     static Browser descriptionBrowser;
@@ -65,19 +66,26 @@ public class DemoLauncher {
     static Button useCustomAllocator;
 
     public static void main(String[] args) {
-        //if demo class is specified, launch it and exit
-        if (args.length > 0) {
-            String[] demoArgs = new String[]{};
+        //if a demo class is specified, launch it and exit
+        if (args.length > 0 && !args[0].isEmpty()) {
+            String[] demoArgs = {};
             if (args.length > 1) {
                 demoArgs = Arrays.copyOfRange(args, 1, args.length);
             }
+            String nativeImageConfigDir = System.getProperty(NATIVE_IMAGE_CONFIG_DIR_PROPERTY);
             //class name can omit the default "org.lwjgl.demo." package prefix
             if (args[0].startsWith(DEMO_PACKAGE_PREFIX)) {
                 //assume fully-specified demo class name
-                launchDemoInCurrentJVM(args[0], demoArgs);
+                if (nativeImageConfigDir == null)
+                    launchDemoInCurrentJVM(args[0], demoArgs);
+                else
+                    launchDemoInSeparateJVM(args[0], Arrays.asList(demoArgs));
             } else {
                 //assume partially-specified demo class name
-                launchDemoInCurrentJVM(DEMO_PACKAGE_PREFIX + args[0], demoArgs);
+                if (nativeImageConfigDir == null)
+                    launchDemoInCurrentJVM(DEMO_PACKAGE_PREFIX + args[0], demoArgs);
+                else
+                    launchDemoInSeparateJVM(DEMO_PACKAGE_PREFIX + args[0], Arrays.asList(demoArgs));
             }
             return;
         }
@@ -342,7 +350,7 @@ public class DemoLauncher {
             String key = (String) prop.getKey();
             if (key.startsWith("org.lwjgl")) {
                 newProcessCommand.add("-D" + key + "=" + prop.getValue());
-            } else if (key.equals("native.image.config.dir")) {
+            } else if (key.equals(NATIVE_IMAGE_CONFIG_DIR_PROPERTY)) {
                 String value = (String) prop.getValue();
                 if (value != null && !value.trim().isEmpty()) {
                     newProcessCommand.add("-agentlib:native-image-agent=config-merge-dir=" + value);

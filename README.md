@@ -79,39 +79,39 @@ The `nativeCompile` task would take a while to compile all demo source code and
 link them with the LWJGL libraries into an executable file.
 The resulting `lwjgl3-demos` file is (in Linux):
 
-	build/native-image-linux/lwjgl3-demos
+	build/native/nativeCompile/lwjgl3-demos
 
 (or if building on a Windows machine:
 
-	build\native-image-windows\lwjgl3-demos.exe
+	build\native\nativeCompile\lwjgl3-demos.exe
 
 )
 
 which can then be run to show the graphical demo launcher application:
 
-	./build/native-image-linux/lwjgl3-demos
+	./build/native/nativeCompile/lwjgl3-demos
 
 Or to run a demo class directly as a parameter (e.g.
 [DepthEdgeShaderDemo20](src/org/lwjgl/demo/opengl/fbo/DepthEdgeShaderDemo20.java)):
 
-	./build/native-image-linux/lwjgl3-demos opengl.fbo.DepthEdgeShaderDemo20
+	./build/native/nativeCompile/lwjgl3-demos opengl.fbo.DepthEdgeShaderDemo20
 
 Or to run a demo class directly with its own parameters (e.g.
 [Bump](src/org/lwjgl/demo/bgfx/Bump.java)):
 
-	./build/native-image-linux/lwjgl3-demos bgfx.Bump --gl --intel
+	./build/native/nativeCompile/lwjgl3-demos bgfx.Bump --gl --intel
 
 System properties can be passed on to the running demo with the -D parameter,
 e.g. to print out some debug info in the console:
 
-	./build/native-image-linux/lwjgl3-demos opengl.fbo.DepthEdgeShaderDemo20 -Dorg.lwjgl.util.Debug=true
+	./build/native/nativeCompile/lwjgl3-demos opengl.fbo.DepthEdgeShaderDemo20 -Dorg.lwjgl.util.Debug=true
 
 (or if building on a Windows machine:
 
-	build\native-image-windows\lwjgl3-demos.exe
-	build\native-image-windows\lwjgl3-demos.exe bgfx.Bump --gl --intel
-	build\native-image-windows\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20
-	build\native-image-windows\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20 -Dorg.lwjgl.util.Debug=true
+	build\native\nativeCompile\lwjgl3-demos.exe
+	build\native\nativeCompile\lwjgl3-demos.exe bgfx.Bump --gl --intel
+	build\native\nativeCompile\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20
+	build\native\nativeCompile\lwjgl3-demos.exe opengl.fbo.DepthEdgeShaderDemo20 -Dorg.lwjgl.util.Debug=true
 
 )
 
@@ -152,39 +152,39 @@ The `package` task would take a while to compile all demo source code and
 link them with the LWJGL libraries into an executable file.
 The resulting `lwjgl3-demos` file is (in Linux):
 
-	target/native-image-linux/lwjgl3-demos
+	target/lwjgl3-demos
 
 (or if building on a Windows machine:
 
-	target\native-image-windows\lwjgl3-demos.exe
+	target\lwjgl3-demos.exe
 
 )
 
 which can then be run to show the graphical demo launcher application:
 
-	./target/native-image-linux/lwjgl3-demos
+	./target/lwjgl3-demos
 
 Or to run a demo class directly as a parameter (e.g.
 [Demo33Ubo](src/org/lwjgl/demo/opengl/raytracing/Demo33Ubo.java)):
 
-	./target/native-image-linux/lwjgl3-demos opengl.raytracing.Demo33Ubo
+	./target/lwjgl3-demos opengl.raytracing.Demo33Ubo
 
 Or to run a demo class directly with its own parameters (e.g.
 [Bump](src/org/lwjgl/demo/bgfx/Bump.java)):
 
-	./target/native-image-linux/lwjgl3-demos bgfx.Bump --gl --intel
+	./target/lwjgl3-demos bgfx.Bump --gl --intel
 
 System properties can be passed on to the running demo with the -D parameter,
 e.g. to print out some debug info in the console:
 
-	./target/native-image-linux/lwjgl3-demos opengl.raytracing.Demo33Ubo -Dorg.lwjgl.util.Debug=true
+	./target/lwjgl3-demos opengl.raytracing.Demo33Ubo -Dorg.lwjgl.util.Debug=true
 
 (or if building on a Windows machine:
 
-	target\native-image-windows\lwjgl3-demos.exe
-	target\native-image-windows\lwjgl3-demos.exe bgfx.Bump --gl --intel
-	target\native-image-windows\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo
-	target\native-image-windows\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo -Dorg.lwjgl.util.Debug=true
+	target\lwjgl3-demos.exe
+	target\lwjgl3-demos.exe bgfx.Bump --gl --intel
+	target\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo
+	target\lwjgl3-demos.exe opengl.raytracing.Demo33Ubo -Dorg.lwjgl.util.Debug=true
 
 )
 
