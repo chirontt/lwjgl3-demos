@@ -32,22 +32,22 @@
       "pattern":"\\QMETA-INF/linux/x64/org/lwjgl/stb/liblwjgl_stb.so.sha1\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-atk-gtk-4965r11.so\\E"
+      "pattern":"\\Qlibswt-atk-gtk-4967r8.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-cairo-gtk-4965r11.so\\E"
+      "pattern":"\\Qlibswt-cairo-gtk-4967r8.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-glx-gtk-4965r11.so\\E"
+      "pattern":"\\Qlibswt-glx-gtk-4967r8.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-gtk-4965r11.so\\E"
+      "pattern":"\\Qlibswt-gtk-4967r8.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-pi3-gtk-4965r11.so\\E"
+      "pattern":"\\Qlibswt-pi3-gtk-4967r8.so\\E"
     }, 
     {
-      "pattern":"\\Qlibswt-webkit-gtk-4965r11.so\\E"
+      "pattern":"\\Qlibswt-webkit-gtk-4967r8.so\\E"
     }, 
     {
       "pattern":"\\Qlinux/x64/org/lwjgl/assimp/libassimp.so\\E"
